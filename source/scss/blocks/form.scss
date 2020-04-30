@@ -2,6 +2,7 @@
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: flex-end;
 }
 
 .form__label {
@@ -29,12 +30,32 @@
   }
 }
 
+
+@keyframes form__field--field-fade-in {
+  0% {
+    opacity: 0;
+    width: 0;
+    margin-left: auto;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  100% {
+    width: 100%;
+  }
+}
+
 .form__field {
+  $form__field--width-animation-duration: 0.7s;
+
   flex: none;
   margin-right: 3rem;
   padding: 0 5.6rem;
   height: 6rem;
-  width: calc(100% - 21rem);
+  width: 100%;
+  max-width: calc(100% - 21rem);
   text-transform: uppercase;
   font: inherit;
   font-size: 2.4rem;
@@ -43,6 +64,7 @@
   border: 0;
   border-radius: 3rem;
   outline: none;
+  animation: form__field--field-fade-in $form__field--width-animation-duration ease-out;
 
   &:focus {
     border: 1px solid $c-purple;
@@ -52,7 +74,7 @@
     margin-right: 30px;
     padding: 0 56px;
     height: 60px;
-    width: calc(100% - 210px);
+    max-width: calc(100% - 210px);
     font-size: 24px;
     border-radius: 30px;
   }
@@ -60,26 +82,26 @@
   @media (orientation: portrait) {
     margin-right: 1rem;
     padding: 0 2.5rem;
-    width: calc(100% - 5rem);
+    max-width: calc(100% - 5rem);
     height: 4rem;
     font-size: 1.6rem;
   }
 
   @media (max-width: $tablet) and (orientation: landscape) {
-    width: calc(100% - 9rem);
+    max-width: calc(100% - 9rem);
   }
 
   @media (max-width: $mobile) and (orientation: landscape) {
     margin-right: 1rem;
     padding: 0 2.5rem;
-    width: calc(100% - 5rem);
+    max-width: calc(100% - 5rem);
     height: 4rem;
     font-size: 1.6rem;
   }
 }
 
 .form__button {
-  flex-grow: 1;
+  flex-shrink: 0;
 
   @media (orientation: portrait) {
     position: relative;
@@ -94,8 +116,8 @@
     position: relative;
     flex: none;
     padding: 0;
-    width: 6rem;
-    height: 6rem;
+    width: 8rem;
+    height: 8rem;
     font-size: 0;
   }
 
