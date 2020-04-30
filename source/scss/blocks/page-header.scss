@@ -237,10 +237,14 @@
   }
 
   a {
+    $page-header__menu--item-transition-duration: 0.3s;
+
     position: relative;
     display: block;
     color: inherit;
     padding: 0 0.5em 0.5em;
+    overflow: hidden;
+    transition: color $page-header__menu--item-transition-duration ease-out;
 
     &::after {
       content: "";
@@ -249,8 +253,9 @@
       width: 100%;
       height: 2px;
       background-color: $c-light;
-      display: none;
       left: 0;
+      transform: translateX(calc(-100% - 10px));
+      transition: background-color $page-header__menu--item-transition-duration ease-out, transform $page-header__menu--item-transition-duration ease-out;
 
       @media (min-width: $stop-scaling) {
         left: -5px;
@@ -272,7 +277,7 @@
 
     &.active {
       &::after {
-        display: block;
+        transform: translateX(0);
       }
     }
 
@@ -284,6 +289,7 @@
       &::after {
         opacity: 1;
         background-color: $c-purple;
+        transform: translateX(0);
       }
     }
   }

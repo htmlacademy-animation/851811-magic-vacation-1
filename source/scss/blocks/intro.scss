@@ -86,13 +86,31 @@
   }
 }
 
+@keyframes intro__message--text-fade-in {
+  0% {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
 .intro__message {
+  $intro__message--animation-duration: 0.45s;
+
   flex: none;
   width: 50.9rem;
   max-width: 50%;
   text-transform: uppercase;
   font-size: 2.4rem;
   line-height: 1.27;
+  animation: intro__message--text-fade-in $intro__message--animation-duration ease-out;
 
   @media (min-width: $stop-scaling) {
     width: 509px;
