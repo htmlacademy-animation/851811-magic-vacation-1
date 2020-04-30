@@ -1,11 +1,42 @@
+$social-block--toggler-transition-duration: 0.3s;
+$social-block--toggler-transition-delay: 0.1s;
+
+$social-block--elements-count: 3;
+$social-block--element-transform-transition-duration: 0.35s;
+$social-block--element-opacity-transition-duration: 0.3s;
+$social-block--element-transition-delay: 0.1s;
+
+$social-block--link-transition-duration: 0.3s;
+
+@mixin show-social-elements {
+  pointer-events: auto;
+
+  @for $i from 1 through $social-block--elements-count {
+    li:nth-child(#{$i}) {
+      opacity: 1;
+      transform: translateY(0);
+      transition:
+        opacity $social-block--element-opacity-transition-duration ease-out #{$social-block--element-transition-delay * $i},
+        transform $social-block--element-transform-transition-duration ease-out #{$social-block--element-transition-delay * $i};
+    }
+  }
+}
+
 .social-block {
   position: relative;
+}
 
-  &:hover {
-    .social-block__list {
-      opacity: 1;
-      pointer-events: auto;
+.social-block--active {
+  .social-block__toggler:not(:hover) {
+    color: $c-light;
+
+    &::before {
+      background-color: $c-purple;
     }
+  }
+
+  .social-block__list {
+    @include show-social-elements();
   }
 }
 
@@ -17,6 +48,7 @@
   height: 4rem;
   color: $c-dark;
   border-radius: 50%;
+  transition: color $social-block--toggler-transition-duration ease-out $social-block--toggler-transition-delay;
 
   @media (max-width: $tablet) and (orientation: portrait) {
     display: none;
@@ -27,13 +59,20 @@
   }
 
   &::before {
-    @include center;
     content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
+    will-change: transform;
+    transform: scale(1);
+    transform-origin: center;
+    transition:
+      transform $social-block--toggler-transition-duration ease-out $social-block--toggler-transition-delay,
+      background-color $social-block--toggler-transition-duration ease-out $social-block--toggler-transition-delay;
     border-radius: 50%;
     background-color: $c-light;
-    border: 2px solid $c-light;
     z-index: -1;
   }
 
@@ -44,13 +83,11 @@
     height: 2.2rem;
   }
 
-  &:hover,
-  .social-block--active & {
+  &:hover {
     color: $c-purple;
 
     &::before {
-      width: 112.5%;
-      height: 112.5%;
+      transform: scale(1.125);
     }
   }
 
@@ -62,9 +99,8 @@
       border-color: $c-purple;
     }
 
-    & + .social-block__list {
-      opacity: 1;
-      pointer-events: auto;
+    ~ .social-block__list {
+      @include show-social-elements();
     }
   }
 
@@ -73,8 +109,7 @@
     color: $c-light;
 
     &::before {
-      width: 100%;
-      height: 100%;
+      transform: scale(1);
       background-color: $c-purple;
       border-color: $c-purple;
     }
@@ -87,7 +122,6 @@
   top: 100%;
   right: 0;
   margin-top: 1.5rem;
-  opacity: 0;
   pointer-events: none;
 
   @media (min-width: $stop-scaling) {
@@ -137,13 +171,10 @@
     pointer-events: auto;
   }
 
-  .social-block--active & {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
   li {
     flex: none;
+    opacity: 0;
+    transform: translateY(20px);
     margin-bottom: 0.5rem;
 
     @media (min-width: $stop-scaling) {
@@ -168,6 +199,7 @@
   color: $c-light;
   border: 2px solid transparent;
   border-radius: 50%;
+  transition: color $social-block--link-transition-duration ease-out;
 
   @media (min-width: $stop-scaling) {
     width: 40px;
