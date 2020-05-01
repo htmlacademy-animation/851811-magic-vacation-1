@@ -141,10 +141,10 @@
   }
 }
 
-.page-header__nav {
-  $page-header__nav--transition-duration: 0.4s;
-  $page-header__nav--transition-delay: 0.4s;
+$page-header__nav--transition-duration: 0.4s;
+$page-header__nav--transition-delay: 0.4s;
 
+.page-header__nav {
   display: flex;
   align-items: center;
   opacity: 0;
@@ -299,8 +299,12 @@
     }
 
     &.active {
-      &::after {
-        transform: translateX(0);
+      .document__body_ready & {
+        &::after {
+          transform: translateX(0);
+          transition-duration: $page-header__nav--transition-duration;
+          transition-delay: $page-header__nav--transition-delay;
+        }
       }
     }
 
