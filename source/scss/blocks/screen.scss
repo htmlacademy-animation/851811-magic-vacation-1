@@ -39,6 +39,8 @@
 }
 
 .screen__footer {
+  $screen__footer--transition-duration: 0.3s;
+
   position: absolute;
   bottom: 0;
   left: 0;
@@ -46,6 +48,12 @@
   color: $c-dark;
   background-color: $c-light;
   z-index: 1;
+  transform: translateY(100%);
+
+  .document__body_ready & {
+    transform: translateY(0);
+    transition: transform $screen__footer--transition-duration $page-header__logo--page-header__nav--screen__footer--timing-function;
+  }
 
   @media (max-width: $tablet) and (orientation: portrait) {
     width: 3.5rem;

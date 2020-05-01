@@ -27,6 +27,9 @@
 }
 
 .page-header__logo {
+  $page-header__logo--transition-duration: 0.4s;
+  $page-header__logo--transition-delay: 0.2s;
+
   @include hover;
   position: relative;
   flex: none;
@@ -35,6 +38,17 @@
   padding: 1rem 0;
   width: 10rem;
   color: $c-light;
+  transform: translateX(-50px);
+  opacity: 0;
+
+  .document__body_ready & {
+    transform: translateX(0);
+    opacity: 1;
+    transition-property: opacity, transform;
+    transition-duration: $page-header__logo--transition-duration;
+    transition-timing-function: $page-header__logo--page-header__nav--screen__footer--timing-function;
+    transition-delay: $page-header__logo--transition-delay;
+  }
 
   @media (min-width: $stop-scaling) {
     top: -5px;
@@ -127,9 +141,18 @@
   }
 }
 
+$page-header__nav--transition-duration: 0.4s;
+$page-header__nav--transition-delay: 0.4s;
+
 .page-header__nav {
   display: flex;
   align-items: center;
+  opacity: 0;
+
+  .document__body_ready & {
+    opacity: 1;
+    transition: opacity $page-header__nav--transition-duration $page-header__logo--page-header__nav--screen__footer--timing-function $page-header__nav--transition-delay;
+  }
 
   @media (max-width: $tablet) and (orientation: portrait) {
     position: fixed;
@@ -276,8 +299,12 @@
     }
 
     &.active {
-      &::after {
-        transform: translateX(0);
+      .document__body_ready & {
+        &::after {
+          transform: translateX(0);
+          transition-duration: $page-header__nav--transition-duration;
+          transition-delay: $page-header__nav--transition-delay;
+        }
       }
     }
 
