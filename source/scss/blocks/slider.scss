@@ -5,6 +5,7 @@
 
   .swiper-wrapper {
     min-height: 100vh;
+    box-sizing: border-box;
 
     @media (max-width: $tablet) and (orientation: portrait) {
       min-height: calc(var(--vh, 1vh) * 100);
@@ -89,36 +90,12 @@
   }
 }
 
-@keyframes slider__item-text--text-fade-in {
-  0% {
-    opacity: 0;
-    transform: translateX(200px);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .slider__item-text {
-  $slider__item-text--animation-duration: 0.6s;
-  $slider__item-text--animation-delay: 0.2s;
-
   margin-top: 3.6rem;
   margin-bottom: 0;
   max-width: 34rem;
   font-size: 1.8rem;
   line-height: 2rem;
-  will-change: transform;
-
-  .slider__item.slider__item_current & {
-    animation: slider__item-text--text-fade-in $slider__item-text--animation-duration ease-out;
-  }
-
-  .slider__item.slider__item_next & {
-    animation: slider__item-text--text-fade-in $slider__item-text--animation-duration ease-out $slider__item-text--animation-delay;
-  }
 
   @media (min-width: $stop-scaling) {
     margin-top: 36px;
