@@ -306,10 +306,74 @@
     background-size: auto calc(100vh - 13.8rem), 100% 25rem;
     background-position: top center, bottom center;
   }
+
+  &.screen--transitioning {
+    display: block;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+$screen--prizes--animation-duration: 0.4s;
+
+@keyframes screen--prizes--bg-slide-up {
+  0% {
+    transform: translateY(100%);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
 }
 
 .screen--prizes {
-  background-color: $c-dark;
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    transform: translateY(100%);
+    will-change: transform;
+    background-color: $c-dark;
+  }
+
+  &.screen--transitioning {
+    display: block;
+    z-index: -1;
+
+    .screen__wrapper {
+      opacity: 0;
+    }
+
+    .screen__footer {
+      transform: translateY(100%);
+    }
+  }
+
+  &.active {
+    z-index: 1;
+
+    &::after {
+      animation: screen--prizes--bg-slide-up $screen--prizes--animation-duration ease-in-out forwards;
+    }
+
+    .screen__wrapper {
+      opacity: 1;
+      transition: opacity 0.4s ease-in $screen--prizes--animation-duration; // TODO убрать когда будет задание на анимацию этого экрана
+    }
+
+    .screen__footer {
+      transform: translateY(0);
+      transition: transform $screen--prizes--animation-duration cubic-bezier(0.48, 0.83, 0.16, 0.92);
+    }
+  }
 }
 
 .screen--game {

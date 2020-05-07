@@ -43,9 +43,33 @@ export default class FullPageScroll {
     this.screenElements.forEach((screen) => {
       screen.classList.add(`screen--hidden`);
       screen.classList.remove(`active`);
+      screen.classList.remove(`screen--transitioning`);
     });
     this.screenElements[this.activeScreen].classList.remove(`screen--hidden`);
     this.screenElements[this.activeScreen].classList.add(`active`);
+
+    const isStory = this.screenElements[this.activeScreen].id === `story`;
+    const isPrizes = this.screenElements[this.activeScreen].id === `prizes`;
+
+    if (isStory) {
+      this.screenElements[this.activeScreen + 1].classList.add(`screen--transitioning`);
+
+      this.screenElements[this.activeScreen + 1].addEventListener(`animationend`, (event) => {
+        if (event.animationName.match(/screen--prizes--bg-slide-up/)) {
+          this.screenElements[this.activeScreen + 1].classList.remove(`screen--transitioning`);
+        }
+      });
+    }
+
+    if (isPrizes) {
+      this.screenElements[this.activeScreen - 1].classList.add(`screen--transitioning`);
+
+      this.screenElements[this.activeScreen].addEventListener(`animationend`, (event) => {
+        if (event.animationName.match(/screen--prizes--bg-slide-up/)) {
+          this.screenElements[this.activeScreen - 1].classList.remove(`screen--transitioning`);
+        }
+      });
+    }
   }
 
   changeActiveMenuItem() {
