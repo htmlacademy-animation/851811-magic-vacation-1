@@ -27,9 +27,6 @@
 }
 
 .page-header__logo {
-  $page-header__logo--transition-duration: 0.4s;
-  $page-header__logo--transition-delay: 0.2s;
-
   @include hover;
   position: relative;
   flex: none;
@@ -38,17 +35,6 @@
   padding: 1rem 0;
   width: 10rem;
   color: $c-light;
-  transform: translateX(-50px);
-  opacity: 0;
-
-  .document__body_ready & {
-    transform: translateX(0);
-    opacity: 1;
-    transition-property: opacity, transform;
-    transition-duration: $page-header__logo--transition-duration;
-    transition-timing-function: $page-header__logo--page-header__nav--screen__footer--timing-function;
-    transition-delay: $page-header__logo--transition-delay;
-  }
 
   @media (min-width: $stop-scaling) {
     top: -5px;
@@ -141,18 +127,9 @@
   }
 }
 
-$page-header__nav--transition-duration: 0.4s;
-$page-header__nav--transition-delay: 0.4s;
-
 .page-header__nav {
   display: flex;
   align-items: center;
-  opacity: 0;
-
-  .document__body_ready & {
-    opacity: 1;
-    transition: opacity $page-header__nav--transition-duration $page-header__logo--page-header__nav--screen__footer--timing-function $page-header__nav--transition-delay;
-  }
 
   @media (max-width: $tablet) and (orientation: portrait) {
     position: fixed;
@@ -260,14 +237,10 @@ $page-header__nav--transition-delay: 0.4s;
   }
 
   a {
-    $page-header__menu--item-transition-duration: 0.3s;
-
     position: relative;
     display: block;
     color: inherit;
     padding: 0 0.5em 0.5em;
-    overflow: hidden;
-    transition: color $page-header__menu--item-transition-duration ease-out;
 
     &::after {
       content: "";
@@ -276,14 +249,8 @@ $page-header__nav--transition-delay: 0.4s;
       width: 100%;
       height: 2px;
       background-color: $c-light;
+      display: none;
       left: 0;
-      transform: translateX(calc(-100% - 10px));
-      transition: background-color $page-header__menu--item-transition-duration ease-out, transform $page-header__menu--item-transition-duration ease-out;
-
-      @media (min-width: $stop-scaling) {
-        left: -5px;
-        right: -5px;
-      }
 
       @media (max-width: $tablet) and (orientation: portrait) {
         left: 0;
@@ -299,12 +266,8 @@ $page-header__nav--transition-delay: 0.4s;
     }
 
     &.active {
-      .document__body_ready & {
-        &::after {
-          transform: translateX(0);
-          transition-duration: $page-header__nav--transition-duration;
-          transition-delay: $page-header__nav--transition-delay;
-        }
+      &::after {
+        display: block;
       }
     }
 
@@ -316,7 +279,6 @@ $page-header__nav--transition-delay: 0.4s;
       &::after {
         opacity: 1;
         background-color: $c-purple;
-        transform: translateX(0);
       }
     }
   }

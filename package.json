@@ -37,7 +37,7 @@
   "scripts": {
     "editorconfig": "editorconfig-cli",
     "stylelint": "stylelint \"source/sass/**/*.scss\" --syntax scss",
-    "test": "npm run editorconfig && npm run stylelint && eslint source/js/ --fix",
+    "test": "npm run editorconfig && npm run stylelint && eslint source/js/",
     "build": "webpack",
     "webp": "gulp webp",
     "sprite": "gulp sprite",
@@ -59,6 +59,7 @@
     "node": "8.15"
   },
   "dependencies": {
+    "normalize.css": "8.0.1",
     "swiper": "5.3.8",
     "three": "0.115.0"
   }
