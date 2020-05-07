@@ -48,8 +48,6 @@
 }
 
 .form__field {
-  $form__field--width-animation-duration: 0.7s;
-
   flex: none;
   margin-right: 3rem;
   padding: 0 5.6rem;
@@ -64,7 +62,7 @@
   border: 0;
   border-radius: 3rem;
   outline: none;
-  animation: form__field--field-fade-in $form__field--width-animation-duration ease-out;
+  animation: form__field--field-fade-in 0.7s ease-out;
 
   &:focus {
     border: 1px solid $c-purple;

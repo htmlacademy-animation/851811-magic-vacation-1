@@ -39,8 +39,6 @@
 }
 
 .screen__footer {
-  $screen__footer--transition-duration: 0.3s;
-
   position: absolute;
   bottom: 0;
   left: 0;
@@ -52,7 +50,7 @@
 
   .document__body_ready & {
     transform: translateY(0);
-    transition: transform $screen__footer--transition-duration $page-header__logo--page-header__nav--screen__footer--timing-function;
+    transition: transform 0.3s cubic-bezier(0.48, 0.83, 0.16, 0.92);
   }
 
   @media (max-width: $tablet) and (orientation: portrait) {
