@@ -47,6 +47,7 @@
   background-color: $c-light;
   z-index: 1;
   transform: translateY(100%);
+  will-change: transform;
 
   .document__body_ready & {
     transform: translateY(0);

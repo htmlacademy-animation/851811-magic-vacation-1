@@ -36,6 +36,7 @@
   width: 10rem;
   color: $c-light;
   transform: translateX(-50px);
+  will-change: transform;
   opacity: 0;
 
   .document__body_ready & {
@@ -267,6 +268,7 @@
       background-color: $c-light;
       left: 0;
       transform: translateX(calc(-100% - 10px));
+      will-change: transform;
       transition: background-color 0.3s ease-out, transform 0.3s ease-out;
 
       @media (min-width: $stop-scaling) {
