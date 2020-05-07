@@ -102,15 +102,13 @@
 }
 
 .intro__message {
-  $intro__message--animation-duration: 0.45s;
-
   flex: none;
   width: 50.9rem;
   max-width: 50%;
   text-transform: uppercase;
   font-size: 2.4rem;
   line-height: 1.27;
-  animation: intro__message--text-fade-in $intro__message--animation-duration ease-out;
+  animation: intro__message--text-fade-in 0.45s ease-out;
 
   @media (min-width: $stop-scaling) {
     width: 509px;

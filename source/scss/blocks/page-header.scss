@@ -35,6 +35,15 @@
   padding: 1rem 0;
   width: 10rem;
   color: $c-light;
+  transform: translateX(-50px);
+  will-change: transform;
+  opacity: 0;
+
+  .document__body_ready & {
+    transform: translateX(0);
+    opacity: 1;
+    transition: opacity, transform 0.4s cubic-bezier(0.48, 0.83, 0.16, 0.92) 0.2s;
+  }
 
   @media (min-width: $stop-scaling) {
     top: -5px;
@@ -130,6 +139,12 @@
 .page-header__nav {
   display: flex;
   align-items: center;
+  opacity: 0;
+
+  .document__body_ready & {
+    opacity: 1;
+    transition: opacity 0.4s cubic-bezier(0.48, 0.83, 0.16, 0.92) 0.4s;
+  }
 
   @media (max-width: $tablet) and (orientation: portrait) {
     position: fixed;
@@ -241,6 +256,8 @@
     display: block;
     color: inherit;
     padding: 0 0.5em 0.5em;
+    overflow: hidden;
+    transition: color 0.3s ease-out;
 
     &::after {
       content: "";
@@ -249,8 +266,15 @@
       width: 100%;
       height: 2px;
       background-color: $c-light;
-      display: none;
       left: 0;
+      transform: translateX(calc(-100% - 10px));
+      will-change: transform;
+      transition: background-color 0.3s ease-out, transform 0.3s ease-out;
+
+      @media (min-width: $stop-scaling) {
+        left: -5px;
+        right: -5px;
+      }
 
       @media (max-width: $tablet) and (orientation: portrait) {
         left: 0;
@@ -266,8 +290,12 @@
     }
 
     &.active {
-      &::after {
-        display: block;
+      .document__body_ready & {
+        &::after {
+          transform: translateX(0);
+          transition-duration: 0.4s;
+          transition-delay: 0.4s;
+        }
       }
     }
 
@@ -279,6 +307,7 @@
       &::after {
         opacity: 1;
         background-color: $c-purple;
+        transform: translateX(0);
       }
     }
   }
