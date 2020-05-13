@@ -267,7 +267,8 @@
       height: 2px;
       background-color: $c-light;
       left: 0;
-      transform: translateX(calc(-100% - 10px));
+      transform: scaleX(0);
+      transform-origin: right top;
       will-change: transform;
       transition: background-color 0.3s ease-out, transform 0.3s ease-out;
 
@@ -292,7 +293,8 @@
     &.active {
       .document__body_ready & {
         &::after {
-          transform: translateX(0);
+          transform: scaleX(1);
+          transform-origin: left top;
           transition-duration: 0.4s;
           transition-delay: 0.4s;
         }
@@ -307,7 +309,8 @@
       &::after {
         opacity: 1;
         background-color: $c-purple;
-        transform: translateX(0);
+        transform: scaleX(1);
+        transform-origin: left top;
       }
     }
   }
