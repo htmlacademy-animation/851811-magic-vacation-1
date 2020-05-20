@@ -136,14 +136,23 @@
   }
 }
 
+@keyframes page-header__nav--fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
 .page-header__nav {
   display: flex;
   align-items: center;
   opacity: 0;
 
   .document__body_ready & {
-    opacity: 1;
-    transition: opacity 0.4s cubic-bezier(0.48, 0.83, 0.16, 0.92) 0.4s;
+    animation: page-header__nav--fade-in 0.4s cubic-bezier(0.48, 0.83, 0.16, 0.92) 0.4s forwards;
   }
 
   @media (max-width: $tablet) and (orientation: portrait) {
