@@ -103,10 +103,6 @@ export default class FullPageScroll {
   }
 
   startSvgAnimation({ element, svgFile }) {
-    const prevSvgFile = element.src.match(/(img\/.+)/)[0];
-
-    if (prevSvgFile !== svgFile) {
-      element.src = svgFile;
-    }
+    element.src = `${svgFile}?${new Date().getTime()}`
   }
 }
