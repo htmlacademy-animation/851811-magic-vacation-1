@@ -10366,6 +10366,8 @@ class FullPageScroll {
           this.screenElements[this.activeScreen - 1].classList.remove(`screen--transitioning`);
         }
       });
+
+      this.startSvgAnimation({ element: document.querySelector(`.prizes__item--journeys img`), svgFile: `img/primary-award-animation.svg` })
     }
   }
 
@@ -10394,6 +10396,14 @@ class FullPageScroll {
       this.activeScreen = Math.min(this.screenElements.length - 1, ++this.activeScreen);
     } else {
       this.activeScreen = Math.max(0, --this.activeScreen);
+    }
+  }
+
+  startSvgAnimation({ element, svgFile }) {
+    const prevSvgFile = element.src.match(/(img\/.+)/)[0];
+
+    if (prevSvgFile !== svgFile) {
+      element.src = svgFile;
     }
   }
 }
