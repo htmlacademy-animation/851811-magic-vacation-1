@@ -170,7 +170,7 @@
         id="suitcaseOpacity"
         attributeName="opacity"
         to="1"
-        begin="longFloorTranslate.end"
+        begin="longFloorTranslate.end + 0.2s"
       />
 
       <animateTransform
