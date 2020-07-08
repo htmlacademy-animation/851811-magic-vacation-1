@@ -107,6 +107,10 @@
 .prizes__item {
   margin-left: 7.5rem;
 
+  @media (orientation: landscape) {
+    opacity: 0;
+  }
+
   @media (min-width: $stop-scaling) {
     margin-left: 75px;
   }
@@ -130,7 +134,7 @@
     .prizes__icon {
       position: relative;
       left: -5.9rem;
-      bottom: -1.4rem;
+      bottom: 0;
       width: 26.8rem;
 
       @media (min-width: $stop-scaling) {
@@ -169,10 +173,31 @@
     }
 
     .prizes__icon {
+      position: relative;
       width: 18.8rem;
+
+      img {
+        @media (min-width: $mobile) and (orientation: landscape) {
+          position: absolute;
+          bottom: -3px;
+          right: 0;
+          width: 14rem;
+          max-width: 20rem;
+        }
+
+        @media (min-width: $tablet) and (orientation: landscape) {
+          width: 30rem;
+          max-width: 30rem;
+        }
+      }
 
       @media (min-width: $stop-scaling) {
         width: 188px;
+
+        img {
+          bottom: -13px;
+          width: 22rem;
+        }
       }
 
       @media (max-width: $tablet) and (orientation: portrait) {
@@ -266,6 +291,10 @@
     font-size: 12rem;
     line-height: 0.55;
 
+    @media (orientation: landscape) {
+      opacity: 0;
+    }
+
     @media (min-width: $stop-scaling) {
       font-size: 120px;
     }
@@ -289,6 +318,11 @@
     align-items: flex-end;
     margin-left: 1.4rem;
     max-width: 14rem;
+
+    @media (orientation: landscape) {
+      opacity: 0;
+      transform: translateX(100px);
+    }
 
     @media (min-width: $stop-scaling) {
       margin-left: 14px;
@@ -328,5 +362,58 @@
       width: 0.5rem;
       height: 0.5rem;
     }
+  }
+}
+
+
+.prizes__item--active {
+  @media (orientation: landscape) {
+    opacity: 1;
+
+    .prizes__desc {
+      b {
+        opacity: 1;
+        transition: opacity 0.4s ease-in-out;
+      }
+
+      span {
+        transform: translateX(0);
+        opacity: 1;
+        transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+      }
+    }
+
+    &.prizes__item--journeys {
+      animation: prizes__item--journeys-slide-in 5s ease-in-out forwards;
+
+      .prizes__desc {
+        b, span {
+          transition-delay: 3s;
+        }
+      }
+    }
+
+    &.prizes__item--cases {
+      .prizes__desc {
+        b, span {
+          transition-delay: 1s;
+        }
+      }
+    }
+  }
+}
+
+
+@keyframes prizes__item--journeys-slide-in {
+  0% {
+    transform: translateX(100%);
+  }
+
+  90% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(0);
   }
 }
