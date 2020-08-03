@@ -10410,11 +10410,12 @@ class FullPageScroll {
   }
 
   startSvgAnimation({element, activeClass, svgFile}) {
-    element.classList.add(activeClass);
-
     const imageElement = element.querySelector(`img`);
     imageElement.src = `${svgFile}?${new Date().getTime()}`;
-    imageElement.style.opacity = 1;
+
+    setTimeout(() => {
+      element.classList.add(activeClass);
+    }, 0);
   }
 }
 

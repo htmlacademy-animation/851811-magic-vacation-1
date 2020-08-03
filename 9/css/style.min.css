@@ -2274,8 +2274,6 @@ img {
 @media (orientation: landscape) {
   .prizes__item--active {
     opacity: 1; }
-    .prizes__item--active .prizes__icon img {
-      opacity: 0; }
     .prizes__item--active .prizes__desc b {
       opacity: 1;
       transition: opacity 0.4s ease-in-out; }
