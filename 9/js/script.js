@@ -10368,15 +10368,15 @@ class FullPageScroll {
       });
 
       setTimeout(() => {
-        this.startSvgAnimation({element: document.querySelector(`.prizes__item--journeys`), activeClass: `prizes__item--active`, svgFile: `img/primary-award-animation.svg?${new Date().getTime()}`});
+        this.startSvgAnimation({element: document.querySelector(`.prizes__item--journeys`), activeClass: `prizes__item--active`, svgFile: `img/primary-award-animation.svg`});
       }, 0);
 
       setTimeout(() => {
-        this.startSvgAnimation({element: document.querySelector(`.prizes__item--cases`), activeClass: `prizes__item--active`, svgFile: `img/secondary-award-animation.svg?${new Date().getTime()}`});
+        this.startSvgAnimation({element: document.querySelector(`.prizes__item--cases`), activeClass: `prizes__item--active`, svgFile: `img/secondary-award-animation.svg`});
       }, 5000);
 
       setTimeout(() => {
-        this.startSvgAnimation({element: document.querySelector(`.prizes__item--codes`), activeClass: `prizes__item--active`, svgFile: `img/additional-award-animation.svg?${new Date().getTime()}`});
+        this.startSvgAnimation({element: document.querySelector(`.prizes__item--codes`), activeClass: `prizes__item--active`, svgFile: `img/additional-award-animation.svg`});
       }, 7000);
     }
   }
@@ -10410,10 +10410,11 @@ class FullPageScroll {
   }
 
   startSvgAnimation({element, activeClass, svgFile}) {
-    const imageElement = element.querySelector(`img`);
-    imageElement.src = svgFile;
-
     element.classList.add(activeClass);
+
+    const imageElement = element.querySelector(`img`);
+    imageElement.src = `${svgFile}?${new Date().getTime()}`;
+    imageElement.style.opacity = 1;
   }
 }
 
