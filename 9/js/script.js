@@ -10367,6 +10367,10 @@ class FullPageScroll {
         }
       });
 
+      document.querySelector(`.prizes__item--journeys img`).src = ''
+      document.querySelector(`.prizes__item--cases img`).src = ''
+      document.querySelector(`.prizes__item--codes img`).src = ''
+
       setTimeout(() => {
         this.startSvgAnimation({element: document.querySelector(`.prizes__item--journeys`), activeClass: `prizes__item--active`, svgFile: `img/primary-award-animation.svg`});
       }, 0);
