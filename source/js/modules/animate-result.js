@@ -79,13 +79,23 @@ const createOpacitySet = ({id, to, begin}) => setAnimationAttributes({
 
 const createVictoryAnimation = (element) => {
   const id = element.id.replace(/-/g, `_`);
-  const firstAnimationId = `${id}_scale`;
+  const firstAnimationId = `${id}_opacity`;
+
+  element.setAttribute(`style`, `opacity: 0;`);
+
+  element.appendChild(
+      createOpacitySet({
+        id: firstAnimationId,
+        to: 1,
+        begin: `indefinite`,
+      })
+  );
 
   element.appendChild(
       createTransformAnimation({
-        id: firstAnimationId,
+        id: `${id}_scale`,
         values: SCALE,
-        begin: `indefinite`
+        begin: `${firstAnimationId}.begin`
       })
   );
 
