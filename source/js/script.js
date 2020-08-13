@@ -11,6 +11,7 @@ import FullPageScroll from './modules/full-page-scroll';
 import document from './modules/document';
 import rules from './modules/rules';
 import intro from './modules/intro';
+import animateResult from './modules/animate-result';
 
 // init modules
 mobileHeight();
@@ -24,6 +25,7 @@ social();
 document();
 rules();
 intro();
+animateResult();
 
 const fullPageScroll = new FullPageScroll();
 fullPageScroll.init();
