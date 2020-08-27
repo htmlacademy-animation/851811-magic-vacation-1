@@ -1,4 +1,5 @@
 import throttle from 'lodash/throttle';
+import gameCountdown from '../modules/animate-game-countdown';
 
 export default class FullPageScroll {
   constructor() {
@@ -50,6 +51,7 @@ export default class FullPageScroll {
 
     const isStory = this.screenElements[this.activeScreen].id === `story`;
     const isPrizes = this.screenElements[this.activeScreen].id === `prizes`;
+    const isGame = this.screenElements[this.activeScreen].id === `game`;
 
     if (isStory) {
       this.screenElements[this.activeScreen + 1].classList.add(`screen--transitioning`);
@@ -85,6 +87,14 @@ export default class FullPageScroll {
       setTimeout(() => {
         this.startSvgAnimation({element: document.querySelector(`.prizes__item--codes`), activeClass: `prizes__item--active`, svgFile: `img/additional-award-animation.svg`});
       }, 7000);
+    }
+
+    if (isGame) {
+      gameCountdown.startCountdown();
+    }
+
+    if (!isGame) {
+      gameCountdown.endCountdown();
     }
   }
 
