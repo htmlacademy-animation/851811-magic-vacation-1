@@ -1,6 +1,6 @@
 class Countdown {
   constructor() {
-    this.animationDuration = 5 * 60 * 1000; // 5 минут === 300 000 ms;
+    this.animationDuration = 300000; // 5 минут
     this.timePerFrame = 1000; // обновляем раз в секунду
 
     this.lastFrameUpdateTime = null;

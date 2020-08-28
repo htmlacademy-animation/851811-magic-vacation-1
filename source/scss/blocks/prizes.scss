@@ -372,8 +372,7 @@
 
     .prizes__desc {
       b {
-        opacity: 1;
-        transition: opacity 0.4s ease-in-out;
+        animation: prizes__item--amount--fade-in 0.4s ease-in-out forwards;
       }
 
       span {
@@ -387,7 +386,12 @@
       animation: prizes__item--journeys-slide-in 5s ease-in-out forwards;
 
       .prizes__desc {
-        b, span {
+        b {
+          animation-delay: 3s;
+          width: 1ch;
+        }
+
+        span {
           transition-delay: 3s;
         }
       }
@@ -395,7 +399,25 @@
 
     &.prizes__item--cases {
       .prizes__desc {
-        b, span {
+        b {
+          animation-delay: 1s;
+          width: 1ch;
+        }
+
+        span {
+          transition-delay: 1s;
+        }
+      }
+    }
+
+    &.prizes__item--codes {
+      .prizes__desc {
+        b {
+          animation-delay: 1s;
+          width: 3ch;
+        }
+
+        span {
           transition-delay: 1s;
         }
       }
@@ -415,5 +437,15 @@
 
   100% {
     transform: translateX(0);
+  }
+}
+
+@keyframes prizes__item--amount--fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
   }
 }
