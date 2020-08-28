@@ -1,6 +1,12 @@
 import throttle from 'lodash/throttle';
 import gameCountdown from '../modules/animate-game-countdown';
 
+const PrizeType = {
+  JOURNEYS: 'primary',
+  CASES: 'secondary',
+  CODES: 'additional',
+};
+
 export default class FullPageScroll {
   constructor() {
     this.THROTTLE_TIMEOUT = 2000;
@@ -72,21 +78,9 @@ export default class FullPageScroll {
         }
       });
 
-      document.querySelector(`.prizes__item--journeys img`).src = ``;
-      document.querySelector(`.prizes__item--cases img`).src = ``;
-      document.querySelector(`.prizes__item--codes img`).src = ``;
-
-      setTimeout(() => {
-        this.startSvgAnimation({element: document.querySelector(`.prizes__item--journeys`), activeClass: `prizes__item--active`, svgFile: `img/primary-award-animation.svg`});
-      }, 0);
-
-      setTimeout(() => {
-        this.startSvgAnimation({element: document.querySelector(`.prizes__item--cases`), activeClass: `prizes__item--active`, svgFile: `img/secondary-award-animation.svg`});
-      }, 5000);
-
-      setTimeout(() => {
-        this.startSvgAnimation({element: document.querySelector(`.prizes__item--codes`), activeClass: `prizes__item--active`, svgFile: `img/additional-award-animation.svg`});
-      }, 7000);
+      this.animatePrize({ prize: 'journeys', timeout: 0 });
+      this.animatePrize({ prize: 'cases', timeout: 5000 });
+      this.animatePrize({ prize: 'codes', timeout: 7000 });
     }
 
     if (isGame) {
@@ -133,5 +127,19 @@ export default class FullPageScroll {
     setTimeout(() => {
       element.classList.add(activeClass);
     }, 0);
+  }
+
+  animatePrize({ prize, timeout }) {
+    document.querySelector(`.prizes__item--${prize} img`).src = ``;
+
+    const prizeType = PrizeType[prize.toUpperCase()]
+
+    setTimeout(() => {
+      this.startSvgAnimation({
+        element: document.querySelector(`.prizes__item--${prize}`),
+        activeClass: `prizes__item--active`,
+        svgFile: `img/${prizeType}-award-animation.svg`
+      });
+    }, timeout);
   }
 }
