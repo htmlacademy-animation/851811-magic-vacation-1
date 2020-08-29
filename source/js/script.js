@@ -11,7 +11,7 @@ import FullPageScroll from './modules/full-page-scroll';
 import document from './modules/document';
 import rules from './modules/rules';
 import intro from './modules/intro';
-import animateResult from './modules/animate-result';
+import animateResult from './modules/svg/animate-result';
 
 // init modules
 mobileHeight();
