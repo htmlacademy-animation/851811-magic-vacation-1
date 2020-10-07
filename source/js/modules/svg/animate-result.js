@@ -1,3 +1,5 @@
+import animateTrip from '../../modules/canvas/trip';
+
 const STROKE = {
   attributeName: `stroke-dasharray`,
   fill: `freeze`,
@@ -159,11 +161,14 @@ const createFailAnimation = (element) => {
   document.querySelector(`#${firstAnimationId}`).beginElement();
 };
 
-const startAnimationByClick = ({elementSelector, buttonSelector, createAnimation}) => {
+const startAnimationByClick = ({elementSelector, buttonSelector, createAnimation, callback}) => {
   const button = document.querySelector(buttonSelector);
   button.addEventListener(`click`, () => {
     const element = document.querySelector(elementSelector);
     createAnimation(element);
+    if (callback) {
+      callback();
+    }
   });
 };
 
@@ -172,6 +177,7 @@ export default () => {
     elementSelector: `#result__title-svg_victory`,
     buttonSelector: `.js-show-result[data-target=result]`,
     createAnimation: createVictoryAnimation,
+    callback: animateTrip,
   });
 
   startAnimationByClick({
