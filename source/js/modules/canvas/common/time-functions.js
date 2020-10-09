@@ -1,3 +1,7 @@
+export const power = (n, timeFraction) => {
+  return Math.pow(timeFraction, n);
+};
+
 export const back = (x, timeFraction) => Math.pow(timeFraction, 2) * ((x + 1) * timeFraction - x);
 
 export const bounce = (timeFraction) => {

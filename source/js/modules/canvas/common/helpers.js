@@ -12,6 +12,12 @@ export const rotateCoords = (cx, cy, x, y, angle) => {
   return {x: newX, y: newY};
 };
 
+export const getCoordsOfAngle = (cx, cy, radius, angle) => {
+  const x = cx + radius * Math.cos(angle);
+  const y = cy + radius * Math.sin(angle);
+  return {x, y};
+};
+
 export const skewCtx = (ctx, x, y) => {
   ctx.transform(1, x, y, 1, 0, 0);
 };
