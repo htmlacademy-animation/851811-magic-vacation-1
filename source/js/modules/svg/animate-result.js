@@ -1,4 +1,5 @@
 import animateTrip from '../../modules/canvas/trip';
+import animateFail from '../../modules/canvas/fail';
 
 const STROKE = {
   attributeName: `stroke-dasharray`,
@@ -190,5 +191,6 @@ export default () => {
     elementSelector: `#result__title-svg_fail`,
     buttonSelector: `.js-show-result[data-target=result3]`,
     createAnimation: createFailAnimation,
+    callback: animateFail,
   });
 };
