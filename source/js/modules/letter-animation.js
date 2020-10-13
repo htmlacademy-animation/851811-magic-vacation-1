@@ -1,6 +1,6 @@
 class LetterAnimation {
   constructor({element, duration, activationClass, wordClass, letterClass, transitionProperty}) {
-    this._TIME_SPACE = 100;
+    this._visuallyHiddenClass = `visually-hidden`;
 
     this._element = element;
     this._duration = duration;
@@ -26,7 +26,10 @@ class LetterAnimation {
       return;
     }
 
-    const text = this._element.textContent.trim().split(` `).filter((letter) => letter !== ``);
+    const textContent = this._element.textContent;
+    const visuallyHiddenTextContent = this.getVisuallyHiddenTextContent(textContent);
+
+    const text = textContent.trim().split(` `).filter((letter) => letter !== ``);
 
     const content = text.reduce((fragmentParent, word, index) => {
       const wordElement = Array.from(word).reduce((fragment, letter) => {
@@ -39,6 +42,7 @@ class LetterAnimation {
 
       const wordContainer = document.createElement(`span`);
       wordContainer.classList.add(this._wordClass);
+      wordContainer.setAttribute(`aria-hidden`, `true`);
       wordContainer.appendChild(wordElement);
 
       if (index !== text.length - 1) {
@@ -50,7 +54,16 @@ class LetterAnimation {
     }, document.createDocumentFragment());
 
     this._element.innerHTML = ``;
+    this._element.appendChild(visuallyHiddenTextContent);
     this._element.appendChild(content);
+  }
+
+  getVisuallyHiddenTextContent(textContent) {
+    const visuallyHiddenTextContent = document.createElement(`span`);
+    visuallyHiddenTextContent.classList.add(this._visuallyHiddenClass);
+    visuallyHiddenTextContent.textContent = textContent;
+
+    return visuallyHiddenTextContent;
   }
 
   runAnimation() {
