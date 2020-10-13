@@ -1,7 +1,10 @@
 import Swiper from "swiper";
+import Scene from './three/story';
 
 export default () => {
   let storySlider;
+
+  const scene = new Scene();
 
   const setSlider = function () {
     if (((window.innerWidth / window.innerHeight) < 1) || window.innerWidth < 769) {
@@ -16,13 +19,13 @@ export default () => {
         on: {
           slideChange: () => {
             if (storySlider.activeIndex === 0 || storySlider.activeIndex === 1) {
-              //
+              scene.changeScene(0);
             } else if (storySlider.activeIndex === 2 || storySlider.activeIndex === 3) {
-              //
+              scene.changeScene(1);
             } else if (storySlider.activeIndex === 4 || storySlider.activeIndex === 5) {
-              //
+              scene.changeScene(2);
             } else if (storySlider.activeIndex === 6 || storySlider.activeIndex === 7) {
-              //
+              scene.changeScene(3);
             }
           },
           resize: () => {
@@ -53,13 +56,13 @@ export default () => {
         on: {
           slideChange: () => {
             if (storySlider.activeIndex === 0) {
-              //
+              scene.changeScene(0);
             } else if (storySlider.activeIndex === 2) {
-              //
+              scene.changeScene(1);
             } else if (storySlider.activeIndex === 4) {
-              //
+              scene.changeScene(2);
             } else if (storySlider.activeIndex === 6) {
-              //
+              scene.changeScene(3);
             }
           },
           resize: () => {
@@ -80,6 +83,18 @@ export default () => {
       storySlider.destroy();
     }
     setSlider();
+  });
+
+  document.body.addEventListener(`screenChanged`, (event) => {
+    const {detail} = event;
+    const {screenName} = detail;
+
+    if (screenName === `story`) {
+      scene.init();
+      scene.changeScene(0);
+    } else {
+      scene.end();
+    }
   });
 
   setSlider();
