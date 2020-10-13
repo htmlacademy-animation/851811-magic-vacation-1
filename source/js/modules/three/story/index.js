@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 
+import getRawShaderMaterialAttrs from '../common/get-raw-shader-material-attrs';
+
 export default class Intro {
   constructor() {
     this.innerWidth = window.innerWidth;
@@ -54,7 +56,7 @@ export default class Intro {
 
     loadManager.onLoad = () => {
       loadedTextures.forEach((loadedTexture, index) => {
-        const material = new THREE.MeshBasicMaterial({map: loadedTexture});
+        const material = new THREE.RawShaderMaterial(getRawShaderMaterialAttrs({map: {value: loadedTexture}}));
         const image = new THREE.Mesh(geometry, material);
         image.scale.x = this.innerHeight * this.textureRatio;
         image.scale.y = this.innerHeight;

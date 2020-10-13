@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 
+import getRawShaderMaterialAttrs from '../common/get-raw-shader-material-attrs';
+
 export default class Intro {
   constructor() {
     this.innerWidth = window.innerWidth;
@@ -45,7 +47,7 @@ export default class Intro {
     const loadManager = new THREE.LoadingManager();
     const textureLoader = new THREE.TextureLoader(loadManager);
     const loadedTexture = textureLoader.load(this.texturePath);
-    const material = new THREE.MeshBasicMaterial({map: loadedTexture});
+    const material = new THREE.RawShaderMaterial(getRawShaderMaterialAttrs({map: {value: loadedTexture}}));
     const geometry = new THREE.PlaneGeometry(1, 1);
 
     loadManager.onLoad = () => {
