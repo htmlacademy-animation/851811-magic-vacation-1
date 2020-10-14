@@ -44,15 +44,14 @@ export default (uniforms) => (
 
       void main() {
         vec4 texel = texture2D(map, vUv);
+        vec4 result = texel;
 
         if (options.hueShift != 0.0) {
-          vec3 hueShifted = hueShift(texel.rgb, options.hueShift);
+          vec3 hueShifted = hueShift(result.rgb, options.hueShift);
 
-          gl_FragColor = vec4(hueShifted.rgb, 1);
+          result = vec4(hueShifted.rgb, 1);
         }
-        else {
-          gl_FragColor = texel;
-        }
+        gl_FragColor = result;
       }
     `,
   }
