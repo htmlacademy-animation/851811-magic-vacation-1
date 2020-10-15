@@ -8,11 +8,23 @@ export default class Intro {
     this.innerHeight = window.innerHeight;
 
     this.canvasSelector = `screen__canvas--story`;
-    this.texturePaths = [
-      `img/screen__textures/scene-1.png`,
-      `img/screen__textures/scene-2.png`,
-      `img/screen__textures/scene-3.png`,
-      `img/screen__textures/scene-4.png`,
+    this.textures = [
+      {
+        src: `img/screen__textures/scene-1.png`,
+        options: {hueShift: 0.0},
+      },
+      {
+        src: `img/screen__textures/scene-2.png`,
+        options: {hueShift: -0.26},
+      },
+      {
+        src: `img/screen__textures/scene-3.png`,
+        options: {hueShift: 0.0},
+      },
+      {
+        src: `img/screen__textures/scene-4.png`,
+        options: {hueShift: 0.0},
+      },
     ];
     this.textureRatio = 2048 / 1024;
     this.backgroundColor = 0x5f458c;
@@ -51,16 +63,27 @@ export default class Intro {
 
     const loadManager = new THREE.LoadingManager();
     const textureLoader = new THREE.TextureLoader(loadManager);
-    const loadedTextures = this.texturePaths.map((texturePath) => textureLoader.load(texturePath));
+    const loadedTextures = this.textures.map((texture) => ({src: textureLoader.load(texture.src), options: texture.options}));
     const geometry = new THREE.PlaneGeometry(1, 1);
 
     loadManager.onLoad = () => {
       loadedTextures.forEach((loadedTexture, index) => {
-        const material = new THREE.RawShaderMaterial(getRawShaderMaterialAttrs({map: {value: loadedTexture}}));
+        const rawShaderMaterialAttrs = getRawShaderMaterialAttrs({
+          map: {
+            value: loadedTexture.src,
+          },
+          options: {
+            value: loadedTexture.options,
+          },
+        });
+
+        const material = new THREE.RawShaderMaterial(rawShaderMaterialAttrs);
+
         const image = new THREE.Mesh(geometry, material);
         image.scale.x = this.innerHeight * this.textureRatio;
         image.scale.y = this.innerHeight;
         image.position.x = this.getScenePosition(index);
+
         this.scene.add(image);
       });
     };
