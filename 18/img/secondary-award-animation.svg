@@ -1,0 +1,238 @@
+<svg width="326" height="338" viewBox="0 0 326 338" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g>
+    <g id="backFlowerGroup">
+      <path id="backFlower" d="M249.34 213.82a1.997 1.997 0 012.261-.08 2 2 0 01.889 2.08c-1 7-2.07 20.33 4.85 19.4 4.94-.66-16.65-31.53 19.32-38.16a1.993 1.993 0 012.007.753 1.997 1.997 0 01.173 2.137c-1.32 2.74-2.83 6.61-2.73 9.9a2 2 0 003.71 1c4.1-6.15 15.1-17.86 36.59-10.7a2 2 0 011.35 1.54c.93 4.8 4.13 23.24-.29 28.72-5.09 6.31-15 4.14-16.18 10.25-1.3 6.91 7.51 4.82 13.42-.22a1.996 1.996 0 012.211-.295 2 2 0 011.109 1.935c-.25 5.45-2.18 14-11.12 18.69-13.78 7.21-23.48-7-25.19-3.88-2.59 4.66 7.94 8.47 13.78 10.18a2.002 2.002 0 01.61 3.59c-10.52 7.74-29.13 10.28-37-5.41-8.3-16.59-12.93-12.49-18.19-20.38-5.71-8.57-4.33-22.54 8.38-31.05h.04zm29.36 32.47c.5 2.73 5.2 3.51 8.35 2.94 3.15-.57 8.47-3.83 8-6.56-.47-2.73-6.62-3.9-9.78-3.33-3.16.57-7.05 4.22-6.55 6.95" fill="#E81A5A">
+        <animateTransform
+          id="backFlowerRotate"
+          attributeName="transform"
+          type="rotate"
+          values="0 255 245; 10 255 245; 0 255 245"
+          keyTimes="0; 0.5; 1"
+          dur="1.5s"
+          repeatCount="indefinite"
+          additive="sum"
+        />
+      </path>
+      <path id="backFlowerStem" d="M248.87 334.88s-4.91-70.27 5.54-80.72" stroke="#E81A5A" stroke-width="2" stroke-miterlimit="10"/>
+    </g>
+
+    <g id="clouds">
+      <g id="topClouds" stroke="#fff" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round">
+        <path d="M51.31 84.72h39.77"/>
+        <path d="M71.09 74.45H43.73a12.4 12.4 0 00-24.8 0H1"/>
+        <path d="M79.35 74.45h22.2"/>
+
+        <animateTransform
+          id="topCloudsTranslate"
+          attributeName="transform"
+          type="translate"
+          values="70 0; 0 0;"
+          keyTimes="0; 1"
+          dur="0.4s"
+          fill="freeze"
+        />
+        <animate
+          id="topCloudsOpacityIn"
+          attributeType="CSS"
+          attributeName="opacity"
+          from="0"
+          to="1"
+          dur="0.2s"
+          fill="freeze"
+          begin="topCloudsTranslate.begin"
+        />
+      </g>
+      <g id="bottomClouds" stroke="#fff" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round">
+        <path d="M258 152.28h39.78"/>
+        <path d="M286.05 142h22.2"/>
+
+        <animateTransform
+          id="bottomCloudsTranslate"
+          attributeName="transform"
+          type="translate"
+          values="100 0; 0 0;"
+          keyTimes="0; 1"
+          dur="0.4s"
+          fill="freeze"
+        />
+        <animate
+          id="bottomCloudsOpacityIn"
+          attributeType="CSS"
+          attributeName="opacity"
+          from="0"
+          to="1"
+          dur="0.2s"
+          fill="freeze"
+          begin="bottomCloudsTranslate.begin"
+        />
+      </g>
+
+      <path id="middleCloud" d="M221.64 126h-19.45a35.491 35.491 0 00-68-13.69A26.349 26.349 0 00121.3 109a26.72 26.72 0 00-24.8 17H81.35a10.5 10.5 0 100 21h140.3a10.502 10.502 0 0010.5-10.5 10.502 10.502 0 00-10.5-10.5" fill="#fff">
+        <animateTransform
+          id="middleCloudTranslate"
+          attributeName="transform"
+          type="translate"
+          values="130 0; 0 0;"
+          keyTimes="0; 1"
+          dur="0.4s"
+          fill="freeze"
+        />
+        <animate
+          id="middleCloudOpacityIn"
+          attributeType="CSS"
+          attributeName="opacity"
+          from="0"
+          to="1"
+          dur="0.2s"
+          fill="freeze"
+          begin="middleCloudTranslate.begin"
+        />
+      </path>
+
+      <animateTransform
+        id="cloudsTranslate"
+        attributeName="transform"
+        type="translate"
+        values="0 0; 0 -200"
+        keyTimes="0; 1"
+        dur="1s"
+        fill="freeze"
+        begin="longFloorTranslate.end + 0.5s"
+      />
+      <animate
+        id="cloudsOpacityIn"
+        attributeType="CSS"
+        attributeName="opacity"
+        from="1"
+        to="0"
+        dur="0.5s"
+        fill="freeze"
+        begin="cloudsTranslate.begin"
+      />
+    </g>
+
+    <defs>
+      <path id="floorPath" d="M103 331h169v5H103z" stroke="#fff" stroke-width="4" stroke-miterlimit="10" stroke-linecap="round"/>
+      <clipPath id="floorClip">
+        <use xlink:href="#floorPath"/>
+      </clipPath>
+    </defs>
+
+    <path id="longFloor" d="M27 336h278" stroke="#fff" stroke-width="4" stroke-linecap="round" clip-path="url(#floorClip)">
+      <animate
+        id="longFloorOpacity"
+        attributeType="CSS"
+        attributeName="opacity"
+        from="0"
+        to="1"
+        dur="0.4s"
+        fill="freeze"
+      />
+
+      <animateTransform
+        id="longFloorTranslate"
+        attributeName="transform"
+        type="translate"
+        values="-300 0; 10 0"
+        keyTimes="0; 1"
+        dur="0.4s"
+        additive="sum"
+        fill="freeze"
+      />
+    </path>
+
+    <g id="suitcase" opacity="0">
+      <path d="M237.76 336.09a3.539 3.539 0 003.53-3.53v-5.07a3.53 3.53 0 00-7.06 0v5.07a3.547 3.547 0 003.53 3.53" fill="#A67EE5"/>
+      <path d="M237.76 336.09a3.539 3.539 0 003.53-3.53v-5.07a3.53 3.53 0 00-7.06 0v5.07a3.547 3.547 0 003.53 3.53v0z" stroke="#fff" stroke-width="2" stroke-miterlimit="10"/>
+      <path d="M162.22 336.09a3.539 3.539 0 003.53-3.53v-5.07a3.53 3.53 0 00-7.06 0v5.07a3.539 3.539 0 003.53 3.53" fill="#A67EE5"/>
+      <path d="M162.22 336.09a3.539 3.539 0 003.53-3.53v-5.07a3.53 3.53 0 00-7.06 0v5.07a3.539 3.539 0 003.53 3.53v0z" stroke="#fff" stroke-width="2" stroke-miterlimit="10"/>
+      <path d="M156.79 327.5h74.5a11.38 11.38 0 0011.35-11.35v-66.08a11.38 11.38 0 00-11.35-11.35h-74.5a11.38 11.38 0 00-11.35 11.35v66.08a11.38 11.38 0 0011.35 11.35" fill="#A67EE5"/>
+      <path d="M231.29 238.73h-74.5c-6.268 0-11.35 5.082-11.35 11.35v66.08c0 6.268 5.082 11.35 11.35 11.35h74.5c6.268 0 11.35-5.082 11.35-11.35v-66.08c0-6.268-5.082-11.35-11.35-11.35z" stroke="#fff" stroke-width="2" stroke-miterlimit="10"/>
+      <path d="M185.13 226.36h32.4a4.09 4.09 0 014.08 4.08v16a1.188 1.188 0 01-1.19 1.19h-2.7c-.316 0-.618-.125-.841-.349a1.185 1.185 0 01-.349-.841v-14.37a1.27 1.27 0 00-1.27-1.27H187.4a1.27 1.27 0 00-1.27 1.27v14.38a1.188 1.188 0 01-1.19 1.19h-2.7c-.316 0-.618-.125-.841-.349a1.185 1.185 0 01-.349-.841v-16a4.101 4.101 0 014.09-4.08" fill="#A67EE5"/>
+      <path d="M185.13 226.36h32.4a4.09 4.09 0 014.08 4.08v16a1.188 1.188 0 01-1.19 1.19h-2.7c-.316 0-.618-.125-.841-.349a1.185 1.185 0 01-.349-.841v-14.37a1.27 1.27 0 00-1.27-1.27H187.4a1.27 1.27 0 00-1.27 1.27v14.38a1.188 1.188 0 01-1.19 1.19h-2.7c-.316 0-.618-.125-.841-.349a1.185 1.185 0 01-.349-.841v-16a4.101 4.101 0 014.08-4.09z" stroke="#fff" stroke-width="2" stroke-miterlimit="10"/>
+      <path d="M171.21 327.5h74.5a11.38 11.38 0 0011.35-11.35v-66.08a11.38 11.38 0 00-11.35-11.35h-74.5a11.378 11.378 0 00-11.34 11.35v66.08a11.392 11.392 0 0011.35 11.35" fill="#A67EE5"/>
+      <path d="M171.21 327.5h74.5a11.38 11.38 0 0011.35-11.35v-66.08a11.38 11.38 0 00-11.35-11.35h-74.5a11.378 11.378 0 00-11.34 11.35v66.08a11.39 11.39 0 0011.34 11.35v0z" stroke="#fff" stroke-width="2" stroke-miterlimit="10"/>
+      <path d="M240.1 259.64h-63.26" stroke="#fff" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
+      <path d="M240.1 283.12h-63.26" stroke="#fff" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
+      <path d="M240.1 306.59h-63.26" stroke="#fff" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
+      <path d="M153.99 260.89h.67v44.46h-.67a3.532 3.532 0 01-3.52-3.51v-37.43a3.519 3.519 0 013.52-3.52" fill="#A67EE5"/>
+      <path d="M153.99 260.89h.67v44.46h-.67a3.532 3.532 0 01-3.52-3.51v-37.43a3.52 3.52 0 013.52-3.52v0z" stroke="#fff" stroke-width="2" stroke-miterlimit="10"/>
+      <path d="M201.34 226.08l-55.59-79.83" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M201.34 226.08l-18.54-79.83" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M219.86 146.25l-18.52 79.83" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M256.92 146.25l-55.58 79.83" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M201.33 90.65a55.58 55.58 0 0155.54 55.56c0-6.76-8.3-12.25-18.53-12.25s-18.31 5.35-18.52 12v.26c0-6.76-8.3-12.25-18.53-12.25s-18.54 5.49-18.54 12.25v-.26c-.22-6.64-8.42-12-18.52-12s-18.52 5.49-18.52 12.25a55.588 55.588 0 0116.279-39.311A55.582 55.582 0 01201.3 90.62l.03.03zm-.03-1.69a57.311 57.311 0 00-57.21 57.25 1.665 1.665 0 001.025 1.534 1.665 1.665 0 001.809-.36 1.666 1.666 0 00.486-1.174c0-5.84 7.57-10.59 16.87-10.59 9.11 0 16.68 4.66 16.86 10.38v.21a1.663 1.663 0 001.66 1.66 1.663 1.663 0 001.66-1.66c0-5.84 7.57-10.59 16.87-10.59s16.87 4.75 16.87 10.59a1.663 1.663 0 001.66 1.66 1.663 1.663 0 001.66-1.66V146c.18-5.73 7.74-10.39 16.86-10.39 9.3 0 16.87 4.75 16.87 10.59a1.663 1.663 0 001.66 1.66 1.663 1.663 0 001.66-1.66 57.298 57.298 0 00-57.23-57.25" fill="#fff"/>
+      <path d="M201.33 90.65c9.92 0 18 20.9 18.54 55.33.21-6.65 8.41-12 18.52-12s18.48 5.5 18.48 12.23a55.59 55.59 0 00-55.59-55.59" fill="#E81A5A"/>
+      <path d="M201.32 90.65a55.581 55.581 0 00-55.58 55.56c0-6.76 8.3-12.25 18.52-12.25 10.22 0 18.3 5.35 18.52 12 .52-34.43 8.61-55.32 18.53-55.32" fill="#FE6183"/>
+      <path d="M201.33 90.65c-9.93 0-18 20.9-18.54 55.32v.26c0-6.76 8.3-12.25 18.53-12.25s18.55 5.5 18.55 12.23v-.26c-.51-34.43-8.6-55.33-18.52-55.33" fill="#F7396B"/>
+
+      <set
+        id="suitcaseOpacity"
+        attributeName="opacity"
+        to="1"
+        begin="longFloorTranslate.end + 0.2s"
+      />
+
+      <animateTransform
+        id="suitcaseScale"
+        attributeName="transform"
+        type="scale"
+        values="0 0; 0.5, 0.5; 1, 1"
+        keyTimes="0; 0.7; 1"
+        dur="2s"
+        additive="sum"
+        fill="freeze"
+        begin="longFloorTranslate.end"
+      />
+
+      <animateTransform
+        id="suitcaseRotate"
+        attributeName="transform"
+        type="rotate"
+        values="30; -30; 20; 18.29; -6.48; 0"
+        keyTimes="0; 0.35; 0.6; 0.65; 0.9; 1"
+        dur="2s"
+        additive="sum"
+        fill="freeze"
+        begin="longFloorTranslate.end"
+      />
+
+      <animateTransform
+        id="suitcaseOffset"
+        attributeName="transform"
+        type="translate"
+        values="-30 -150; -220 -295"
+        keyTimes="0; 1"
+        dur="2s"
+        additive="sum"
+        fill="freeze"
+        begin="longFloorTranslate.end"
+      />
+
+      <animateMotion
+        id="suitcaseFlight"
+        dur="2s"
+        fill="freeze"
+        begin="longFloorTranslate.end"
+      >
+        <mpath href="#flyPath"/>
+      </animateMotion>
+    </g>
+    <g id="frontFlowerGroup">
+      <path id="frontFlower" d="M308.79 290.4a2.15 2.15 0 01.55 2.17c-1.06 3.43-4.58 12.85-12.1 16.34-5.14 2.38-8.33-2.7-10.92.77s2.1 5 6.92 4.31a2.16 2.16 0 012.14 3.34 14.343 14.343 0 01-11.73 6.67c-10.84.27-12.55-11.58-14.57-10.19-2.72 1.89 1.27 6.55 4.39 9.57a2.162 2.162 0 01-1.3 3.71c-8.76.84-19.72-3.51-19.8-15-.08-12.94-4.25-11.8-5.11-18.35-.91-6.88 3.88-14.88 13.74-16.69a2.161 2.161 0 012.31 3.11c-2.41 4.73-6 12.6-2.82 12.56 3.46 0-1.58-22.58 28.43-15.26a2.158 2.158 0 011.09 3.54l-.1.11a2.158 2.158 0 00-.166 2.683 2.165 2.165 0 002.576.767c3.66-1.52 9.16-1.27 16.47 5.84" fill="#FE6183"/>
+      <path id="frontFlowerStem" d="M231 334.88s3.48-30.11 21.7-30.11" stroke="#FE6183" stroke-width="2" stroke-miterlimit="10"/>
+
+      <animateTransform
+        id="frontFlowerRotate"
+        attributeName="transform"
+        type="rotate"
+        values="0 230 331; -5 230 331; 0 230 331; 7 230 331; 0 230 331;"
+        keyTimes="0; 0.3; 0.5; 0.7; 1"
+        dur="3s"
+        repeatCount="indefinite"
+        additive="sum"
+      />
+    </g>
+    <path id="flyPath" d="M171.174 128.082c24.19-9.24 29.8-15.84 29.42-20.44-1.24-15.13-69.69-38.78-112.42-6.56-2.93 2.21-31.66 24.52-29 54 3.54 39.18 59.83 61.15 75.7 67.35 53.65 20.94 94.43 8.79 101.78 27.18 2.89 7.25.78 19.69-21.48 42.47" stroke="#000" stroke-miterlimit="10" opacity="0"/>
+  </g>
+</svg>
