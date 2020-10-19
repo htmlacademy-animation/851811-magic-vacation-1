@@ -51,7 +51,7 @@ vec4 blendOutline(vec4 texture, vec4 outline) {
 
 vec4 magnify(sampler2D map, magnificationStruct magnification) {
   float outlineThickness = 3.0;
-  vec4 outlineColor = vec4(1, 1, 1, 0.3);
+  vec4 outlineColor = vec4(1, 1, 1, 0.15);
 
   vec2 resolution = magnification.resolution;
   bubbleStruct bubble = magnification.bubbles[0];
