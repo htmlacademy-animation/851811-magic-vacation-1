@@ -29,23 +29,19 @@ vec3 hueShift(vec3 color, float hue) {
   return vec3(color * cosAngle + cross(k, color) * sin(hue) + k * dot(k, color) * (1.0 - cosAngle));
 }
 
-float getOffset(vec2 point, vec2 circle) {
-  return sqrt(pow(point.x - circle.x, 2.0) + pow(point.y - circle.y, 2.0));
-}
-
 bool isCurrentBubble(vec2 point, vec2 circle, float radius, float outlineThickness) {
-  float offset = getOffset(point, circle);
+  float offset = distance(point, circle);
   return offset < radius + outlineThickness;
 }
 
 
 bool isInsideTheCircle(vec2 point, vec2 circle, float radius) {
-  float offset = getOffset(point, circle);
+  float offset = distance(point, circle);
   return offset < radius;
 }
 
 bool isOutlineOfTheCircle(vec2 point, vec2 circle, float radius, float outlineThickness) {
-  float offset = getOffset(point, circle);
+  float offset = distance(point, circle);
   return floor(offset) >= floor(radius) && floor(offset) <= floor(radius + outlineThickness);
 }
 
@@ -77,7 +73,7 @@ vec4 magnify(sampler2D map, magnificationStruct magnification) {
   float h = bubble.radius / 2.0;
 
   float hr = radius * sqrt(1.0 - pow((radius - h) / radius, 2.0));
-  float offset = sqrt(pow(point.x - position.x, 2.0) + pow(point.y - position.y, 2.0));
+  float offset = distance(point, position);
 
   bool pointIsInside = isInsideTheCircle(point, position, hr);
   bool pointIsOutline = isOutlineOfTheCircle(point, position, hr, outlineThickness);
