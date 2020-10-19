@@ -95,7 +95,7 @@ export default class Intro {
   }
 
   addBubbleUniform(index) {
-    const {width} = this.renderer.getSize();
+    const {width} = this.getSceneSize();
     const pixelRatio = this.renderer.getPixelRatio();
 
     if (this.textures[index].options.magnify) {
@@ -187,7 +187,7 @@ export default class Intro {
 
     const magnifiedIndex = this.textures.findIndex((texture) => texture.options.magnify);
 
-    const {width} = this.renderer.getSize();
+    const {width} = this.getSceneSize();
     const pixelRatio = this.renderer.getPixelRatio();
 
     this.materials[magnifiedIndex].uniforms.magnification.value.resolution = [width * pixelRatio, width / this.textureRatio * pixelRatio];
@@ -204,6 +204,12 @@ export default class Intro {
 
   getScenePosition(index) {
     return this.innerHeight * this.textureRatio * index;
+  }
+
+  getSceneSize() {
+    const size = new THREE.Vector2();
+    this.renderer.getSize(size);
+    return size;
   }
 
   bubblePositionAnimationTick(index, from, to) {
