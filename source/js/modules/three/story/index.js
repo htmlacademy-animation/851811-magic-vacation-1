@@ -34,9 +34,15 @@ export default class Intro {
 
     this.bubblesDuration = 5000;
 
+    this.defaultFlareAngles = [5.0 * Math.PI / 8.0, 7 * Math.PI / 8.0];
+    this.defaultFlareOffset = 0.8;
+
     this.bubbles = [
       {
         radius: 120.0,
+        flareAngleStart: this.defaultFlareAngles[0],
+        flareAngleEnd: this.defaultFlareAngles[1],
+        flareOffset: this.defaultFlareOffset,
         initialPosition: [this.canvasCenter.x - this.canvasCenter.x / 10, -100],
         position: [this.canvasCenter.x - this.canvasCenter.x / 10, -100],
         finalPosition: [this.canvasCenter.x - this.canvasCenter.x / 10, this.innerHeight + 100],
@@ -45,6 +51,9 @@ export default class Intro {
       },
       {
         radius: 80.0,
+        flareAngleStart: this.defaultFlareAngles[0],
+        flareAngleEnd: this.defaultFlareAngles[1],
+        flareOffset: this.defaultFlareOffset,
         initialPosition: [this.canvasCenter.x - this.innerWidth / 4, -100],
         position: [this.canvasCenter.x - this.innerWidth / 4, -100],
         finalPosition: [this.canvasCenter.x - this.innerWidth / 4, this.innerHeight + 100],
@@ -53,6 +62,9 @@ export default class Intro {
       },
       {
         radius: 70.0,
+        flareAngleStart: this.defaultFlareAngles[0],
+        flareAngleEnd: this.defaultFlareAngles[1],
+        flareOffset: this.defaultFlareOffset,
         initialPosition: [this.canvasCenter.x, -100],
         position: [this.canvasCenter.x, -100],
         finalPosition: [this.canvasCenter.x, this.innerHeight + 100],
@@ -83,7 +95,7 @@ export default class Intro {
   }
 
   addBubbleUniform(index) {
-    const {width} = this.renderer.getSize();
+    const {width} = this.getSceneSize();
     const pixelRatio = this.renderer.getPixelRatio();
 
     if (this.textures[index].options.magnify) {
@@ -175,7 +187,7 @@ export default class Intro {
 
     const magnifiedIndex = this.textures.findIndex((texture) => texture.options.magnify);
 
-    const {width} = this.renderer.getSize();
+    const {width} = this.getSceneSize();
     const pixelRatio = this.renderer.getPixelRatio();
 
     this.materials[magnifiedIndex].uniforms.magnification.value.resolution = [width * pixelRatio, width / this.textureRatio * pixelRatio];
@@ -192,6 +204,12 @@ export default class Intro {
 
   getScenePosition(index) {
     return this.innerHeight * this.textureRatio * index;
+  }
+
+  getSceneSize() {
+    const size = new THREE.Vector2();
+    this.renderer.getSize(size);
+    return size;
   }
 
   bubblePositionAnimationTick(index, from, to) {
