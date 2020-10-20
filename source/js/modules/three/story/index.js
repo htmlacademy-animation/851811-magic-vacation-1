@@ -1,7 +1,9 @@
 import * as THREE from 'three';
-import {animateProgress, tick} from '../../canvas/common/helpers';
-
+import {animateProgress, animateEasingWithFramerate, tick} from '../../canvas/common/helpers';
+import bezierEasing from '../../canvas/common/bezier-easing';
 import getRawShaderMaterialAttrs from '../common/get-raw-shader-material-attrs';
+
+const easeInOut = bezierEasing(0.42, 0, 0.58, 1);
 
 export default class Intro {
   constructor() {
@@ -19,6 +21,14 @@ export default class Intro {
       {
         src: `img/screen__textures/scene-2.png`,
         options: {hueShift: -0.26, magnify: true},
+        animationSettings: {
+          hue: {
+            initalHue: -0.1,
+            finalHue: -0.26,
+            duration: 3000,
+            variation: 0.3,
+          },
+        },
       },
       {
         src: `img/screen__textures/scene-3.png`,
@@ -31,6 +41,11 @@ export default class Intro {
     ];
     this.textureRatio = 2048 / 1024;
     this.backgroundColor = 0x5f458c;
+
+    this.hueIsAnimating = false;
+    this.defaultHueIntensityEasingFn = (timingFraction) => {
+      return easeInOut(Math.sin(timingFraction * Math.PI));
+    };
 
     this.bubblesDuration = 5000;
 
@@ -83,15 +98,28 @@ export default class Intro {
       z: 800,
     };
 
+    this.currentScene = 0;
+
     this.render = this.render.bind(this);
     this.handleResize = this.handleResize.bind(this);
     this.updateScreenSize = this.updateScreenSize.bind(this);
+    this.animateHue = this.animateHue.bind(this);
+    this.getHueAnimationSettings = this.getHueAnimationSettings.bind(this);
   }
 
   resetBubbles() {
     this.bubbles.forEach((_, index) => {
       this.bubbles[index].position = [...this.bubbles[index].initialPosition];
     });
+  }
+
+  resetHue() {
+    const hueAnimationSettings = this.getHueAnimationSettings(this.currentScene);
+    if (!hueAnimationSettings) {
+      return;
+    }
+
+    this.textures[this.currentScene].options.hueShift = hueAnimationSettings.initalHue;
   }
 
   addBubbleUniform(index) {
@@ -110,6 +138,12 @@ export default class Intro {
     }
 
     return {};
+  }
+
+  getHueAnimationSettings(index) {
+    const texture = this.textures[index];
+
+    return texture.animationSettings && texture.animationSettings.hue;
   }
 
   init() {
@@ -161,6 +195,7 @@ export default class Intro {
       });
     };
 
+    this.changeScene(0);
     this.animationRequest = requestAnimationFrame(this.render);
   }
 
@@ -194,11 +229,19 @@ export default class Intro {
   }
 
   changeScene(index) {
+    this.currentScene = index;
     this.camera.position.x = this.getScenePosition(index);
 
     if (this.textures[index].options.magnify) {
       this.resetBubbles();
       this.animateBubbles();
+    }
+
+    if (this.getHueAnimationSettings(index)) {
+      if (!this.hueIsAnimating) {
+        this.resetHue();
+        this.animateHue();
+      }
     }
   }
 
@@ -224,12 +267,40 @@ export default class Intro {
     };
   }
 
+  hueIntensityAnimationTick(index, from, to) {
+    return (progress) => {
+      const hueAnimationSettings = this.getHueAnimationSettings(index);
+      if (!hueAnimationSettings) {
+        this.textures[index].options.hueShift = hueAnimationSettings.initalHue;
+        return;
+      }
+
+      const hueShift = tick(from, to, progress);
+      this.textures[index].options.hueShift = hueShift;
+    };
+  }
+
   animateBubbles() {
     this.bubbles.forEach((bubble, index) => {
       setTimeout(() => {
         animateProgress(this.bubblePositionAnimationTick(index, this.bubbles[index].initialPosition, this.bubbles[index].finalPosition), this.bubblesDuration);
       }, this.bubbles[index].timeout);
     });
+  }
+
+  animateHue() {
+    const hueAnimationSettings = this.getHueAnimationSettings(this.currentScene);
+    if (!hueAnimationSettings) {
+      this.hueIsAnimating = false;
+      return;
+    }
+
+    this.hueIsAnimating = true;
+
+    const {initalHue, finalHue, duration, variation} = hueAnimationSettings;
+    const offset = (Math.random() * variation * 2 + (1 - variation));
+
+    animateEasingWithFramerate(this.hueIntensityAnimationTick(this.currentScene, initalHue, finalHue * offset), duration * offset, this.defaultHueIntensityEasingFn).then(this.animateHue);
   }
 
   render() {
