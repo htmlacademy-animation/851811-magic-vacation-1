@@ -299,7 +299,7 @@ export default class Intro {
     this.hueIsAnimating = true;
 
     const {initalHue, finalHue, duration, variation} = hueAnimationSettings;
-    const offset = (Math.random() * variation * 2 + (1 - variation));
+    const offset = Math.random() * variation * 2 + (1 - variation);
 
     animateEasingWithFramerate(this.hueIntensityAnimationTick(this.currentScene, initalHue, finalHue * offset), duration * offset, this.defaultHueIntensityEasingFn).then(this.animateHue);
   }
