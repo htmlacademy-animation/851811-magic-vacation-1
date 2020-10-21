@@ -1,9 +1,10 @@
 import * as THREE from 'three';
-import {animateProgress, animateEasingWithFramerate, tick} from '../../canvas/common/helpers';
+import {animateEasing, animateEasingWithFramerate, tick} from '../../canvas/common/helpers';
 import bezierEasing from '../../canvas/common/bezier-easing';
 import getRawShaderMaterialAttrs from '../common/get-raw-shader-material-attrs';
 
 const easeInOut = bezierEasing(0.42, 0, 0.58, 1);
+const easeIn = bezierEasing(0.42, 0, 1, 1);
 
 export default class Intro {
   constructor() {
@@ -47,7 +48,7 @@ export default class Intro {
       return easeInOut(Math.sin(timingFraction * Math.PI));
     };
 
-    this.bubblesDuration = 5000;
+    this.bubblesDuration = 3000;
 
     this.defaultFlareAngles = [5.0 * Math.PI / 8.0, 7 * Math.PI / 8.0];
     this.defaultFlareOffset = 0.8;
@@ -260,7 +261,7 @@ export default class Intro {
       const pixelRatio = this.renderer.getPixelRatio();
 
       const y = tick(from[1], to[1], progress) * pixelRatio;
-      const offset = this.bubbles[index].positionAmplitude * Math.pow(1 - progress, 0.5) * Math.sin(progress * Math.PI * 10);
+      const offset = this.bubbles[index].positionAmplitude * Math.pow(1 - progress, 0.8) * Math.sin(progress * Math.PI * 7);
       const x = (offset + this.bubbles[index].initialPosition[0]) * pixelRatio;
 
       this.bubbles[index].position = [x, y];
@@ -283,7 +284,7 @@ export default class Intro {
   animateBubbles() {
     this.bubbles.forEach((bubble, index) => {
       setTimeout(() => {
-        animateProgress(this.bubblePositionAnimationTick(index, this.bubbles[index].initialPosition, this.bubbles[index].finalPosition), this.bubblesDuration);
+        animateEasing(this.bubblePositionAnimationTick(index, this.bubbles[index].initialPosition, this.bubbles[index].finalPosition), this.bubblesDuration, easeIn);
       }, this.bubbles[index].timeout);
     });
   }
