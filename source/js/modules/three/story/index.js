@@ -155,6 +155,19 @@ export default class Intro {
     return texture.animationSettings && texture.animationSettings.hue;
   }
 
+  getSphere() {
+    const geometry = new THREE.SphereGeometry(100, 50, 50);
+
+    const material = new THREE.MeshStandardMaterial({
+      color: new THREE.Color(`#F1354C`),
+      metalness: 0.05,
+      emissive: 0x0,
+      roughness: 0.5
+    });
+
+    return new THREE.Mesh(geometry, material);
+  }
+
   init() {
     window.addEventListener(`resize`, this.handleResize);
 
@@ -203,6 +216,9 @@ export default class Intro {
         return material;
       });
     };
+
+    const sphere = this.getSphere();
+    this.scene.add(sphere);
 
     this.changeScene(0);
     this.animationRequest = requestAnimationFrame(this.render);
