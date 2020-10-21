@@ -91,12 +91,12 @@ export default class Intro {
 
     this.animationRequest = null;
 
-    this.fov = 45;
+    this.fov = this.getFov();
     this.aspect = this.innerWidth / this.innerHeight;
     this.near = 0.1;
     this.far = 1000;
     this.position = {
-      z: 800,
+      z: 750,
     };
 
     this.currentScene = 0;
@@ -139,6 +139,14 @@ export default class Intro {
     }
 
     return {};
+  }
+
+  getFov() {
+    if (this.innerWidth > this.innerHeight) {
+      return 35;
+    }
+
+    return (32 * this.innerHeight) / Math.min(this.innerWidth * 1.3, this.innerHeight);
   }
 
   getHueAnimationSettings(index) {
@@ -217,6 +225,7 @@ export default class Intro {
     this.canvasElement.width = this.innerWidth;
     this.canvasElement.height = this.innerHeight;
 
+    this.camera.fov = this.getFov();
     this.camera.aspect = this.innerWidth / this.innerHeight;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(this.innerWidth, this.innerHeight);
