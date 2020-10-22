@@ -183,19 +183,6 @@ export default class Intro {
     return texture.animationSettings && texture.animationSettings.hue;
   }
 
-  getSphere() {
-    const geometry = new THREE.SphereGeometry(100, 50, 50);
-
-    const material = new THREE.MeshStandardMaterial({
-      color: new THREE.Color(`#F1354C`),
-      metalness: 0.05,
-      emissive: 0x0,
-      roughness: 0.5
-    });
-
-    return new THREE.Mesh(geometry, material);
-  }
-
   getLight() {
     const lightGroup = new THREE.Group();
 
@@ -258,9 +245,6 @@ export default class Intro {
         return material;
       });
     };
-
-    const sphere = this.getSphere();
-    this.scene.add(sphere);
 
     const light = this.getLight();
     light.position.z = this.camera.position.z;
