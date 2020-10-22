@@ -99,6 +99,34 @@ export default class Intro {
       z: 750,
     };
 
+    this.lights = [
+      {
+        id: `DirectionalLight`,
+        type: `DirectionalLight`,
+        color: `rgb(255,255,255)`,
+        intensity: 0.84,
+        position: {x: 0, y: this.position.z * Math.tan(-15 * THREE.Math.DEG2RAD), z: this.position.z},
+      },
+      {
+        id: `PointLight-0`,
+        type: `PointLight`,
+        color: `rgb(246,242,255)`,
+        intensity: 0.60,
+        decay: 2.0,
+        distance: 975,
+        position: {x: -785, y: -350, z: 710},
+      },
+      {
+        id: `PointLight-1`,
+        type: `PointLight`,
+        color: `rgb(245,254,255)`,
+        intensity: 0.95,
+        decay: 2.0,
+        distance: 975,
+        position: {x: 730, y: 800, z: 985},
+      },
+    ];
+
     this.currentScene = 0;
 
     this.render = this.render.bind(this);
@@ -168,6 +196,20 @@ export default class Intro {
     return new THREE.Mesh(geometry, material);
   }
 
+  getLight() {
+    const lightGroup = new THREE.Group();
+
+    this.lights.forEach((light) => {
+      const color = new THREE.Color(light.color);
+
+      const lightUnit = new THREE[light.type](color, light.intensity, light.distance, light.decay);
+      lightUnit.position.set(...Object.values(light.position));
+      lightGroup.add(lightUnit);
+    });
+
+    return lightGroup;
+  }
+
   init() {
     window.addEventListener(`resize`, this.handleResize);
 
@@ -219,6 +261,10 @@ export default class Intro {
 
     const sphere = this.getSphere();
     this.scene.add(sphere);
+
+    const light = this.getLight();
+    light.position.z = this.camera.position.z;
+    this.scene.add(light);
 
     this.changeScene(0);
     this.animationRequest = requestAnimationFrame(this.render);
