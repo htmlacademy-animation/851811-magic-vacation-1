@@ -91,13 +91,41 @@ export default class Intro {
 
     this.animationRequest = null;
 
-    this.fov = 45;
+    this.fov = this.getFov();
     this.aspect = this.innerWidth / this.innerHeight;
     this.near = 0.1;
     this.far = 1000;
     this.position = {
-      z: 800,
+      z: 750,
     };
+
+    this.lights = [
+      {
+        id: `DirectionalLight`,
+        type: `DirectionalLight`,
+        color: `rgb(255,255,255)`,
+        intensity: 0.84,
+        position: {x: 0, y: this.position.z * Math.tan(-15 * THREE.Math.DEG2RAD), z: this.position.z},
+      },
+      {
+        id: `PointLight-0`,
+        type: `PointLight`,
+        color: `rgb(246,242,255)`,
+        intensity: 0.60,
+        decay: 2.0,
+        distance: 975,
+        position: {x: -785, y: -350, z: 710},
+      },
+      {
+        id: `PointLight-1`,
+        type: `PointLight`,
+        color: `rgb(245,254,255)`,
+        intensity: 0.95,
+        decay: 2.0,
+        distance: 975,
+        position: {x: 730, y: 800, z: 985},
+      },
+    ];
 
     this.currentScene = 0;
 
@@ -141,10 +169,45 @@ export default class Intro {
     return {};
   }
 
+  getFov() {
+    if (this.innerWidth > this.innerHeight) {
+      return 35;
+    }
+
+    return (32 * this.innerHeight) / Math.min(this.innerWidth * 1.3, this.innerHeight);
+  }
+
   getHueAnimationSettings(index) {
     const texture = this.textures[index];
 
     return texture.animationSettings && texture.animationSettings.hue;
+  }
+
+  getSphere() {
+    const geometry = new THREE.SphereGeometry(100, 50, 50);
+
+    const material = new THREE.MeshStandardMaterial({
+      color: new THREE.Color(`#F1354C`),
+      metalness: 0.05,
+      emissive: 0x0,
+      roughness: 0.5
+    });
+
+    return new THREE.Mesh(geometry, material);
+  }
+
+  getLight() {
+    const lightGroup = new THREE.Group();
+
+    this.lights.forEach((light) => {
+      const color = new THREE.Color(light.color);
+
+      const lightUnit = new THREE[light.type](color, light.intensity, light.distance, light.decay);
+      lightUnit.position.set(...Object.values(light.position));
+      lightGroup.add(lightUnit);
+    });
+
+    return lightGroup;
   }
 
   init() {
@@ -196,6 +259,13 @@ export default class Intro {
       });
     };
 
+    const sphere = this.getSphere();
+    this.scene.add(sphere);
+
+    const light = this.getLight();
+    light.position.z = this.camera.position.z;
+    this.scene.add(light);
+
     this.changeScene(0);
     this.animationRequest = requestAnimationFrame(this.render);
   }
@@ -217,6 +287,7 @@ export default class Intro {
     this.canvasElement.width = this.innerWidth;
     this.canvasElement.height = this.innerHeight;
 
+    this.camera.fov = this.getFov();
     this.camera.aspect = this.innerWidth / this.innerHeight;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(this.innerWidth, this.innerHeight);
@@ -299,7 +370,7 @@ export default class Intro {
     this.hueIsAnimating = true;
 
     const {initalHue, finalHue, duration, variation} = hueAnimationSettings;
-    const offset = (Math.random() * variation * 2 + (1 - variation));
+    const offset = Math.random() * variation * 2 + (1 - variation);
 
     animateEasingWithFramerate(this.hueIntensityAnimationTick(this.currentScene, initalHue, finalHue * offset), duration * offset, this.defaultHueIntensityEasingFn).then(this.animateHue);
   }
