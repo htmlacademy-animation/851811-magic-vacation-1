@@ -183,7 +183,7 @@ export default class Intro {
     return texture.animationSettings && texture.animationSettings.hue;
   }
 
-  getLight() {
+  createLight() {
     const lightGroup = new THREE.Group();
 
     this.lights.forEach((light) => {
@@ -246,7 +246,7 @@ export default class Intro {
       });
     };
 
-    const light = this.getLight();
+    const light = this.createLight();
     light.position.z = this.camera.position.z;
     this.scene.add(light);
 
