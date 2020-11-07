@@ -4,6 +4,7 @@ import bezierEasing from '../../canvas/common/bezier-easing';
 import getRawShaderMaterialAttrs from '../common/get-raw-shader-material-attrs';
 
 import SecondRoom from './second-room';
+import ThirdRoom from './third-room';
 
 const easeInOut = bezierEasing(0.42, 0, 0.58, 1);
 const easeIn = bezierEasing(0.42, 0, 1, 1);
@@ -37,6 +38,7 @@ export default class Intro {
       {
         src: `img/screen__textures/scene-3.png`,
         options: {hueShift: 0.0},
+        room: ThirdRoom,
       },
       {
         src: `img/screen__textures/scene-4.png`,
