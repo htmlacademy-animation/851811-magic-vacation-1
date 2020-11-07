@@ -106,11 +106,18 @@ export default class Intro {
 
     this.lights = [
       {
-        id: `DirectionalLight`,
+        id: `DirectionalLight-0`,
         type: `DirectionalLight`,
         color: `rgb(255,255,255)`,
         intensity: 0.84,
         position: {x: 0, y: this.position.z * Math.tan(-15 * THREE.Math.DEG2RAD), z: this.position.z},
+      },
+      {
+        id: `DirectionalLight-1`,
+        type: `DirectionalLight`,
+        color: `rgb(255,255,255)`,
+        intensity: 0.5,
+        position: {x: 0, y: 500, z: 0},
       },
       {
         id: `PointLight-0`,
