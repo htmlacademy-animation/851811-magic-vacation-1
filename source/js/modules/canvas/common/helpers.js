@@ -105,3 +105,5 @@ export const runSerial = async (tasks) => {
   });
   return result;
 };
+
+export const getConeRadiusFromSideWidth = (width) => Math.hypot(width, width) / 2;
