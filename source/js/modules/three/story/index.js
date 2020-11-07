@@ -3,6 +3,8 @@ import {animateEasing, animateEasingWithFramerate, tick} from '../../canvas/comm
 import bezierEasing from '../../canvas/common/bezier-easing';
 import getRawShaderMaterialAttrs from '../common/get-raw-shader-material-attrs';
 
+import SecondRoom from './second-room';
+
 const easeInOut = bezierEasing(0.42, 0, 0.58, 1);
 const easeIn = bezierEasing(0.42, 0, 1, 1);
 
@@ -30,6 +32,7 @@ export default class Intro {
             variation: 0.3,
           },
         },
+        room: SecondRoom,
       },
       {
         src: `img/screen__textures/scene-3.png`,
@@ -216,7 +219,10 @@ export default class Intro {
 
     const loadManager = new THREE.LoadingManager();
     const textureLoader = new THREE.TextureLoader(loadManager);
-    const loadedTextures = this.textures.map((texture) => ({src: textureLoader.load(texture.src), options: texture.options}));
+    const loadedTextures = this.textures.map((texture) => ({
+      ...texture,
+      src: textureLoader.load(texture.src),
+    }));
     const geometry = new THREE.PlaneGeometry(1, 1);
 
     loadManager.onLoad = () => {
@@ -241,6 +247,14 @@ export default class Intro {
         image.position.x = this.getScenePosition(index);
 
         this.scene.add(image);
+
+        if (loadedTexture.room) {
+          const Room = loadedTexture.room;
+
+          const roomElements = new Room();
+          roomElements.position.x = this.getScenePosition(index);
+          this.scene.add(roomElements);
+        }
 
         return material;
       });
