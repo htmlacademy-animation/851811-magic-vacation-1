@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import getRawShaderMaterialAttrs from '../common/get-raw-shader-material-attrs';
+import getRawShaderMaterialAttrs from '../common/hue-and-bubbles-raw-shader';
 
 export default class Intro {
   constructor() {

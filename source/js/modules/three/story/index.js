@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {animateEasing, animateEasingWithFramerate, tick} from '../../canvas/common/helpers';
 import bezierEasing from '../../canvas/common/bezier-easing';
-import getRawShaderMaterialAttrs from '../common/get-raw-shader-material-attrs';
+import getRawShaderMaterialAttrs from '../common/hue-and-bubbles-raw-shader';
 
 import SecondRoom from './second-room';
 import ThirdRoom from './third-room';
