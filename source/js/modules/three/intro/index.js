@@ -14,6 +14,7 @@ export default class Intro {
     this.textureRatio = 2048 / 1024;
     this.backgroundColor = 0x5f458c;
 
+    this.initialized = false;
     this.animationRequest = null;
 
     this.fov = 45;
@@ -30,8 +31,16 @@ export default class Intro {
   }
 
   init() {
-    window.addEventListener(`resize`, this.handleResize);
+    if (!this.initialized) {
+      this.prepareScene();
+      this.initialized = true;
+    }
 
+    window.addEventListener(`resize`, this.handleResize);
+    this.animationRequest = requestAnimationFrame(this.render);
+  }
+
+  prepareScene() {
     this.canvasElement = document.getElementById(this.canvasSelector);
     this.canvasElement.width = this.innerWidth;
     this.canvasElement.height = this.innerHeight;
@@ -61,8 +70,6 @@ export default class Intro {
     };
 
     this.addSvgObjects();
-
-    this.animationRequest = requestAnimationFrame(this.render);
   }
 
   addSvgObjects() {

@@ -96,6 +96,7 @@ export default class Intro {
       },
     ];
 
+    this.initialized = false;
     this.animationRequest = null;
 
     this.fov = this.getFov();
@@ -212,8 +213,16 @@ export default class Intro {
   }
 
   init() {
-    window.addEventListener(`resize`, this.handleResize);
+    if (!this.initialized) {
+      this.prepareScene();
+      this.initialized = true;
+    }
 
+    window.addEventListener(`resize`, this.handleResize);
+    this.animationRequest = requestAnimationFrame(this.render);
+  }
+
+  prepareScene() {
     this.canvasElement = document.getElementById(this.canvasSelector);
     this.canvasElement.width = this.innerWidth;
     this.canvasElement.height = this.innerHeight;
@@ -276,7 +285,6 @@ export default class Intro {
     this.scene.add(light);
 
     this.changeScene(0);
-    this.animationRequest = requestAnimationFrame(this.render);
   }
 
   end() {
