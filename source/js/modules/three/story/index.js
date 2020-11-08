@@ -3,6 +3,7 @@ import {animateEasing, animateEasingWithFramerate, tick} from '../../canvas/comm
 import bezierEasing from '../../canvas/common/bezier-easing';
 import getRawShaderMaterialAttrs from '../common/hue-and-bubbles-raw-shader';
 
+import FirstRoom from './first-room';
 import SecondRoom from './second-room';
 import ThirdRoom from './third-room';
 
@@ -21,6 +22,7 @@ export default class Intro {
       {
         src: `img/screen__textures/scene-1.png`,
         options: {hueShift: 0.0},
+        room: FirstRoom,
       },
       {
         src: `img/screen__textures/scene-2.png`,
