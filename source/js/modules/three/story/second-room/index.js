@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 
+import SVGObject from '../../common/svg-object';
+
 import Pyramid from './pyramid';
 import Lantern from './lantern';
 
@@ -24,6 +26,7 @@ class SecondRoom extends THREE.Group {
   constructChildren() {
     this.addPyramid();
     this.addLantern();
+    this.addLeaf();
   }
 
   addPyramid() {
@@ -41,6 +44,13 @@ class SecondRoom extends THREE.Group {
     lantern.rotation.copy(new THREE.Euler(10 * THREE.Math.DEG2RAD, 60 * THREE.Math.DEG2RAD, 0), `XYZ`);
     lantern.position.set(110, -137, 10);
     this.add(lantern);
+  }
+
+  async addLeaf() {
+    const leaf = await new SVGObject({name: `leaf-2`}).getObject();
+    leaf.position.set(-200, 100, 30);
+    leaf.scale.set(1.5, 1.5, 1.5);
+    this.add(leaf);
   }
 }
 

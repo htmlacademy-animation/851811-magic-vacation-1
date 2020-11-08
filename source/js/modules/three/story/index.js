@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 import {animateEasing, animateEasingWithFramerate, tick} from '../../canvas/common/helpers';
 import bezierEasing from '../../canvas/common/bezier-easing';
-import getRawShaderMaterialAttrs from '../common/get-raw-shader-material-attrs';
+import getRawShaderMaterialAttrs from '../common/hue-and-bubbles-raw-shader';
 
+import FirstRoom from './first-room';
 import SecondRoom from './second-room';
 import ThirdRoom from './third-room';
 
@@ -21,6 +22,7 @@ export default class Intro {
       {
         src: `img/screen__textures/scene-1.png`,
         options: {hueShift: 0.0},
+        room: FirstRoom,
       },
       {
         src: `img/screen__textures/scene-2.png`,
@@ -94,6 +96,7 @@ export default class Intro {
       },
     ];
 
+    this.initialized = false;
     this.animationRequest = null;
 
     this.fov = this.getFov();
@@ -210,8 +213,16 @@ export default class Intro {
   }
 
   init() {
-    window.addEventListener(`resize`, this.handleResize);
+    if (!this.initialized) {
+      this.prepareScene();
+      this.initialized = true;
+    }
 
+    window.addEventListener(`resize`, this.handleResize);
+    this.animationRequest = requestAnimationFrame(this.render);
+  }
+
+  prepareScene() {
     this.canvasElement = document.getElementById(this.canvasSelector);
     this.canvasElement.width = this.innerWidth;
     this.canvasElement.height = this.innerHeight;
@@ -274,7 +285,6 @@ export default class Intro {
     this.scene.add(light);
 
     this.changeScene(0);
-    this.animationRequest = requestAnimationFrame(this.render);
   }
 
   end() {
