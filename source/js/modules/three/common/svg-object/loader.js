@@ -65,7 +65,7 @@ const svgPaths = [
 ];
 
 const createSvgGroup = (data, settings) => {
-  const paths = data.paths;
+  const {paths} = data;
   const group = new THREE.Group();
 
   for (let i = 0; i < paths.length; i++) {
