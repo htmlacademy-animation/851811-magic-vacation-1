@@ -47,7 +47,9 @@ export default class Intro {
         options: {hueShift: 0.0},
       },
     ];
-    this.textureRatio = 2048 / 1024;
+    this.textureHeight = 1024;
+    this.textureWidth = 2048;
+    this.textureRatio = this.textureWidth / this.textureHeight;
     this.backgroundColor = 0x5f458c;
 
     this.hueIsAnimating = false;
@@ -262,8 +264,8 @@ export default class Intro {
         material.needsUpdate = true;
 
         const image = new THREE.Mesh(geometry, material);
-        image.scale.x = this.innerHeight * this.textureRatio;
-        image.scale.y = this.innerHeight;
+        image.scale.x = this.innerHeight * this.textureRatio / (this.textureHeight / this.innerHeight);
+        image.scale.y = this.innerHeight / (this.textureHeight / this.innerHeight);
         image.position.x = this.getScenePosition(index);
 
         this.scene.add(image);

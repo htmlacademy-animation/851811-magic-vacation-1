@@ -11,7 +11,9 @@ export default class Intro {
 
     this.canvasSelector = `screen__canvas--intro`;
     this.texturePath = `img/screen__textures/scene-0.png`;
-    this.textureRatio = 2048 / 1024;
+    this.textureHeight = 1024;
+    this.textureWidth = 2048;
+    this.textureRatio = this.textureWidth / this.textureHeight;
     this.backgroundColor = 0x5f458c;
 
     this.initialized = false;
@@ -63,8 +65,8 @@ export default class Intro {
 
     loadManager.onLoad = () => {
       const image = new THREE.Mesh(geometry, material);
-      image.scale.x = this.innerHeight * this.textureRatio;
-      image.scale.y = this.innerHeight;
+      image.scale.x = this.innerHeight * this.textureRatio / (this.textureHeight / this.innerHeight);
+      image.scale.y = this.innerHeight / (this.textureHeight / this.innerHeight);
 
       this.scene.add(image);
     };
