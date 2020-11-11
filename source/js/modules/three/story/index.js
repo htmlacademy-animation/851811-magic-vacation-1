@@ -6,6 +6,7 @@ import getRawShaderMaterialAttrs from '../common/hue-and-bubbles-raw-shader';
 import FirstRoom from './first-room';
 import SecondRoom from './second-room';
 import ThirdRoom from './third-room';
+import FourthRoom from './fourth-room';
 
 const easeInOut = bezierEasing(0.42, 0, 0.58, 1);
 const easeIn = bezierEasing(0.42, 0, 1, 1);
@@ -45,9 +46,12 @@ export default class Intro {
       {
         src: `img/screen__textures/scene-4.png`,
         options: {hueShift: 0.0},
+        room: FourthRoom,
       },
     ];
-    this.textureRatio = 2048 / 1024;
+    this.textureHeight = 1024;
+    this.textureWidth = 2048;
+    this.textureRatio = this.textureWidth / this.textureHeight;
     this.backgroundColor = 0x5f458c;
 
     this.hueIsAnimating = false;
@@ -262,8 +266,8 @@ export default class Intro {
         material.needsUpdate = true;
 
         const image = new THREE.Mesh(geometry, material);
-        image.scale.x = this.innerHeight * this.textureRatio;
-        image.scale.y = this.innerHeight;
+        image.scale.x = this.innerHeight * this.textureRatio / (this.textureHeight / this.innerHeight);
+        image.scale.y = this.innerHeight / (this.textureHeight / this.innerHeight);
         image.position.x = this.getScenePosition(index);
 
         this.scene.add(image);
