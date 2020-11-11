@@ -6,7 +6,6 @@ import getRawShaderMaterialAttrs from '../common/hue-and-bubbles-raw-shader';
 import FirstRoom from './first-room';
 import SecondRoom from './second-room';
 import ThirdRoom from './third-room';
-import FourthRoom from './fourth-room';
 
 const easeInOut = bezierEasing(0.42, 0, 0.58, 1);
 const easeIn = bezierEasing(0.42, 0, 1, 1);
@@ -46,7 +45,8 @@ export default class Intro {
       {
         src: `img/screen__textures/scene-4.png`,
         options: {hueShift: 0.0},
-        room: FourthRoom,
+        room: FirstRoom,
+        roomOptions: {dark: true},
       },
     ];
     this.textureHeight = 1024;
@@ -275,7 +275,7 @@ export default class Intro {
         if (loadedTexture.room) {
           const Room = loadedTexture.room;
 
-          const roomElements = new Room();
+          const roomElements = new Room(loadedTexture.roomOptions);
           roomElements.position.x = this.getScenePosition(index);
           this.scene.add(roomElements);
         }
