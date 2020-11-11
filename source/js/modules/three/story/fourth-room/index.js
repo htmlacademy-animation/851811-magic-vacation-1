@@ -1,9 +1,8 @@
 import * as THREE from 'three';
 
-import SVGObject from '../../common/svg-object';
 import Rug from './rug';
 
-class FirstRoom extends THREE.Group {
+class FourthRoom extends THREE.Group {
   constructor() {
     super();
 
@@ -13,15 +12,7 @@ class FirstRoom extends THREE.Group {
   }
 
   constructChildren() {
-    this.addFlower();
     this.addRug();
-  }
-
-  async addFlower() {
-    const flower = await new SVGObject({name: `flower`}).getObject();
-    flower.position.set(-100, 100, 40);
-    flower.scale.set(0.5, 0.5, 0.5);
-    this.add(flower);
   }
 
   addRug() {
@@ -33,4 +24,4 @@ class FirstRoom extends THREE.Group {
   }
 }
 
-export default FirstRoom;
+export default FourthRoom;
