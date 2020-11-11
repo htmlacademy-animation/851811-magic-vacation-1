@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 
+import colors from '../../common/colors';
+
 class Snowman extends THREE.Group {
   constructor() {
     super();
@@ -16,20 +18,20 @@ class Snowman extends THREE.Group {
     this.baseSphere = {
       radius: 75,
       segments: 20,
-      color: `#B1CFF3`,
+      color: colors.SnowColor,
     };
 
     this.topSphere = {
       radius: 44,
       segments: 20,
-      color: `#B1CFF3`,
+      color: colors.SnowColor,
     };
 
     this.cone = {
       radius: 18,
       height: 75,
       radialSegments: 20,
-      color: `#F84201`,
+      color: colors.Orange,
     };
 
     this.addBase = this.addBase.bind(this);

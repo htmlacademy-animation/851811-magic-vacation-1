@@ -1,10 +1,13 @@
 import * as THREE from 'three';
 
 import {getLathePointsForCircle} from '../../common/helpers';
+import colors from '../../common/colors';
 
 class Saturn extends THREE.Group {
-  constructor() {
+  constructor({dark} = {}) {
     super();
+
+    this.dark = dark;
 
     this.getMaterial = (options = {}) => {
       const {color, ...rest} = options;
@@ -17,7 +20,7 @@ class Saturn extends THREE.Group {
 
     this.planet = {
       radius: 60,
-      color: `#FF0438`,
+      color: this.dark ? colors.ShadowedDominantRed : colors.DominantRed,
       segments: 40,
     };
 
@@ -25,20 +28,20 @@ class Saturn extends THREE.Group {
       width: 120 - 80,
       depth: 2,
       radius: 80,
-      color: `#7F47EA`,
+      color: this.dark ? colors.ShadowedBrightPurple : colors.BrightPurple,
       segments: 40,
     };
 
     this.topSphere = {
       radius: 10,
-      color: `#7F47EA`,
+      color: this.dark ? colors.ShadowedBrightPurple : colors.BrightPurple,
       segments: 40,
     };
 
     this.line = {
       radius: 1,
       height: 1000,
-      color: `#7C8DA9`,
+      color: colors.MetalGrey,
       segments: 40,
     };
 

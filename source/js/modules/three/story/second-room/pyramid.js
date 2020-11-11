@@ -1,5 +1,7 @@
 import * as THREE from 'three';
+
 import {getConeRadiusFromSideWidth} from '../../../canvas/common/helpers';
+import colors from '../../common/colors';
 
 class Pyramid extends THREE.Group {
   constructor() {
@@ -18,7 +20,7 @@ class Pyramid extends THREE.Group {
       height: 280,
       radius: getConeRadiusFromSideWidth(250),
       radialSegments: 4,
-      color: `#1860CF`,
+      color: colors.Blue,
     };
 
     this.addPyramid = this.addPyramid.bind(this);

@@ -2,6 +2,7 @@ import * as THREE from 'three';
 
 import {SVGLoader} from 'three/examples/jsm/loaders/SVGLoader.js';
 import {awaitLoader} from '../helpers';
+import colors from '../../common/colors';
 
 const svgLoader = new SVGLoader();
 
@@ -12,7 +13,7 @@ const svgPaths = [
     height: 85,
     depth: 8,
     cap: 2,
-    color: `#fe6183`,
+    color: colors.LightDominantRed,
   },
   {
     name: `snowflake`,
@@ -20,7 +21,7 @@ const svgPaths = [
     height: 74,
     depth: 8,
     cap: 2,
-    color: `#3b7bf2`,
+    color: colors.Blue,
   },
   {
     name: `question`,
@@ -28,7 +29,7 @@ const svgPaths = [
     height: 56,
     depth: 8,
     cap: 2,
-    color: `#3b7bf2`,
+    color: colors.Blue,
   },
   {
     name: `leaf-1`,
@@ -36,7 +37,7 @@ const svgPaths = [
     height: 117,
     depth: 8,
     cap: 2,
-    color: `#34df96`,
+    color: colors.Green,
   },
   {
     name: `keyhole`,
@@ -44,7 +45,7 @@ const svgPaths = [
     height: 2000,
     depth: 20,
     cap: 2,
-    color: `#a67ee5`,
+    color: colors.DarkPurple,
   },
   {
     name: `flower`,
@@ -60,7 +61,7 @@ const svgPaths = [
     height: 335.108,
     depth: 3,
     cap: 3,
-    color: `#34df96`,
+    color: colors.Green,
   },
 ];
 

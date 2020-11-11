@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 
 import {getConeRadiusFromSideWidth} from '../../../canvas/common/helpers';
+import colors from '../../common/colors';
 
 class Lantern extends THREE.Group {
   constructor() {
@@ -19,34 +20,34 @@ class Lantern extends THREE.Group {
       height: 120,
       radius: 16,
       radialSegments: 20,
-      color: `#1271F3`,
+      color: colors.Blue,
     };
 
     this.baseSphere = {
       height: 16,
       radius: 16,
       segments: 20,
-      color: `#1271F3`,
+      color: colors.Blue,
     };
 
     this.middleCylinder = {
       height: 230,
       radius: 7,
       radialSegments: 20,
-      color: `#1271F3`,
+      color: colors.Blue,
     };
 
     this.topBox = {
       width: 37,
       height: 4,
-      color: `#1271F3`,
+      color: colors.Blue,
     };
 
     this.topTrapezoid = {
       widthTop: 42,
       widthBottom: 34,
       height: 60,
-      color: `#90B0F9`,
+      color: colors.LightBlue,
       radialSegments: 4,
     };
 
@@ -54,7 +55,7 @@ class Lantern extends THREE.Group {
       widthTop: 45,
       widthBottom: 57,
       height: 6,
-      color: `#1271F3`,
+      color: colors.Blue,
       radialSegments: 4,
     };
 
