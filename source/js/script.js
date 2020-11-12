@@ -13,9 +13,12 @@ import rules from './modules/rules';
 import intro from './modules/intro';
 import animateResult from './modules/svg/animate-result';
 
+const fullPageScroll = new FullPageScroll();
+fullPageScroll.init();
+
 // init modules
 mobileHeight();
-slider();
+slider({scene: fullPageScroll.getScene()});
 menu();
 footer();
 chat();
@@ -24,8 +27,5 @@ form();
 social();
 document();
 rules();
-intro();
+intro({scene: fullPageScroll.getScene()});
 animateResult();
-
-const fullPageScroll = new FullPageScroll();
-fullPageScroll.init();

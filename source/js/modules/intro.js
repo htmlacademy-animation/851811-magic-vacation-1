@@ -1,5 +1,4 @@
 import LetterAnimation from './letter-animation';
-import Scene from './three/intro';
 
 const addIntroTitleAnimation = () => {
   const element = document.querySelector(`.intro__title`);
@@ -43,23 +42,19 @@ const addIntroDateAnimation = () => {
   });
 };
 
-const setCanvasAnimation = () => {
-  const scene = new Scene();
-
+const setCanvasAnimation = (scene) => {
   document.body.addEventListener(`screenChanged`, (event) => {
     const {detail} = event;
     const {screenName} = detail;
 
     if (screenName === `top`) {
-      scene.init();
-    } else {
-      scene.end();
+      scene.changeScene(0);
     }
   });
 };
 
-export default () => {
+export default ({scene}) => {
   addIntroTitleAnimation();
   addIntroDateAnimation();
-  setCanvasAnimation();
+  setCanvasAnimation(scene);
 };

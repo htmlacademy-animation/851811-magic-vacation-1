@@ -1,6 +1,7 @@
 import throttle from 'lodash/throttle';
 import gameCountdown from '../modules/countdown/animate-game-countdown';
 import PrizeAmountCountdown from '../modules/countdown/animate-prize-amount';
+import Scene from './three/story';
 
 const PrizeType = {
   JOURNEYS: `primary`,
@@ -18,6 +19,8 @@ export default class FullPageScroll {
     this.activeScreen = 0;
     this.onScrollHandler = this.onScroll.bind(this);
     this.onUrlHashChengedHandler = this.onUrlHashChanged.bind(this);
+
+    this.setScene();
   }
 
   init() {
@@ -25,6 +28,7 @@ export default class FullPageScroll {
     window.addEventListener(`popstate`, this.onUrlHashChengedHandler);
     this.changePageDisplay();
     this.onUrlHashChanged();
+    this.initScene();
   }
 
   onScroll(evt) {
@@ -162,5 +166,32 @@ export default class FullPageScroll {
         amountCoundown.endCountdown();
       }
     });
+  }
+
+  setScene() {
+    this.scene = new Scene();
+  }
+
+  initScene() {
+    const init = (screenName) => {
+      if (screenName === `top` || screenName === `story`) {
+        this.scene.init(screenName);
+      } else {
+        this.scene.end();
+      }
+    };
+
+    init(this.screenElements[this.activeScreen].id);
+
+    document.body.addEventListener(`screenChanged`, (event) => {
+      const {detail} = event;
+      const {screenName} = detail;
+
+      init(screenName);
+    });
+  }
+
+  getScene() {
+    return this.scene;
   }
 }
