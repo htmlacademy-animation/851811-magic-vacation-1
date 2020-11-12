@@ -1,23 +1,18 @@
 import * as THREE from 'three';
 
 import {getLathePointsForCircle} from '../../common/helpers';
+import colors from '../../common/colors';
+import materialReflectivity from '../../common/material-reflectivity';
 
 class Saturn extends THREE.Group {
-  constructor() {
+  constructor({dark} = {}) {
     super();
 
-    this.getMaterial = (options = {}) => {
-      const {color, ...rest} = options;
-
-      return new THREE.MeshStandardMaterial({
-        color: new THREE.Color(color),
-        ...rest,
-      });
-    };
+    this.dark = dark;
 
     this.planet = {
       radius: 60,
-      color: `#FF0438`,
+      color: this.dark ? colors.ShadowedDominantRed : colors.DominantRed,
       segments: 40,
     };
 
@@ -25,20 +20,20 @@ class Saturn extends THREE.Group {
       width: 120 - 80,
       depth: 2,
       radius: 80,
-      color: `#7F47EA`,
+      color: this.dark ? colors.ShadowedBrightPurple : colors.BrightPurple,
       segments: 40,
     };
 
     this.topSphere = {
       radius: 10,
-      color: `#7F47EA`,
+      color: this.dark ? colors.ShadowedBrightPurple : colors.BrightPurple,
       segments: 40,
     };
 
     this.line = {
       radius: 1,
       height: 1000,
-      color: `#7C8DA9`,
+      color: colors.MetalGrey,
       segments: 40,
     };
 
@@ -54,9 +49,21 @@ class Saturn extends THREE.Group {
     this.addLine();
   }
 
+  getMaterial(options = {}) {
+    const {color, ...rest} = options;
+
+    return new THREE.MeshStandardMaterial({
+      color: new THREE.Color(color),
+      ...rest,
+    });
+  }
+
   addPlanet() {
     const planet = new THREE.SphereBufferGeometry(this.planet.radius, this.planet.segments, this.planet.segments);
-    const mesh = new THREE.Mesh(planet, this.getMaterial({color: this.planet.color}));
+    const mesh = new THREE.Mesh(planet, this.getMaterial({
+      color: this.planet.color,
+      ...materialReflectivity.soft,
+    }));
 
     this.add(mesh);
   }
@@ -69,6 +76,7 @@ class Saturn extends THREE.Group {
       color: this.ring.color,
       side: THREE.DoubleSide,
       flatShading: true,
+      ...materialReflectivity.soft,
     }));
     mesh.rotation.copy(new THREE.Euler(20 * THREE.Math.DEG2RAD, 0, 18 * THREE.Math.DEG2RAD), `XYZ`);
 
@@ -77,7 +85,10 @@ class Saturn extends THREE.Group {
 
   addTopSphere() {
     const sphere = new THREE.SphereBufferGeometry(this.topSphere.radius, this.topSphere.segments, this.topSphere.segments);
-    const mesh = new THREE.Mesh(sphere, this.getMaterial({color: this.topSphere.color}));
+    const mesh = new THREE.Mesh(sphere, this.getMaterial({
+      color: this.topSphere.color,
+      ...materialReflectivity.soft,
+    }));
 
     mesh.position.set(0, this.ring.radius + this.topSphere.radius + 60, 0);
     this.add(mesh);
@@ -85,7 +96,10 @@ class Saturn extends THREE.Group {
 
   addLine() {
     const line = new THREE.CylinderBufferGeometry(this.line.radius, this.line.radius, this.line.height, this.line.radialSegments);
-    const mesh = new THREE.Mesh(line, this.getMaterial({color: this.line.color}));
+    const mesh = new THREE.Mesh(line, this.getMaterial({
+      color: this.line.color,
+      ...materialReflectivity.soft,
+    }));
 
     mesh.position.set(0, this.line.height / 2, 0);
     this.add(mesh);

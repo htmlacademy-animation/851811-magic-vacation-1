@@ -3,13 +3,18 @@ import {animateEasing, animateEasingWithFramerate, tick} from '../../canvas/comm
 import bezierEasing from '../../canvas/common/bezier-easing';
 import getRawShaderMaterialAttrs from '../common/hue-and-bubbles-raw-shader';
 
+import IntroRoom from './intro-room';
 import FirstRoom from './first-room';
 import SecondRoom from './second-room';
 import ThirdRoom from './third-room';
-import FourthRoom from './fourth-room';
 
 const easeInOut = bezierEasing(0.42, 0, 0.58, 1);
 const easeIn = bezierEasing(0.42, 0, 1, 1);
+
+const ScreenId = {
+  top: 0,
+  story: 1,
+};
 
 export default class Intro {
   constructor() {
@@ -18,8 +23,13 @@ export default class Intro {
 
     this.canvasCenter = {x: this.innerWidth / 2, y: this.innerHeight / 2};
 
-    this.canvasSelector = `screen__canvas--story`;
+    this.canvasSelector = `background-canvas--story`;
     this.textures = [
+      {
+        src: `img/screen__textures/scene-0.png`,
+        options: {hueShift: 0.0},
+        room: IntroRoom,
+      },
       {
         src: `img/screen__textures/scene-1.png`,
         options: {hueShift: 0.0},
@@ -46,7 +56,8 @@ export default class Intro {
       {
         src: `img/screen__textures/scene-4.png`,
         options: {hueShift: 0.0},
-        room: FourthRoom,
+        room: FirstRoom,
+        roomOptions: {dark: true},
       },
     ];
     this.textureHeight = 1024;
@@ -213,17 +224,24 @@ export default class Intro {
       lightGroup.add(lightUnit);
     });
 
+    const ambientLight = new THREE.AmbientLight(0x404040); // soft white light
+    lightGroup.add(ambientLight);
+
     return lightGroup;
   }
 
-  init() {
+  init(screenName) {
     if (!this.initialized) {
       this.prepareScene();
       this.initialized = true;
     }
 
-    window.addEventListener(`resize`, this.handleResize);
-    this.animationRequest = requestAnimationFrame(this.render);
+    if (!this.animationRequest) {
+      window.addEventListener(`resize`, this.handleResize);
+      this.animationRequest = requestAnimationFrame(this.render);
+    }
+
+    this.changeScene(ScreenId[screenName]);
   }
 
   prepareScene() {
@@ -275,7 +293,7 @@ export default class Intro {
         if (loadedTexture.room) {
           const Room = loadedTexture.room;
 
-          const roomElements = new Room();
+          const roomElements = new Room(loadedTexture.roomOptions);
           roomElements.position.x = this.getScenePosition(index);
           this.scene.add(roomElements);
         }
@@ -287,8 +305,6 @@ export default class Intro {
     const light = this.createLight();
     light.position.z = this.camera.position.z;
     this.scene.add(light);
-
-    this.changeScene(0);
   }
 
   end() {
