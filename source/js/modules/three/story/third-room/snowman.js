@@ -30,7 +30,7 @@ class Snowman extends THREE.Group {
     this.cone = {
       radius: 18,
       height: 75,
-      radialSegments: 20,
+      radialSegments: 40,
       color: colors.Orange,
     };
 
