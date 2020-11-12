@@ -52,6 +52,11 @@ const svgPaths = [
     cap: 2,
     color: colors.DarkPurple,
     materialReflectivity: materialReflectivity.basic,
+    children: new THREE.Mesh(new THREE.PlaneGeometry(2000, 2000), new THREE.MeshStandardMaterial({
+      color: new THREE.Color(colors.Purple),
+      side: THREE.DoubleSide,
+      ...materialReflectivity.basic,
+    })),
   },
   {
     name: `flower`,
@@ -80,7 +85,7 @@ const createSvgGroup = (data, settings) => {
   for (let i = 0; i < paths.length; i++) {
     const path = paths[i];
 
-    const material = new THREE.MeshBasicMaterial({
+    const material = new THREE.MeshStandardMaterial({
       color: new THREE.Color(settings.color),
       side: THREE.DoubleSide,
       ...settings.materialReflectivity,
@@ -102,6 +107,17 @@ const createSvgGroup = (data, settings) => {
       });
       geometry.applyMatrix(new THREE.Matrix4().makeScale(1, -1, 1));
       const mesh = new THREE.Mesh(geometry, material);
+
+      if (settings.children) {
+        const content = settings.children;
+
+        const size = new THREE.Vector3();
+        new THREE.Box3().setFromObject(content).getSize(size);
+        content.position.set(size.x / 2, -size.y / 2, 1);
+
+        group.add(content);
+      }
+
       group.add(mesh);
     }
   }
