@@ -213,6 +213,9 @@ export default class Intro {
       lightGroup.add(lightUnit);
     });
 
+    const ambientLight = new THREE.AmbientLight(0x404040); // soft white light
+    lightGroup.add(ambientLight);
+
     return lightGroup;
   }
 
