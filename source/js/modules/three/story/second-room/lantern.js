@@ -2,19 +2,11 @@ import * as THREE from 'three';
 
 import {getConeRadiusFromSideWidth} from '../../../canvas/common/helpers';
 import colors from '../../common/colors';
+import materialReflectivity from '../../common/material-reflectivity';
 
 class Lantern extends THREE.Group {
   constructor() {
     super();
-
-    this.getMaterial = (options = {}) => {
-      const {color, ...rest} = options;
-
-      return new THREE.MeshStandardMaterial({
-        color: new THREE.Color(color),
-        ...rest,
-      });
-    };
 
     this.baseCylinder = {
       height: 120,
@@ -73,17 +65,32 @@ class Lantern extends THREE.Group {
     this.addTop();
   }
 
+  getMaterial(options = {}) {
+    const {color, ...rest} = options;
+
+    return new THREE.MeshStandardMaterial({
+      color: new THREE.Color(color),
+      ...rest,
+    });
+  }
+
   addBase() {
     this.base = new THREE.Group();
 
     const cylinder = new THREE.CylinderBufferGeometry(this.baseCylinder.radius, this.baseCylinder.radius, this.baseCylinder.height, this.baseCylinder.radialSegments);
-    const cylinderMesh = new THREE.Mesh(cylinder, this.getMaterial({color: this.baseCylinder.color}));
+    const cylinderMesh = new THREE.Mesh(cylinder, this.getMaterial({
+      color: this.baseCylinder.color,
+      ...materialReflectivity.soft,
+    }));
 
     const halfSphere = new THREE.SphereBufferGeometry(this.baseSphere.radius,
         this.baseSphere.segments, this.baseSphere.segments,
         Math.PI * 2.00, Math.PI * 2.00,
         0, Math.PI * 0.5);
-    const halfSphereMesh = new THREE.Mesh(halfSphere, this.getMaterial({color: this.baseSphere.color}));
+    const halfSphereMesh = new THREE.Mesh(halfSphere, this.getMaterial({
+      color: this.baseSphere.color,
+      ...materialReflectivity.soft,
+    }));
 
     this.base.add(cylinderMesh);
     this.base.add(halfSphereMesh);
@@ -94,7 +101,10 @@ class Lantern extends THREE.Group {
 
   addMiddle() {
     const cylinder = new THREE.CylinderBufferGeometry(this.middleCylinder.radius, this.middleCylinder.radius, this.middleCylinder.height, this.middleCylinder.radialSegments);
-    const cylinderMesh = new THREE.Mesh(cylinder, this.getMaterial({color: this.middleCylinder.color}));
+    const cylinderMesh = new THREE.Mesh(cylinder, this.getMaterial({
+      color: this.middleCylinder.color,
+      ...materialReflectivity.soft,
+    }));
 
     const currentGroupSize = new THREE.Box3().setFromObject(this).getSize();
 
@@ -106,13 +116,25 @@ class Lantern extends THREE.Group {
     this.top = new THREE.Group();
 
     const box = new THREE.BoxBufferGeometry(this.topBox.width, this.topBox.height, this.topBox.width);
-    const boxMesh = new THREE.Mesh(box, this.getMaterial({color: this.topBox.color, flatShading: true}));
+    const boxMesh = new THREE.Mesh(box, this.getMaterial({
+      color: this.topBox.color,
+      flatShading: true,
+      ...materialReflectivity.soft,
+    }));
 
     const trapezoid = new THREE.CylinderBufferGeometry(getConeRadiusFromSideWidth(this.topTrapezoid.widthTop), getConeRadiusFromSideWidth(this.topTrapezoid.widthBottom), this.topTrapezoid.height, this.topTrapezoid.radialSegments);
-    const trapezoidMesh = new THREE.Mesh(trapezoid, this.getMaterial({color: this.topTrapezoid.color, flatShading: true}));
+    const trapezoidMesh = new THREE.Mesh(trapezoid, this.getMaterial({
+      color: this.topTrapezoid.color,
+      flatShading: true,
+      ...materialReflectivity.soft,
+    }));
 
     const cap = new THREE.CylinderBufferGeometry(getConeRadiusFromSideWidth(this.topCap.widthTop), getConeRadiusFromSideWidth(this.topCap.widthBottom), this.topCap.height, this.topCap.radialSegments);
-    const capMesh = new THREE.Mesh(cap, this.getMaterial({color: this.topCap.color, flatShading: true}));
+    const capMesh = new THREE.Mesh(cap, this.getMaterial({
+      color: this.topCap.color,
+      flatShading: true,
+      ...materialReflectivity.soft,
+    }));
 
     this.top.add(boxMesh);
     boxMesh.rotation.y = -45 * THREE.Math.DEG2RAD;

@@ -1,19 +1,11 @@
 import * as THREE from 'three';
 
 import colors from '../../common/colors';
+import materialReflectivity from '../../common/material-reflectivity';
 
 class Snowman extends THREE.Group {
   constructor() {
     super();
-
-    this.getMaterial = (options = {}) => {
-      const {color, ...rest} = options;
-
-      return new THREE.MeshStandardMaterial({
-        color: new THREE.Color(color),
-        ...rest,
-      });
-    };
 
     this.baseSphere = {
       radius: 75,
@@ -46,9 +38,21 @@ class Snowman extends THREE.Group {
     this.addTop();
   }
 
+  getMaterial(options = {}) {
+    const {color, ...rest} = options;
+
+    return new THREE.MeshStandardMaterial({
+      color: new THREE.Color(color),
+      ...rest,
+    });
+  }
+
   addBase() {
     const sphere = new THREE.SphereBufferGeometry(this.baseSphere.radius, this.baseSphere.segments, this.baseSphere.segments);
-    const sphereMesh = new THREE.Mesh(sphere, this.getMaterial({color: this.baseSphere.color}));
+    const sphereMesh = new THREE.Mesh(sphere, this.getMaterial({
+      color: this.baseSphere.color,
+      ...materialReflectivity.strong,
+    }));
 
     this.add(sphereMesh);
   }
@@ -57,10 +61,16 @@ class Snowman extends THREE.Group {
     this.top = new THREE.Group();
 
     const sphere = new THREE.SphereBufferGeometry(this.topSphere.radius, this.topSphere.segments, this.topSphere.segments);
-    const sphereMesh = new THREE.Mesh(sphere, this.getMaterial({color: this.topSphere.color}));
+    const sphereMesh = new THREE.Mesh(sphere, this.getMaterial({
+      color: this.topSphere.color,
+      ...materialReflectivity.strong
+    }));
 
     const cone = new THREE.ConeBufferGeometry(this.cone.radius, this.cone.height, this.cone.radialSegments);
-    const coneMesh = new THREE.Mesh(cone, this.getMaterial({color: this.cone.color}));
+    const coneMesh = new THREE.Mesh(cone, this.getMaterial({
+      color: this.cone.color,
+      ...materialReflectivity.soft,
+    }));
 
     this.top.add(sphereMesh);
     this.top.add(coneMesh);

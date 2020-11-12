@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import {SVGLoader} from 'three/examples/jsm/loaders/SVGLoader.js';
 import {awaitLoader} from '../helpers';
 import colors from '../../common/colors';
+import materialReflectivity from '../../common/material-reflectivity';
 
 const svgLoader = new SVGLoader();
 
@@ -14,6 +15,7 @@ const svgPaths = [
     depth: 8,
     cap: 2,
     color: colors.LightDominantRed,
+    materialReflectivity: materialReflectivity.soft,
   },
   {
     name: `snowflake`,
@@ -22,6 +24,7 @@ const svgPaths = [
     depth: 8,
     cap: 2,
     color: colors.Blue,
+    materialReflectivity: materialReflectivity.basic,
   },
   {
     name: `question`,
@@ -30,6 +33,7 @@ const svgPaths = [
     depth: 8,
     cap: 2,
     color: colors.Blue,
+    materialReflectivity: materialReflectivity.basic,
   },
   {
     name: `leaf-1`,
@@ -38,6 +42,7 @@ const svgPaths = [
     depth: 8,
     cap: 2,
     color: colors.Green,
+    materialReflectivity: materialReflectivity.basic,
   },
   {
     name: `keyhole`,
@@ -46,6 +51,7 @@ const svgPaths = [
     depth: 20,
     cap: 2,
     color: colors.DarkPurple,
+    materialReflectivity: materialReflectivity.basic,
   },
   {
     name: `flower`,
@@ -54,6 +60,7 @@ const svgPaths = [
     depth: 4,
     cap: 2,
     color: `#2873f0`,
+    materialReflectivity: {},
   },
   {
     name: `leaf-2`,
@@ -62,6 +69,7 @@ const svgPaths = [
     depth: 3,
     cap: 3,
     color: colors.Green,
+    materialReflectivity: materialReflectivity.basic,
   },
 ];
 
@@ -74,6 +82,8 @@ const createSvgGroup = (data, settings) => {
 
     const material = new THREE.MeshBasicMaterial({
       color: new THREE.Color(settings.color),
+      side: THREE.DoubleSide,
+      ...settings.materialReflectivity,
     });
 
     const shapes = path.toShapes(true);
