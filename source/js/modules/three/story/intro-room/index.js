@@ -1,10 +1,42 @@
 import * as THREE from 'three';
 
 import SVGObject from '../../common/svg-object';
+import colors from '../../common/colors';
+import materialReflectivity from '../../common/material-reflectivity';
+import {loadModel} from '../../common/load-model';
 
 class IntroRoom extends THREE.Group {
   constructor() {
     super();
+
+    this.models = [
+      {
+        name: `airplane`,
+        type: `obj`,
+        path: `img/models/airplane.obj`,
+        materialReflectivity: materialReflectivity.basic,
+        color: colors.White,
+        scale: 0.5,
+        position: {x: 70, y: 80, z: 100},
+        rotate: {x: 90, y: 140, z: -30},
+      },
+      {
+        name: `suitcase`,
+        type: `gltf`,
+        path: `img/models/suitcase.gltf`,
+        scale: 0.4,
+        position: {x: -50, y: -100, z: 30},
+        rotate: {x: 40, y: -120, z: 20},
+      },
+      {
+        name: `watermelon`,
+        type: `gltf`,
+        path: `img/models/watermelon.gltf`,
+        scale: 1,
+        position: {x: -250, y: 0, z: 40},
+        rotate: {x: 0, y: 0, z: 130},
+      },
+    ];
 
     this.constructChildren = this.constructChildren.bind(this);
 
@@ -17,6 +49,16 @@ class IntroRoom extends THREE.Group {
     this.loadSnowflake();
     this.loadQuestion();
     this.loadLeaf();
+    this.loadModels();
+  }
+
+  getMaterial(options = {}) {
+    const {color, ...rest} = options;
+
+    return new THREE.MeshStandardMaterial({
+      color: new THREE.Color(color),
+      ...rest,
+    });
   }
 
   async loadKeyhole() {
@@ -52,6 +94,20 @@ class IntroRoom extends THREE.Group {
     leaf.position.set(250, 200, 100);
     leaf.scale.set(-1.2, 1.2, 1.2);
     this.add(leaf);
+  }
+
+  loadModels() {
+    this.models.forEach((params) => {
+      const material = params.color && this.getMaterial({color: params.color, ...params.materialReflectivity});
+
+      loadModel(params, material, (mesh) => {
+        mesh.name = params.name;
+        mesh.scale.set(params.scale, params.scale, params.scale);
+        mesh.position.set(...Object.values(params.position));
+        mesh.rotation.copy(new THREE.Euler(params.rotate.x * THREE.Math.DEG2RAD, params.rotate.y * THREE.Math.DEG2RAD, params.rotate.z * THREE.Math.DEG2RAD, params.rotationOrder || `XYZ`));
+        this.add(mesh);
+      });
+    });
   }
 }
 
