@@ -1,16 +1,36 @@
+import * as THREE from 'three';
 import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader.js';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 
-const loadObj = (path, onComplete) => {
-  const loaderObj = new OBJLoader();
+const onComplete = (obj3d, material, callback) => {
+  if (material) {
+    obj3d.traverse((child) => {
+      if (child.isMesh) {
+        child.material = material;
+      }
+    });
+  }
 
-  loaderObj.load(path, onComplete);
+  if (typeof callback === `function`) {
+    callback.call(null, obj3d);
+  }
 };
 
-const loadGltf = (path, onComplete) => {
-  const loaderGltf = new GLTFLoader();
+const onGltfComplete = (gltf, material, callback) => {
+  if (!gltf.scene) {
+    return;
+  }
+  onComplete(gltf.scene, material, callback);
+};
 
-  loaderGltf.load(path, onComplete);
+const LoaderByType = {
+  gltf: GLTFLoader,
+  obj: OBJLoader,
+};
+
+const LoadingFnByType = {
+  gltf: onGltfComplete,
+  obj: onComplete,
 };
 
 export const loadModel = (params, material, callback) => {
@@ -18,35 +38,14 @@ export const loadModel = (params, material, callback) => {
     return;
   }
 
-  const onComplete = (obj3d) => {
-    if (material) {
-      obj3d.traverse((child) => {
-        if (child.isMesh) {
-          child.material = material;
-        }
-      });
-    }
-
-    if (typeof callback === `function`) {
-      callback.call(null, obj3d);
-    }
-  };
-
-  const onGltfComplete = (gltf) => {
-    if (!gltf.scene) {
-      return;
-    }
-    onComplete(gltf.scene);
-  };
-
-  switch (params.type) {
-    case `gltf`:
-      loadGltf(params.path, onGltfComplete);
-
-      break;
-    default:
-      loadObj(params.path, onComplete);
-
-      break;
+  const Loader = LoaderByType[params.type];
+  const loadingFn = LoadingFnByType[params.type];
+  if (!Loader || !loadingFn) {
+    return;
   }
+
+  const loadManager = new THREE.LoadingManager();
+  const loader = new Loader(loadManager);
+
+  loader.load(params.path, (model) => loadingFn(model, material, callback));
 };
