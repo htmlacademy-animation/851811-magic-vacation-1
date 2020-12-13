@@ -1,11 +1,5 @@
 import * as THREE from 'three';
 
-export const awaitLoader = (loader, url) => {
-  return new Promise((resolve, reject) => {
-    loader.load(url, (data) => resolve(data), null, reject);
-  });
-};
-
 export const getLathePointsForCircle = (borderWidth, height, radius) => {
   const points = [];
 

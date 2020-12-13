@@ -46,8 +46,11 @@ class SecondRoom extends THREE.Group {
     this.add(lantern);
   }
 
-  async addLeaf() {
-    const leaf = await new SVGObject({name: `leaf-2`}).getObject();
+  addLeaf() {
+    const leaf = new SVGObject({name: `leaf-2`}).getObject();
+    if (!leaf) {
+      return;
+    }
     leaf.position.set(-200, 100, 30);
     leaf.scale.set(1.5, 1.5, 1.5);
     this.add(leaf);

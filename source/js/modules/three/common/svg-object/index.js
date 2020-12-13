@@ -5,9 +5,8 @@ class SVGObject {
     this.name = name;
   }
 
-  async getObject() {
-    const svgs = await loadedSvgs;
-    const svg = svgs.getObjectByName(this.name);
+  getObject() {
+    const svg = loadedSvgs.getObjectByName(this.name);
 
     return svg;
   }
