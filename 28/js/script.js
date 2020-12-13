@@ -69628,22 +69628,15 @@ __webpack_require__.r(__webpack_exports__);
 /*!***************************************************!*\
   !*** ./source/js/modules/three/common/helpers.js ***!
   \***************************************************/
-/*! exports provided: awaitLoader, getLathePointsForCircle, getLatheDegrees */
+/*! exports provided: getLathePointsForCircle, getLatheDegrees */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "awaitLoader", function() { return awaitLoader; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLathePointsForCircle", function() { return getLathePointsForCircle; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getLatheDegrees", function() { return getLatheDegrees; });
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
 
-
-const awaitLoader = (loader, url) => {
-  return new Promise((resolve, reject) => {
-    loader.load(url, (data) => resolve(data), null, reject);
-  });
-};
 
 const getLathePointsForCircle = (borderWidth, height, radius) => {
   const points = [];
@@ -69726,21 +69719,42 @@ module.exports = "// Переменные, которые передаёт Three
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadModel", function() { return loadModel; });
-/* harmony import */ var three_examples_jsm_loaders_OBJLoader_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three/examples/jsm/loaders/OBJLoader.js */ "./node_modules/three/examples/jsm/loaders/OBJLoader.js");
-/* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+/* harmony import */ var three_examples_jsm_loaders_OBJLoader_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three/examples/jsm/loaders/OBJLoader.js */ "./node_modules/three/examples/jsm/loaders/OBJLoader.js");
+/* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
 
 
 
-const loadObj = (path, onComplete) => {
-  const loaderObj = new three_examples_jsm_loaders_OBJLoader_js__WEBPACK_IMPORTED_MODULE_0__["OBJLoader"]();
 
-  loaderObj.load(path, onComplete);
+const onComplete = (obj3d, material, callback) => {
+  if (material) {
+    obj3d.traverse((child) => {
+      if (child.isMesh) {
+        child.material = material;
+      }
+    });
+  }
+
+  if (typeof callback === `function`) {
+    callback.call(null, obj3d);
+  }
 };
 
-const loadGltf = (path, onComplete) => {
-  const loaderGltf = new three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_1__["GLTFLoader"]();
+const onGltfComplete = (gltf, material, callback) => {
+  if (!gltf.scene) {
+    return;
+  }
+  onComplete(gltf.scene, material, callback);
+};
 
-  loaderGltf.load(path, onComplete);
+const LoaderByType = {
+  gltf: three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_2__["GLTFLoader"],
+  obj: three_examples_jsm_loaders_OBJLoader_js__WEBPACK_IMPORTED_MODULE_1__["OBJLoader"],
+};
+
+const LoadingFnByType = {
+  gltf: onGltfComplete,
+  obj: onComplete,
 };
 
 const loadModel = (params, material, callback) => {
@@ -69748,37 +69762,16 @@ const loadModel = (params, material, callback) => {
     return;
   }
 
-  const onComplete = (obj3d) => {
-    if (material) {
-      obj3d.traverse((child) => {
-        if (child.isMesh) {
-          child.material = material;
-        }
-      });
-    }
-
-    if (typeof callback === `function`) {
-      callback.call(null, obj3d);
-    }
-  };
-
-  const onGltfComplete = (gltf) => {
-    if (!gltf.scene) {
-      return;
-    }
-    onComplete(gltf.scene);
-  };
-
-  switch (params.type) {
-    case `gltf`:
-      loadGltf(params.path, onGltfComplete);
-
-      break;
-    default:
-      loadObj(params.path, onComplete);
-
-      break;
+  const Loader = LoaderByType[params.type];
+  const loadingFn = LoadingFnByType[params.type];
+  if (!Loader || !loadingFn) {
+    return;
   }
+
+  const loadManager = new three__WEBPACK_IMPORTED_MODULE_0__["LoadingManager"]();
+  const loader = new Loader(loadManager);
+
+  loader.load(params.path, (model) => loadingFn(model, material, callback));
 };
 
 
@@ -69828,9 +69821,8 @@ class SVGObject {
     this.name = name;
   }
 
-  async getObject() {
-    const svgs = await _loader__WEBPACK_IMPORTED_MODULE_0__["default"];
-    const svg = svgs.getObjectByName(this.name);
+  getObject() {
+    const svg = _loader__WEBPACK_IMPORTED_MODULE_0__["default"].getObjectByName(this.name);
 
     return svg;
   }
@@ -69852,17 +69844,13 @@ class SVGObject {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
 /* harmony import */ var three_examples_jsm_loaders_SVGLoader_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three/examples/jsm/loaders/SVGLoader.js */ "./node_modules/three/examples/jsm/loaders/SVGLoader.js");
-/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../helpers */ "./source/js/modules/three/common/helpers.js");
-/* harmony import */ var _common_colors__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../common/colors */ "./source/js/modules/three/common/colors.js");
-/* harmony import */ var _common_material_reflectivity__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../common/material-reflectivity */ "./source/js/modules/three/common/material-reflectivity.js");
+/* harmony import */ var _common_colors__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../common/colors */ "./source/js/modules/three/common/colors.js");
+/* harmony import */ var _common_material_reflectivity__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../common/material-reflectivity */ "./source/js/modules/three/common/material-reflectivity.js");
 
 
 
 
 
-
-
-const svgLoader = new three_examples_jsm_loaders_SVGLoader_js__WEBPACK_IMPORTED_MODULE_1__["SVGLoader"]();
 
 const svgPaths = [
   {
@@ -69871,8 +69859,8 @@ const svgPaths = [
     height: 85,
     depth: 8,
     cap: 2,
-    color: _common_colors__WEBPACK_IMPORTED_MODULE_3__["default"].LightDominantRed,
-    materialReflectivity: _common_material_reflectivity__WEBPACK_IMPORTED_MODULE_4__["default"].soft,
+    color: _common_colors__WEBPACK_IMPORTED_MODULE_2__["default"].LightDominantRed,
+    materialReflectivity: _common_material_reflectivity__WEBPACK_IMPORTED_MODULE_3__["default"].soft,
   },
   {
     name: `snowflake`,
@@ -69880,8 +69868,8 @@ const svgPaths = [
     height: 74,
     depth: 8,
     cap: 2,
-    color: _common_colors__WEBPACK_IMPORTED_MODULE_3__["default"].Blue,
-    materialReflectivity: _common_material_reflectivity__WEBPACK_IMPORTED_MODULE_4__["default"].basic,
+    color: _common_colors__WEBPACK_IMPORTED_MODULE_2__["default"].Blue,
+    materialReflectivity: _common_material_reflectivity__WEBPACK_IMPORTED_MODULE_3__["default"].basic,
   },
   {
     name: `question`,
@@ -69889,8 +69877,8 @@ const svgPaths = [
     height: 56,
     depth: 8,
     cap: 2,
-    color: _common_colors__WEBPACK_IMPORTED_MODULE_3__["default"].Blue,
-    materialReflectivity: _common_material_reflectivity__WEBPACK_IMPORTED_MODULE_4__["default"].basic,
+    color: _common_colors__WEBPACK_IMPORTED_MODULE_2__["default"].Blue,
+    materialReflectivity: _common_material_reflectivity__WEBPACK_IMPORTED_MODULE_3__["default"].basic,
   },
   {
     name: `leaf-1`,
@@ -69898,8 +69886,8 @@ const svgPaths = [
     height: 117,
     depth: 8,
     cap: 2,
-    color: _common_colors__WEBPACK_IMPORTED_MODULE_3__["default"].Green,
-    materialReflectivity: _common_material_reflectivity__WEBPACK_IMPORTED_MODULE_4__["default"].basic,
+    color: _common_colors__WEBPACK_IMPORTED_MODULE_2__["default"].Green,
+    materialReflectivity: _common_material_reflectivity__WEBPACK_IMPORTED_MODULE_3__["default"].basic,
   },
   {
     name: `keyhole`,
@@ -69907,12 +69895,12 @@ const svgPaths = [
     height: 2000,
     depth: 20,
     cap: 2,
-    color: _common_colors__WEBPACK_IMPORTED_MODULE_3__["default"].DarkPurple,
-    materialReflectivity: _common_material_reflectivity__WEBPACK_IMPORTED_MODULE_4__["default"].basic,
+    color: _common_colors__WEBPACK_IMPORTED_MODULE_2__["default"].DarkPurple,
+    materialReflectivity: _common_material_reflectivity__WEBPACK_IMPORTED_MODULE_3__["default"].basic,
     children: new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](new three__WEBPACK_IMPORTED_MODULE_0__["PlaneGeometry"](2000, 2000), new three__WEBPACK_IMPORTED_MODULE_0__["MeshStandardMaterial"]({
-      color: new three__WEBPACK_IMPORTED_MODULE_0__["Color"](_common_colors__WEBPACK_IMPORTED_MODULE_3__["default"].Purple),
+      color: new three__WEBPACK_IMPORTED_MODULE_0__["Color"](_common_colors__WEBPACK_IMPORTED_MODULE_2__["default"].Purple),
       side: three__WEBPACK_IMPORTED_MODULE_0__["DoubleSide"],
-      ..._common_material_reflectivity__WEBPACK_IMPORTED_MODULE_4__["default"].basic,
+      ..._common_material_reflectivity__WEBPACK_IMPORTED_MODULE_3__["default"].basic,
     })),
   },
   {
@@ -69930,8 +69918,8 @@ const svgPaths = [
     height: 335.108,
     depth: 3,
     cap: 3,
-    color: _common_colors__WEBPACK_IMPORTED_MODULE_3__["default"].Green,
-    materialReflectivity: _common_material_reflectivity__WEBPACK_IMPORTED_MODULE_4__["default"].basic,
+    color: _common_colors__WEBPACK_IMPORTED_MODULE_2__["default"].Green,
+    materialReflectivity: _common_material_reflectivity__WEBPACK_IMPORTED_MODULE_3__["default"].basic,
   },
 ];
 
@@ -69984,14 +69972,18 @@ const createSvgGroup = (data, settings) => {
   return group;
 };
 
-/* harmony default export */ __webpack_exports__["default"] = (svgPaths.reduce(async (resultPromise, path) => {
-  const data = await Object(_helpers__WEBPACK_IMPORTED_MODULE_2__["awaitLoader"])(svgLoader, path.src);
-  const svgGroup = createSvgGroup(data, path);
+const group = new three__WEBPACK_IMPORTED_MODULE_0__["Group"]();
+const loadManager = new three__WEBPACK_IMPORTED_MODULE_0__["LoadingManager"]();
+const loader = new three_examples_jsm_loaders_SVGLoader_js__WEBPACK_IMPORTED_MODULE_1__["SVGLoader"](loadManager);
 
-  const result = await resultPromise;
-  result.add(svgGroup);
-  return result;
-}, new three__WEBPACK_IMPORTED_MODULE_0__["Group"]()));
+svgPaths.forEach((path) => {
+  loader.load(path.src, (data) => {
+    const svgGroup = createSvgGroup(data, path);
+    group.add(svgGroup);
+  });
+});
+
+/* harmony default export */ __webpack_exports__["default"] = (group);
 
 
 /***/ }),
@@ -70032,8 +70024,11 @@ class FirstRoom extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
     this.addSaturn();
   }
 
-  async addFlower() {
-    const flower = await new _common_svg_object__WEBPACK_IMPORTED_MODULE_1__["default"]({name: `flower`, dark: this.dark}).getObject();
+  addFlower() {
+    const flower = new _common_svg_object__WEBPACK_IMPORTED_MODULE_1__["default"]({name: `flower`, dark: this.dark}).getObject();
+    if (!flower) {
+      return;
+    }
     flower.position.set(-100, 100, 40);
     flower.scale.set(0.5, 0.5, 0.5);
     this.add(flower);
@@ -70846,8 +70841,11 @@ class IntroRoom extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
   }
 
   loadSvgs() {
-    this.svgs.forEach(async (params) => {
-      const mesh = await new _common_svg_object__WEBPACK_IMPORTED_MODULE_1__["default"]({name: params.name}).getObject();
+    this.svgs.forEach((params) => {
+      const mesh = new _common_svg_object__WEBPACK_IMPORTED_MODULE_1__["default"]({name: params.name}).getObject();
+      if (!mesh) {
+        return;
+      }
       this.setMeshParams(mesh, params);
       this.add(mesh);
     });
@@ -70932,8 +70930,11 @@ class SecondRoom extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
     this.add(lantern);
   }
 
-  async addLeaf() {
-    const leaf = await new _common_svg_object__WEBPACK_IMPORTED_MODULE_1__["default"]({name: `leaf-2`}).getObject();
+  addLeaf() {
+    const leaf = new _common_svg_object__WEBPACK_IMPORTED_MODULE_1__["default"]({name: `leaf-2`}).getObject();
+    if (!leaf) {
+      return;
+    }
     leaf.position.set(-200, 100, 30);
     leaf.scale.set(1.5, 1.5, 1.5);
     this.add(leaf);
