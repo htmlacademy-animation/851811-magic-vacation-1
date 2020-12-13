@@ -21,8 +21,11 @@ class FirstRoom extends THREE.Group {
     this.addSaturn();
   }
 
-  async addFlower() {
-    const flower = await new SVGObject({name: `flower`, dark: this.dark}).getObject();
+  addFlower() {
+    const flower = new SVGObject({name: `flower`, dark: this.dark}).getObject();
+    if (!flower) {
+      return;
+    }
     flower.position.set(-100, 100, 40);
     flower.scale.set(0.5, 0.5, 0.5);
     this.add(flower);

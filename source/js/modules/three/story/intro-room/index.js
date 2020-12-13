@@ -102,8 +102,11 @@ class IntroRoom extends THREE.Group {
   }
 
   loadSvgs() {
-    this.svgs.forEach(async (params) => {
-      const mesh = await new SVGObject({name: params.name}).getObject();
+    this.svgs.forEach((params) => {
+      const mesh = new SVGObject({name: params.name}).getObject();
+      if (!mesh) {
+        return;
+      }
       this.setMeshParams(mesh, params);
       this.add(mesh);
     });

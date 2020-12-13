@@ -1,11 +1,8 @@
 import * as THREE from 'three';
 
 import {SVGLoader} from 'three/examples/jsm/loaders/SVGLoader.js';
-import {awaitLoader} from '../helpers';
 import colors from '../../common/colors';
 import materialReflectivity from '../../common/material-reflectivity';
-
-const svgLoader = new SVGLoader();
 
 const svgPaths = [
   {
@@ -127,11 +124,15 @@ const createSvgGroup = (data, settings) => {
   return group;
 };
 
-export default svgPaths.reduce(async (resultPromise, path) => {
-  const data = await awaitLoader(svgLoader, path.src);
-  const svgGroup = createSvgGroup(data, path);
+const group = new THREE.Group();
+const loadManager = new THREE.LoadingManager();
+const loader = new SVGLoader(loadManager);
 
-  const result = await resultPromise;
-  result.add(svgGroup);
-  return result;
-}, new THREE.Group());
+svgPaths.forEach((path) => {
+  loader.load(path.src, (data) => {
+    const svgGroup = createSvgGroup(data, path);
+    group.add(svgGroup);
+  });
+});
+
+export default group;
