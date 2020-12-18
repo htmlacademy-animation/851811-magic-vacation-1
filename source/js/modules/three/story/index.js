@@ -117,9 +117,9 @@ export default class Intro {
     this.fov = this.getFov();
     this.aspect = this.innerWidth / this.innerHeight;
     this.near = 0.1;
-    this.far = 1000;
+    this.far = 1405;
     this.position = {
-      z: 750,
+      z: 1405,
     };
 
     this.lights = [
