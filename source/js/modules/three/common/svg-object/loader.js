@@ -102,7 +102,7 @@ const createSvgGroup = (data, settings) => {
         bevelOffset: 0,
         bevelSegments: 1,
       });
-      geometry.applyMatrix(new THREE.Matrix4().makeScale(1, -1, 1));
+      geometry.applyMatrix4(new THREE.Matrix4().makeScale(1, -1, 1));
       const mesh = new THREE.Mesh(geometry, material);
 
       if (settings.children) {
