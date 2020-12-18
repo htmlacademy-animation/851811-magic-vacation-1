@@ -98,9 +98,9 @@ const createSvgGroup = (data, settings) => {
         depth: settings.depth,
         bevelEnabled: true,
         bevelThickness: settings.cap,
-        bevelSize: settings.cap,
+        bevelSize: 0,
         bevelOffset: 0,
-        bevelSegments: 1,
+        bevelSegments: 10,
       });
       geometry.applyMatrix4(new THREE.Matrix4().makeScale(1, -1, 1));
       const mesh = new THREE.Mesh(geometry, material);
