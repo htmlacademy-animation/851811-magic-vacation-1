@@ -88,7 +88,7 @@ const createSvgGroup = (data, settings) => {
       ...settings.materialReflectivity,
     });
 
-    const shapes = path.toShapes(true);
+    const shapes = path.toShapes();
 
     for (let j = 0; j < shapes.length; j++) {
 
