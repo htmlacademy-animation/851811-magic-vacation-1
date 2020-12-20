@@ -287,6 +287,7 @@ export default class Intro {
         image.scale.x = this.innerHeight * this.textureRatio / (this.textureHeight / this.innerHeight);
         image.scale.y = this.innerHeight / (this.textureHeight / this.innerHeight);
         image.position.x = this.getScenePosition(index);
+        image.position.z = this.camera.position.z * 0.5;
 
         this.scene.add(image);
 
@@ -295,6 +296,7 @@ export default class Intro {
 
           const roomElements = new Room(loadedTexture.roomOptions);
           roomElements.position.x = this.getScenePosition(index);
+          roomElements.position.z = this.camera.position.z * 0.5;
           this.scene.add(roomElements);
         }
 
