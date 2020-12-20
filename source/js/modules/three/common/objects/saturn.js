@@ -1,14 +1,15 @@
 import * as THREE from 'three';
 
-import {getLathePointsForCircle} from '../../common/helpers';
-import colors from '../../common/colors';
-import materialReflectivity from '../../common/material-reflectivity';
+import {getLathePointsForCircle} from '../helpers';
+import colors from '../colors';
+import materialReflectivity from '../material-reflectivity';
 
 class Saturn extends THREE.Group {
-  constructor({dark} = {}) {
+  constructor({dark, basic = false} = {}) {
     super();
 
     this.dark = dark;
+    this.basic = basic;
 
     this.planet = {
       radius: 60,
@@ -45,8 +46,11 @@ class Saturn extends THREE.Group {
   constructChildren() {
     this.addPlanet();
     this.addRing();
-    this.addTopSphere();
-    this.addLine();
+
+    if (!this.basic) {
+      this.addTopSphere();
+      this.addLine();
+    }
   }
 
   getMaterial(options = {}) {
