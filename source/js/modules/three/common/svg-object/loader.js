@@ -88,7 +88,7 @@ const createSvgGroup = (data, settings) => {
       ...settings.materialReflectivity,
     });
 
-    const shapes = path.toShapes(true);
+    const shapes = path.toShapes();
 
     for (let j = 0; j < shapes.length; j++) {
 
@@ -98,11 +98,11 @@ const createSvgGroup = (data, settings) => {
         depth: settings.depth,
         bevelEnabled: true,
         bevelThickness: settings.cap,
-        bevelSize: settings.cap,
+        bevelSize: 0,
         bevelOffset: 0,
-        bevelSegments: 1,
+        bevelSegments: 10,
       });
-      geometry.applyMatrix(new THREE.Matrix4().makeScale(1, -1, 1));
+      geometry.applyMatrix4(new THREE.Matrix4().makeScale(1, -1, 1));
       const mesh = new THREE.Mesh(geometry, material);
 
       if (settings.children) {

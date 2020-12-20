@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 import SVGObject from '../../common/svg-object';
 import Rug from './rug';
-import Saturn from './saturn';
+import Saturn from '../../common/objects/saturn';
 
 class FirstRoom extends THREE.Group {
   constructor({dark} = {}) {
