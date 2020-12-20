@@ -4,6 +4,7 @@ import SVGObject from '../../common/svg-object';
 import colors from '../../common/colors';
 import materialReflectivity from '../../common/material-reflectivity';
 import {loadModel} from '../../common/load-model';
+import Saturn from '../../common/objects/saturn';
 
 class IntroRoom extends THREE.Group {
   constructor() {
@@ -24,7 +25,7 @@ class IntroRoom extends THREE.Group {
       {
         name: `snowflake`,
         scale: 1.2,
-        position: {x: -350, y: 0, z: 100},
+        position: {x: -300, y: 0, z: 100},
         rotate: {x: 20, y: 40, z: 0},
       },
       {
@@ -62,7 +63,7 @@ class IntroRoom extends THREE.Group {
         type: `gltf`,
         path: `img/models/watermelon.gltf`,
         scale: 1,
-        position: {x: -250, y: 0, z: 40},
+        position: {x: -370, y: -100, z: 40},
         rotate: {x: 0, y: 0, z: 130},
       },
     ];
@@ -75,6 +76,7 @@ class IntroRoom extends THREE.Group {
   constructChildren() {
     this.loadSvgs();
     this.loadModels();
+    this.addSaturn();
   }
 
   getMaterial(options = {}) {
@@ -122,6 +124,13 @@ class IntroRoom extends THREE.Group {
         this.add(mesh);
       });
     });
+  }
+
+  addSaturn() {
+    const saturn = new Saturn({basic: true});
+    saturn.scale.set(0.5, 0.5, 0.5);
+    saturn.position.set(300, 0, 100);
+    this.add(saturn);
   }
 }
 
