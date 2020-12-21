@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 
-import {getLathePointsForCircle, getLatheDegrees} from '../../common/helpers';
+import {getLathePointsForCircle, getCircleDegrees} from '../../common/helpers';
 import colors from '../../common/colors';
+import {getMaterial} from '../../common/helpers';
 
 class Road extends THREE.Group {
   constructor() {
@@ -25,19 +26,9 @@ class Road extends THREE.Group {
     this.addRoad();
   }
 
-  getMaterial() {
-    return new THREE.MeshStandardMaterial({
-      side: THREE.DoubleSide,
-      flatShading: true,
-      vertexColors: true,
-      color: new THREE.Color(this.road.mainColor),
-    });
-  }
-
-
   getGeometry() {
     const points = getLathePointsForCircle(this.road.width, this.road.depth, this.road.radius);
-    const {start, length} = getLatheDegrees(this.road.degStart, this.road.degEnd);
+    const {start, length} = getCircleDegrees(this.road.degStart, this.road.degEnd);
 
     const road = new THREE.LatheBufferGeometry(points, this.road.segments, start, length).toNonIndexed();
 
@@ -81,7 +72,12 @@ class Road extends THREE.Group {
   }
 
   addRoad() {
-    const mesh = new THREE.Mesh(this.getGeometry(), this.getMaterial());
+    const mesh = new THREE.Mesh(this.getGeometry(), getMaterial({
+      side: THREE.DoubleSide,
+      flatShading: true,
+      vertexColors: true,
+      color: new THREE.Color(this.road.mainColor),
+    }));
 
     this.add(mesh);
   }

@@ -1,20 +1,12 @@
 import * as THREE from 'three';
 
+import {setMeshParams} from '../../common/helpers';
 import Snowman from './snowman';
 import Road from './road';
 
 class ThirdRoom extends THREE.Group {
   constructor() {
     super();
-
-    this.getMaterial = (options = {}) => {
-      const {color, ...rest} = options;
-
-      return new THREE.MeshStandardMaterial({
-        color: new THREE.Color(color),
-        ...rest,
-      });
-    };
 
     this.constructChildren = this.constructChildren.bind(this);
 
@@ -27,19 +19,22 @@ class ThirdRoom extends THREE.Group {
   }
 
   addSnowman() {
-    const snowman = new Snowman(this.getMaterial);
-
-    snowman.scale.set(0.8, 0.8, 0.8);
-    snowman.rotation.copy(new THREE.Euler(10 * THREE.Math.DEG2RAD, 40 * THREE.Math.DEG2RAD, 0), `XYZ`);
-    snowman.position.set(-20, -107, 0);
+    const snowman = new Snowman();
+    setMeshParams(snowman, {
+      scale: 0.35,
+      position: {x: -35, y: 40, z: 140},
+      rotate: {x: 10, y: 40, z: 0},
+    });
     this.add(snowman);
   }
 
   addRoad() {
     const road = new Road();
-    road.scale.set(0.3, 0.3, 0.3);
-    road.position.set(-20, 0, 40);
-    road.rotation.copy(new THREE.Euler(20 * THREE.Math.DEG2RAD, 45 * THREE.Math.DEG2RAD, 180 * THREE.Math.DEG2RAD), `XYZ`);
+    setMeshParams(road, {
+      scale: 0.3,
+      position: {x: 0, y: 0, z: 0},
+      rotate: {x: 0, y: 45, z: 180},
+    });
     this.add(road);
   }
 }

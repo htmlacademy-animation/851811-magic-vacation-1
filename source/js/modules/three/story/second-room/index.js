@@ -2,21 +2,13 @@ import * as THREE from 'three';
 
 import SVGObject from '../../common/svg-object';
 
+import {setMeshParams} from '../../common/helpers';
 import Pyramid from './pyramid';
 import Lantern from './lantern';
 
 class SecondRoom extends THREE.Group {
   constructor() {
     super();
-
-    this.getMaterial = (options = {}) => {
-      const {color, ...rest} = options;
-
-      return new THREE.MeshStandardMaterial({
-        color: new THREE.Color(color),
-        ...rest,
-      });
-    };
 
     this.constructChildren = this.constructChildren.bind(this);
 
@@ -31,18 +23,21 @@ class SecondRoom extends THREE.Group {
 
   addPyramid() {
     const pyramid = new Pyramid();
-
-    pyramid.position.set(-13, 0, -110);
-    pyramid.rotation.copy(new THREE.Euler(3 * THREE.Math.DEG2RAD, 3 * THREE.Math.DEG2RAD, 0), `XYZ`);
+    setMeshParams(pyramid, {
+      scale: 0.32,
+      position: {x: 0, y: 40, z: 110},
+      rotate: {x: 0, y: 3, z: 0},
+    });
     this.add(pyramid);
   }
 
   addLantern() {
-    const lantern = new Lantern(this.getMaterial);
-
-    lantern.scale.set(0.32, 0.32, 0.32);
-    lantern.rotation.copy(new THREE.Euler(10 * THREE.Math.DEG2RAD, 60 * THREE.Math.DEG2RAD, 0), `XYZ`);
-    lantern.position.set(110, -137, 10);
+    const lantern = new Lantern();
+    setMeshParams(lantern, {
+      scale: 0.32,
+      position: {x: 120, y: 20, z: 170},
+      rotate: {x: 0, y: 60, z: 0},
+    });
     this.add(lantern);
   }
 

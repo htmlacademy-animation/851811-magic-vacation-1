@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 
-import {getLathePointsForCircle, getLatheDegrees} from '../../common/helpers';
+import {getLathePointsForCircle, getCircleDegrees} from '../../common/helpers';
 import colors from '../../common/colors';
+import {getMaterial} from '../../common/helpers';
 
 class Rug extends THREE.Group {
   constructor({dark} = {}) {
@@ -26,18 +27,9 @@ class Rug extends THREE.Group {
     this.addRug();
   }
 
-  getMaterial() {
-    return new THREE.MeshStandardMaterial({
-      side: THREE.DoubleSide,
-      flatShading: true,
-      vertexColors: true,
-      color: new THREE.Color(this.rug.mainColor),
-    });
-  }
-
   getGeometry() {
     const points = getLathePointsForCircle(this.rug.width, this.rug.depth, this.rug.radius);
-    const {start, length} = getLatheDegrees(this.rug.degStart, this.rug.degEnd);
+    const {start, length} = getCircleDegrees(this.rug.degStart, this.rug.degEnd);
 
     const rug = new THREE.LatheBufferGeometry(points, this.rug.segments, start, length).toNonIndexed();
 
@@ -73,7 +65,12 @@ class Rug extends THREE.Group {
   }
 
   addRug() {
-    const mesh = new THREE.Mesh(this.getGeometry(), this.getMaterial());
+    const mesh = new THREE.Mesh(this.getGeometry(), getMaterial({
+      side: THREE.DoubleSide,
+      flatShading: true,
+      vertexColors: true,
+      color: new THREE.Color(this.rug.mainColor),
+    }));
 
     this.add(mesh);
   }
