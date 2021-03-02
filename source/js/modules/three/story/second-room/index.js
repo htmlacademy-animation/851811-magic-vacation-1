@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 
-import SVGObject from '../../common/svg-object';
-
+import getSvgObject from '../../common/svg-object';
 import {setMeshParams} from '../../common/helpers';
 import Pyramid from './pyramid';
 import Lantern from './lantern';
@@ -42,13 +41,22 @@ class SecondRoom extends THREE.Group {
   }
 
   addLeaf() {
-    const leaf = new SVGObject({name: `leaf-2`}).getObject();
-    if (!leaf) {
-      return;
-    }
-    leaf.position.set(-200, 100, 30);
-    leaf.scale.set(1.5, 1.5, 1.5);
-    this.add(leaf);
+    getSvgObject({name: `leaf-2`}, (leaf) => {
+      const leaf1 = leaf.clone();
+      setMeshParams(leaf1, {
+        scale: 0.7,
+        position: {x: -70, y: 90, z: 100},
+        rotate: {x: 0, y: 45, z: 0},
+      });
+      this.add(leaf1);
+      const leaf2 = leaf.clone();
+      setMeshParams(leaf2, {
+        scale: 0.5,
+        position: {x: -80, y: 30, z: 120},
+        rotate: {x: 0, y: 45, z: 40},
+      });
+      this.add(leaf2);
+    });
   }
 }
 

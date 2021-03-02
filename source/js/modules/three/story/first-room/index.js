@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import SVGObject from '../../common/svg-object';
+import getSvgObject from '../../common/svg-object';
 import {setMeshParams} from '../../common/helpers';
 import Rug from './rug';
 import Saturn from '../../common/objects/saturn';
@@ -23,13 +23,14 @@ class FirstRoom extends THREE.Group {
   }
 
   addFlower() {
-    const flower = new SVGObject({name: `flower`, dark: this.dark}).getObject();
-    if (!flower) {
-      return;
-    }
-    flower.position.set(-100, 100, 40);
-    flower.scale.set(0.5, 0.5, 0.5);
-    this.add(flower);
+    getSvgObject({name: this.dark ? `flower-dark` : `flower`}, (flower) => {
+      setMeshParams(flower, {
+        position: {x: -90, y: 130, z: 100},
+        rotate: {x: 0, y: 45, z: 0},
+        scale: 0.3,
+      });
+      this.add(flower);
+    });
   }
 
   addRug() {

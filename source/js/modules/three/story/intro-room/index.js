@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import SVGObject from '../../common/svg-object';
+import getSvgObject from '../../common/svg-object';
 import colors from '../../common/colors';
 import materialReflectivity from '../../common/material-reflectivity';
 import {loadModel} from '../../common/load-model';
@@ -82,12 +82,11 @@ class IntroRoom extends THREE.Group {
 
   loadSvgs() {
     this.svgs.forEach((params) => {
-      const mesh = new SVGObject({name: params.name}).getObject();
-      if (!mesh) {
-        return;
-      }
-      setMeshParams(mesh, params);
-      this.add(mesh);
+      getSvgObject({name: params.name}, (mesh) => {
+        mesh.name = params.name;
+        setMeshParams(mesh, params);
+        this.add(mesh);
+      });
     });
   }
 
