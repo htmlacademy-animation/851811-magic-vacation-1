@@ -1,6 +1,6 @@
-import * as THREE from 'three';
 import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader.js';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
+import loadManager from '../load-manager';
 
 const onComplete = (obj3d, material, callback) => {
   if (material) {
@@ -44,7 +44,6 @@ export const loadModel = (params, material, callback) => {
     return;
   }
 
-  const loadManager = new THREE.LoadingManager();
   const loader = new Loader(loadManager);
 
   loader.load(params.path, (model) => loadingFn(model, material, callback));

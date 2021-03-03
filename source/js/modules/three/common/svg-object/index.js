@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import {SVGLoader} from 'three/examples/jsm/loaders/SVGLoader.js';
 import colors from '../../common/colors';
 import materialReflectivity from '../../common/material-reflectivity';
+import loadManager from '../load-manager';
 
 const size = new THREE.Vector3();
 const box = new THREE.Box3();
@@ -135,7 +136,6 @@ const createSvgGroup = (data, settings) => {
   return group;
 };
 
-const loadManager = new THREE.LoadingManager();
 const loader = new SVGLoader(loadManager);
 const cache = {};
 

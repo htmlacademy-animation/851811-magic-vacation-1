@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import {animateEasing, animateEasingWithFramerate, tick} from '../../canvas/common/helpers';
 import bezierEasing from '../../canvas/common/bezier-easing';
 // import getRawShaderMaterialAttrs from '../common/hue-and-bubbles-raw-shader';
+import loadManager from '../common/load-manager';
 
 import IntroRoom from './intro-room';
 import FirstRoom from './first-room';
@@ -300,6 +301,11 @@ export default class Story {
     if (!this.initialized) {
       this.prepareScene();
       this.initialized = true;
+      this.scene.visible = false;
+      loadManager.onLoad = () => {
+        this.scene.visible = true;
+        this.renderer.render(this.scene, this.camera);
+      };
     }
 
     if (!this.animationRequest) {
@@ -382,6 +388,8 @@ export default class Story {
     this.scene.add(this.intro);
 
     this.setLight();
+
+    // this.scene.overrideMaterial = new THREE.MeshBasicMaterial({color: 'green'});
   }
 
   end() {
@@ -437,6 +445,7 @@ export default class Story {
         }
       }
     }
+    this.renderer.render(this.scene, this.camera);
   }
 
   getScenePosition(index) {
@@ -497,11 +506,13 @@ export default class Story {
   }
 
   render() {
-    // this.controls.update();
     this.renderer.render(this.scene, this.camera);
 
-    if (this.animationRequest) {
-      requestAnimationFrame(this.render);
-    }
+    // this.controls.update();
+
+
+    // if (this.animationRequest) {
+    //   requestAnimationFrame(this.render);
+    // }
   }
 }
