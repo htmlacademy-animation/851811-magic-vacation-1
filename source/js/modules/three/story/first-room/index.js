@@ -1,8 +1,13 @@
 import * as THREE from 'three';
 
-import SVGObject from '../../common/svg-object';
+import getSvgObject from '../../common/svg-object';
+import colors from '../../common/colors';
+import materialReflectivity from '../../common/material-reflectivity';
+import {loadModel} from '../../common/load-model';
+import {setMeshParams, getMaterial} from '../../common/helpers';
 import Rug from './rug';
 import Saturn from '../../common/objects/saturn';
+import Wall from '../../common/objects/wall';
 
 class FirstRoom extends THREE.Group {
   constructor({dark} = {}) {
@@ -10,40 +15,84 @@ class FirstRoom extends THREE.Group {
 
     this.dark = dark;
 
-    this.constructChildren = this.constructChildren.bind(this);
+    this.models = [
+      {
+        name: `static`,
+        type: `gltf`,
+        path: `img/models/scene${this.dark ? 4 : 1}-static-output-1.gltf`,
+        scale: 0.3,
+        position: {x: 0, y: 0, z: 1},
+        rotate: {x: 0, y: -45, z: 0},
+      },
+      {
+        name: `suitcase`,
+        type: `gltf`,
+        path: `img/models/suitcase.gltf`,
+        scale: 0.3,
+        position: {x: -110, y: 0, z: 230},
+        rotate: {x: 0, y: -20, z: 0},
+      },
+    ];
 
+    this.constructChildren = this.constructChildren.bind(this);
     this.constructChildren();
   }
 
   constructChildren() {
+    this.addWall();
+    this.loadModels();
     this.addFlower();
     this.addRug();
     this.addSaturn();
   }
 
   addFlower() {
-    const flower = new SVGObject({name: `flower`, dark: this.dark}).getObject();
-    if (!flower) {
-      return;
-    }
-    flower.position.set(-100, 100, 40);
-    flower.scale.set(0.5, 0.5, 0.5);
-    this.add(flower);
+    getSvgObject({name: this.dark ? `flower-dark` : `flower`}, (flower) => {
+      setMeshParams(flower, {
+        position: {x: -90, y: 130, z: 100},
+        rotate: {x: 0, y: 45, z: 0},
+        scale: 0.3,
+      });
+      this.add(flower);
+    });
   }
 
   addRug() {
     const rug = new Rug({dark: this.dark});
-    rug.scale.set(0.3, 0.3, 0.3);
-    rug.position.set(-20, 0, 40);
-    rug.rotation.copy(new THREE.Euler(20 * THREE.Math.DEG2RAD, 45 * THREE.Math.DEG2RAD, 180 * THREE.Math.DEG2RAD), `XYZ`);
+    setMeshParams(rug, {
+      scale: 0.3,
+      position: {x: 0, y: 0, z: 0},
+      rotate: {x: 0, y: 45, z: 180},
+    });
     this.add(rug);
   }
 
   addSaturn() {
     const saturn = new Saturn({dark: this.dark});
-    saturn.scale.set(0.7, 0.7, 0.7);
-    saturn.position.set(30, 0, 100);
+    saturn.scale.set(0.3, 0.3, 0.3);
+    saturn.position.set(30, 150, 100);
     this.add(saturn);
+  }
+
+  addWall() {
+    const wall = new Wall({
+      wallMaterialReflectivity: materialReflectivity[this.dark ? `basic` : `soft`],
+      wallColor: colors[this.dark ? `ShadowedPurple` : `Purple`],
+      floorColor: colors[this.dark ? `ShadowedDarkPurple` : `DarkPurple`],
+    });
+    this.add(wall);
+  }
+
+  loadModels() {
+    this.models.forEach((params) => {
+      const material = params.color && getMaterial({color: params.color, ...params.materialReflectivity});
+
+      loadModel(params, material, (mesh) => {
+        mesh.name = params.name;
+        setMeshParams(mesh, params);
+        this.add(mesh);
+      });
+    });
   }
 }
 

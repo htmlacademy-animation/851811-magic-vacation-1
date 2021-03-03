@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import {getLathePointsForCircle} from '../helpers';
 import colors from '../colors';
 import materialReflectivity from '../material-reflectivity';
+import {getMaterial} from '../helpers';
 
 class Saturn extends THREE.Group {
   constructor({dark, basic = false} = {}) {
@@ -53,18 +54,9 @@ class Saturn extends THREE.Group {
     }
   }
 
-  getMaterial(options = {}) {
-    const {color, ...rest} = options;
-
-    return new THREE.MeshStandardMaterial({
-      color: new THREE.Color(color),
-      ...rest,
-    });
-  }
-
   addPlanet() {
     const planet = new THREE.SphereBufferGeometry(this.planet.radius, this.planet.segments, this.planet.segments);
-    const mesh = new THREE.Mesh(planet, this.getMaterial({
+    const mesh = new THREE.Mesh(planet, getMaterial({
       color: this.planet.color,
       ...materialReflectivity.soft,
     }));
@@ -76,7 +68,7 @@ class Saturn extends THREE.Group {
     const points = getLathePointsForCircle(this.ring.width, this.ring.depth, this.ring.radius);
 
     const ring = new THREE.LatheBufferGeometry(points, this.ring.segments);
-    const mesh = new THREE.Mesh(ring, this.getMaterial({
+    const mesh = new THREE.Mesh(ring, getMaterial({
       color: this.ring.color,
       side: THREE.DoubleSide,
       flatShading: true,
@@ -89,7 +81,7 @@ class Saturn extends THREE.Group {
 
   addTopSphere() {
     const sphere = new THREE.SphereBufferGeometry(this.topSphere.radius, this.topSphere.segments, this.topSphere.segments);
-    const mesh = new THREE.Mesh(sphere, this.getMaterial({
+    const mesh = new THREE.Mesh(sphere, getMaterial({
       color: this.topSphere.color,
       ...materialReflectivity.soft,
     }));
@@ -100,7 +92,7 @@ class Saturn extends THREE.Group {
 
   addLine() {
     const line = new THREE.CylinderBufferGeometry(this.line.radius, this.line.radius, this.line.height, this.line.radialSegments);
-    const mesh = new THREE.Mesh(line, this.getMaterial({
+    const mesh = new THREE.Mesh(line, getMaterial({
       color: this.line.color,
       ...materialReflectivity.soft,
     }));

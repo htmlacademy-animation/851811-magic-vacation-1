@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 
-import {getLathePointsForCircle, getLatheDegrees} from '../../common/helpers';
+import {getLathePointsForCircle, getCircleDegrees} from '../../common/helpers';
 import colors from '../../common/colors';
+import {getMaterial} from '../../common/helpers';
 
 class Road extends THREE.Group {
   constructor() {
@@ -25,19 +26,9 @@ class Road extends THREE.Group {
     this.addRoad();
   }
 
-  getMaterial() {
-    return new THREE.MeshStandardMaterial({
-      side: THREE.DoubleSide,
-      flatShading: true,
-      vertexColors: true,
-      color: new THREE.Color(this.road.mainColor),
-    });
-  }
-
-
   getGeometry() {
     const points = getLathePointsForCircle(this.road.width, this.road.depth, this.road.radius);
-    const {start, length} = getLatheDegrees(this.road.degStart, this.road.degEnd);
+    const {start, length} = getCircleDegrees(this.road.degStart, this.road.degEnd);
 
     const road = new THREE.LatheBufferGeometry(points, this.road.segments, start, length).toNonIndexed();
 
@@ -51,6 +42,7 @@ class Road extends THREE.Group {
     const color = new THREE.Color();
 
     const beginning = new THREE.Vector3(positionArray[0], positionArray[1], positionArray[2]);
+    const currentVector = new THREE.Vector3();
 
     for (let i = 0; i < positionCount; i++) {
       color.setStyle(this.road.mainColor);
@@ -59,8 +51,8 @@ class Road extends THREE.Group {
       const y = positionArray[i * 3 + 1];
       const z = positionArray[i * 3 + 2];
 
-      const vector = new THREE.Vector3(x, y, z);
-      const angle = vector.angleTo(beginning) * THREE.Math.RAD2DEG;
+      currentVector.set(x, y, z);
+      const angle = currentVector.angleTo(beginning) * THREE.Math.RAD2DEG;
 
       const inRightDegree = Math.floor(angle / stripeDegree) % 3 === 1;
       const offset = Math.sqrt(Math.pow(x, 2) + Math.pow(z, 2)) - this.road.radius;
@@ -81,7 +73,12 @@ class Road extends THREE.Group {
   }
 
   addRoad() {
-    const mesh = new THREE.Mesh(this.getGeometry(), this.getMaterial());
+    const mesh = new THREE.Mesh(this.getGeometry(), getMaterial({
+      side: THREE.DoubleSide,
+      flatShading: true,
+      vertexColors: true,
+      color: new THREE.Color(this.road.mainColor),
+    }));
 
     this.add(mesh);
   }

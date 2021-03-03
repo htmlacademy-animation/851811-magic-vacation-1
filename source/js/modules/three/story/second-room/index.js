@@ -1,22 +1,36 @@
 import * as THREE from 'three';
 
-import SVGObject from '../../common/svg-object';
-
+import getSvgObject from '../../common/svg-object';
+import colors from '../../common/colors';
+import materialReflectivity from '../../common/material-reflectivity';
+import {loadModel} from '../../common/load-model';
+import {setMeshParams, getMaterial} from '../../common/helpers';
 import Pyramid from './pyramid';
 import Lantern from './lantern';
+import Wall from '../../common/objects/wall';
 
 class SecondRoom extends THREE.Group {
   constructor() {
     super();
 
-    this.getMaterial = (options = {}) => {
-      const {color, ...rest} = options;
-
-      return new THREE.MeshStandardMaterial({
-        color: new THREE.Color(color),
-        ...rest,
-      });
-    };
+    this.models = [
+      {
+        name: `static`,
+        type: `gltf`,
+        path: `img/models/scene2-static-output-1.gltf`,
+        scale: 0.3,
+        position: {x: 0, y: 0, z: 0},
+        rotate: {x: 0, y: -45, z: 0},
+      },
+      {
+        name: `suitcase`,
+        type: `gltf`,
+        path: `img/models/suitcase.gltf`,
+        scale: 0.3,
+        position: {x: -110, y: 0, z: 230},
+        rotate: {x: 0, y: -20, z: 0},
+      },
+    ];
 
     this.constructChildren = this.constructChildren.bind(this);
 
@@ -24,6 +38,8 @@ class SecondRoom extends THREE.Group {
   }
 
   constructChildren() {
+    this.addWall();
+    this.loadModels();
     this.addPyramid();
     this.addLantern();
     this.addLeaf();
@@ -31,29 +47,62 @@ class SecondRoom extends THREE.Group {
 
   addPyramid() {
     const pyramid = new Pyramid();
-
-    pyramid.position.set(-13, 0, -110);
-    pyramid.rotation.copy(new THREE.Euler(3 * THREE.Math.DEG2RAD, 3 * THREE.Math.DEG2RAD, 0), `XYZ`);
+    setMeshParams(pyramid, {
+      scale: 0.32,
+      position: {x: 0, y: 40, z: 110},
+      rotate: {x: 0, y: 3, z: 0},
+    });
     this.add(pyramid);
   }
 
   addLantern() {
-    const lantern = new Lantern(this.getMaterial);
-
-    lantern.scale.set(0.32, 0.32, 0.32);
-    lantern.rotation.copy(new THREE.Euler(10 * THREE.Math.DEG2RAD, 60 * THREE.Math.DEG2RAD, 0), `XYZ`);
-    lantern.position.set(110, -137, 10);
+    const lantern = new Lantern();
+    setMeshParams(lantern, {
+      scale: 0.32,
+      position: {x: 120, y: 20, z: 170},
+      rotate: {x: 0, y: 60, z: 0},
+    });
     this.add(lantern);
   }
 
   addLeaf() {
-    const leaf = new SVGObject({name: `leaf-2`}).getObject();
-    if (!leaf) {
-      return;
-    }
-    leaf.position.set(-200, 100, 30);
-    leaf.scale.set(1.5, 1.5, 1.5);
-    this.add(leaf);
+    getSvgObject({name: `leaf-2`}, (leaf) => {
+      const leaf1 = leaf.clone();
+      setMeshParams(leaf1, {
+        scale: 0.7,
+        position: {x: -70, y: 90, z: 100},
+        rotate: {x: 0, y: 45, z: 0},
+      });
+      this.add(leaf1);
+      const leaf2 = leaf.clone();
+      setMeshParams(leaf2, {
+        scale: 0.5,
+        position: {x: -80, y: 30, z: 120},
+        rotate: {x: 0, y: 45, z: 40},
+      });
+      this.add(leaf2);
+    });
+  }
+
+  addWall() {
+    const wall = new Wall({
+      wallMaterialReflectivity: materialReflectivity.basic,
+      wallColor: colors.Blue,
+      floorColor: colors.BrightBlue,
+    });
+    this.add(wall);
+  }
+
+  loadModels() {
+    this.models.forEach((params) => {
+      const material = params.color && getMaterial({color: params.color, ...params.materialReflectivity});
+
+      loadModel(params, material, (mesh) => {
+        mesh.name = params.name;
+        setMeshParams(mesh, params);
+        this.add(mesh);
+      });
+    });
   }
 }
 

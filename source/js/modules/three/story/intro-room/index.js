@@ -1,9 +1,10 @@
 import * as THREE from 'three';
 
-import SVGObject from '../../common/svg-object';
+import getSvgObject from '../../common/svg-object';
 import colors from '../../common/colors';
 import materialReflectivity from '../../common/material-reflectivity';
 import {loadModel} from '../../common/load-model';
+import {setMeshParams, getMaterial} from '../../common/helpers';
 import Saturn from '../../common/objects/saturn';
 
 class IntroRoom extends THREE.Group {
@@ -79,48 +80,23 @@ class IntroRoom extends THREE.Group {
     this.addSaturn();
   }
 
-  getMaterial(options = {}) {
-    const {color, ...rest} = options;
-
-    return new THREE.MeshStandardMaterial({
-      color: new THREE.Color(color),
-      ...rest,
-    });
-  }
-
-  setMeshParams(mesh, params) {
-    if (params.position) {
-      mesh.position.set(...Object.values(params.position));
-    }
-    if (typeof params.scale === `number`) {
-      mesh.scale.set(params.scale, params.scale, params.scale);
-    }
-    if (typeof params.scale === `object`) {
-      mesh.scale.set(...Object.values(params.scale));
-    }
-    if (params.rotate) {
-      mesh.rotation.copy(new THREE.Euler(params.rotate.x * THREE.Math.DEG2RAD, params.rotate.y * THREE.Math.DEG2RAD, params.rotate.z * THREE.Math.DEG2RAD, params.rotationOrder || `XYZ`));
-    }
-  }
-
   loadSvgs() {
     this.svgs.forEach((params) => {
-      const mesh = new SVGObject({name: params.name}).getObject();
-      if (!mesh) {
-        return;
-      }
-      this.setMeshParams(mesh, params);
-      this.add(mesh);
+      getSvgObject({name: params.name}, (mesh) => {
+        mesh.name = params.name;
+        setMeshParams(mesh, params);
+        this.add(mesh);
+      });
     });
   }
 
   loadModels() {
     this.models.forEach((params) => {
-      const material = params.color && this.getMaterial({color: params.color, ...params.materialReflectivity});
+      const material = params.color && getMaterial({color: params.color, ...params.materialReflectivity});
 
       loadModel(params, material, (mesh) => {
         mesh.name = params.name;
-        this.setMeshParams(mesh, params);
+        setMeshParams(mesh, params);
         this.add(mesh);
       });
     });
