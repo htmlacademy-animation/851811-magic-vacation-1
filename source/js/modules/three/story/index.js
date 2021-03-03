@@ -272,17 +272,18 @@ export default class Story {
     const [current, previous] = this.currentScene === 0 ? [ScreenName.intro, ScreenName.room] : [ScreenName.room, ScreenName.intro];
 
     const currentLight = this.scene.getObjectByName(`light-${current}`);
-    if (currentLight) {
-      return;
-    }
-
     const previousLight = this.scene.getObjectByName(`light-${previous}`);
-    if (previousLight) {
-      this.scene.remove(previousLight);
+
+    if (currentLight) {
+      currentLight.visible = true;
+    } else {
+      const light = this.screenLights[current]();
+      this.scene.add(light);
     }
 
-    const light = this.screenLights[current]();
-    this.scene.add(light);
+    if (previousLight) {
+      previousLight.visible = false;
+    }
   }
 
   setCamera() {
