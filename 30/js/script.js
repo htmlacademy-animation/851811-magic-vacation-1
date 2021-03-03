@@ -69686,6 +69686,23 @@ const getMaterial = (options = {}) => {
 
 /***/ }),
 
+/***/ "./source/js/modules/three/common/load-manager.js":
+/*!********************************************************!*\
+  !*** ./source/js/modules/three/common/load-manager.js ***!
+  \********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
+
+
+/* harmony default export */ __webpack_exports__["default"] = (new three__WEBPACK_IMPORTED_MODULE_0__["LoadingManager"]());
+
+
+/***/ }),
+
 /***/ "./source/js/modules/three/common/load-model/index.js":
 /*!************************************************************!*\
   !*** ./source/js/modules/three/common/load-model/index.js ***!
@@ -69696,9 +69713,9 @@ const getMaterial = (options = {}) => {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadModel", function() { return loadModel; });
-/* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
-/* harmony import */ var three_examples_jsm_loaders_OBJLoader_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three/examples/jsm/loaders/OBJLoader.js */ "./node_modules/three/examples/jsm/loaders/OBJLoader.js");
-/* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
+/* harmony import */ var three_examples_jsm_loaders_OBJLoader_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three/examples/jsm/loaders/OBJLoader.js */ "./node_modules/three/examples/jsm/loaders/OBJLoader.js");
+/* harmony import */ var three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three/examples/jsm/loaders/GLTFLoader.js */ "./node_modules/three/examples/jsm/loaders/GLTFLoader.js");
+/* harmony import */ var _load_manager__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../load-manager */ "./source/js/modules/three/common/load-manager.js");
 
 
 
@@ -69725,8 +69742,8 @@ const onGltfComplete = (gltf, material, callback) => {
 };
 
 const LoaderByType = {
-  gltf: three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_2__["GLTFLoader"],
-  obj: three_examples_jsm_loaders_OBJLoader_js__WEBPACK_IMPORTED_MODULE_1__["OBJLoader"],
+  gltf: three_examples_jsm_loaders_GLTFLoader_js__WEBPACK_IMPORTED_MODULE_1__["GLTFLoader"],
+  obj: three_examples_jsm_loaders_OBJLoader_js__WEBPACK_IMPORTED_MODULE_0__["OBJLoader"],
 };
 
 const LoadingFnByType = {
@@ -69745,8 +69762,7 @@ const loadModel = (params, material, callback) => {
     return;
   }
 
-  const loadManager = new three__WEBPACK_IMPORTED_MODULE_0__["LoadingManager"]();
-  const loader = new Loader(loadManager);
+  const loader = new Loader(_load_manager__WEBPACK_IMPORTED_MODULE_2__["default"]);
 
   loader.load(params.path, (model) => loadingFn(model, material, callback));
 };
@@ -70000,11 +70016,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var three_examples_jsm_loaders_SVGLoader_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! three/examples/jsm/loaders/SVGLoader.js */ "./node_modules/three/examples/jsm/loaders/SVGLoader.js");
 /* harmony import */ var _common_colors__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../common/colors */ "./source/js/modules/three/common/colors.js");
 /* harmony import */ var _common_material_reflectivity__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../common/material-reflectivity */ "./source/js/modules/three/common/material-reflectivity.js");
+/* harmony import */ var _load_manager__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../load-manager */ "./source/js/modules/three/common/load-manager.js");
 
 
 
 
 
+
+
+const size = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
+const box = new three__WEBPACK_IMPORTED_MODULE_0__["Box3"]();
 
 const svgPaths = [
   {
@@ -70119,8 +70140,7 @@ const createSvgGroup = (data, settings) => {
       if (settings.children) {
         const content = settings.children;
 
-        const size = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
-        new three__WEBPACK_IMPORTED_MODULE_0__["Box3"]().setFromObject(content).getSize(size);
+        box.setFromObject(content).getSize(size);
         content.position.set(size.x / 2, -size.y / 2, 1);
 
         group.add(content);
@@ -70135,8 +70155,7 @@ const createSvgGroup = (data, settings) => {
   return group;
 };
 
-const loadManager = new three__WEBPACK_IMPORTED_MODULE_0__["LoadingManager"]();
-const loader = new three_examples_jsm_loaders_SVGLoader_js__WEBPACK_IMPORTED_MODULE_1__["SVGLoader"](loadManager);
+const loader = new three_examples_jsm_loaders_SVGLoader_js__WEBPACK_IMPORTED_MODULE_1__["SVGLoader"](_load_manager__WEBPACK_IMPORTED_MODULE_4__["default"]);
 const cache = {};
 
 const getSvg = ({name, ...params}, callback) => {
@@ -70335,12 +70354,13 @@ class Rug extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
     const color = new three__WEBPACK_IMPORTED_MODULE_0__["Color"]();
 
     const beginning = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"](positionArray[0], positionArray[1], positionArray[2]);
+    const currentVector = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
 
     for (let i = 0; i < positionCount; i++) {
       color.setStyle(this.rug.mainColor);
 
-      const vector = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"](positionArray[i * 3], positionArray[i * 3 + 1], positionArray[i * 3 + 2]);
-      const angle = vector.angleTo(beginning) * three__WEBPACK_IMPORTED_MODULE_0__["Math"].RAD2DEG;
+      currentVector.set(positionArray[i * 3], positionArray[i * 3 + 1], positionArray[i * 3 + 2]);
+      const angle = currentVector.angleTo(beginning) * three__WEBPACK_IMPORTED_MODULE_0__["Math"].RAD2DEG;
 
       const isStripe = Math.floor(angle / stripeDegree) % 2 === 1;
 
@@ -70386,15 +70406,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var three__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! three */ "./node_modules/three/build/three.module.js");
 /* harmony import */ var _canvas_common_helpers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../canvas/common/helpers */ "./source/js/modules/canvas/common/helpers.js");
 /* harmony import */ var _canvas_common_bezier_easing__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../canvas/common/bezier-easing */ "./source/js/modules/canvas/common/bezier-easing.js");
-/* harmony import */ var _intro_room__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./intro-room */ "./source/js/modules/three/story/intro-room/index.js");
-/* harmony import */ var _first_room__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./first-room */ "./source/js/modules/three/story/first-room/index.js");
-/* harmony import */ var _second_room__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./second-room */ "./source/js/modules/three/story/second-room/index.js");
-/* harmony import */ var _third_room__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./third-room */ "./source/js/modules/three/story/third-room/index.js");
+/* harmony import */ var _common_load_manager__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../common/load-manager */ "./source/js/modules/three/common/load-manager.js");
+/* harmony import */ var _intro_room__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./intro-room */ "./source/js/modules/three/story/intro-room/index.js");
+/* harmony import */ var _first_room__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./first-room */ "./source/js/modules/three/story/first-room/index.js");
+/* harmony import */ var _second_room__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./second-room */ "./source/js/modules/three/story/second-room/index.js");
+/* harmony import */ var _third_room__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./third-room */ "./source/js/modules/three/story/third-room/index.js");
 
 // import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 
 
 // import getRawShaderMaterialAttrs from '../common/hue-and-bubbles-raw-shader';
+
 
 
 
@@ -70414,6 +70436,8 @@ const ScreenId = {
   story: 1,
 };
 
+const box = new three__WEBPACK_IMPORTED_MODULE_0__["Box3"]();
+
 class Story {
   constructor() {
     this.innerWidth = window.innerWidth;
@@ -70427,7 +70451,7 @@ class Story {
       {
         // src: `img/screen__textures/scene-1.png`,
         options: {hueShift: 0.0},
-        Elements: _first_room__WEBPACK_IMPORTED_MODULE_4__["default"],
+        Elements: _first_room__WEBPACK_IMPORTED_MODULE_5__["default"],
       },
       {
         // src: `img/screen__textures/scene-2.png`,
@@ -70440,17 +70464,17 @@ class Story {
             variation: 0.3,
           },
         },
-        Elements: _second_room__WEBPACK_IMPORTED_MODULE_5__["default"],
+        Elements: _second_room__WEBPACK_IMPORTED_MODULE_6__["default"],
       },
       {
         // src: `img/screen__textures/scene-3.png`,
         options: {hueShift: 0.0},
-        Elements: _third_room__WEBPACK_IMPORTED_MODULE_6__["default"],
+        Elements: _third_room__WEBPACK_IMPORTED_MODULE_7__["default"],
       },
       {
         // src: `img/screen__textures/scene-4.png`,
         options: {hueShift: 0.0},
-        Elements: _first_room__WEBPACK_IMPORTED_MODULE_4__["default"],
+        Elements: _first_room__WEBPACK_IMPORTED_MODULE_5__["default"],
         elementsOptions: {dark: true},
       },
     ];
@@ -70568,6 +70592,8 @@ class Story {
 
     this.currentScene = 0;
 
+    this.sceneSize = new three__WEBPACK_IMPORTED_MODULE_0__["Vector2"]();
+
     this.render = this.render.bind(this);
     this.handleResize = this.handleResize.bind(this);
     this.updateScreenSize = this.updateScreenSize.bind(this);
@@ -70660,17 +70686,18 @@ class Story {
     const [current, previous] = this.currentScene === 0 ? [ScreenName.intro, ScreenName.room] : [ScreenName.room, ScreenName.intro];
 
     const currentLight = this.scene.getObjectByName(`light-${current}`);
-    if (currentLight) {
-      return;
-    }
-
     const previousLight = this.scene.getObjectByName(`light-${previous}`);
-    if (previousLight) {
-      this.scene.remove(previousLight);
+
+    if (currentLight) {
+      currentLight.visible = true;
+    } else {
+      const light = this.screenLights[current]();
+      this.scene.add(light);
     }
 
-    const light = this.screenLights[current]();
-    this.scene.add(light);
+    if (previousLight) {
+      previousLight.visible = false;
+    }
   }
 
   setCamera() {
@@ -70687,6 +70714,11 @@ class Story {
     if (!this.initialized) {
       this.prepareScene();
       this.initialized = true;
+      this.scene.visible = false;
+      _common_load_manager__WEBPACK_IMPORTED_MODULE_3__["default"].onLoad = () => {
+        this.scene.visible = true;
+        this.renderer.render(this.scene, this.camera);
+      };
     }
 
     if (!this.animationRequest) {
@@ -70717,7 +70749,7 @@ class Story {
 
     this.scene = new three__WEBPACK_IMPORTED_MODULE_0__["Scene"]();
 
-    this.intro = new _intro_room__WEBPACK_IMPORTED_MODULE_3__["default"]();
+    this.intro = new _intro_room__WEBPACK_IMPORTED_MODULE_4__["default"]();
 
     this.roomGroup = new three__WEBPACK_IMPORTED_MODULE_0__["Group"]();
 
@@ -70756,7 +70788,7 @@ class Story {
 
     this.intro.position.z = 400;
 
-    const box = new three__WEBPACK_IMPORTED_MODULE_0__["Box3"]().setFromObject(this.roomGroup);
+    box.setFromObject(this.roomGroup);
     box.center(this.roomGroup.position); // this re-sets the mesh position
     this.roomGroup.position.multiplyScalar(-1);
 
@@ -70769,6 +70801,8 @@ class Story {
     this.scene.add(this.intro);
 
     this.setLight();
+
+    // this.scene.overrideMaterial = new THREE.MeshBasicMaterial({color: 'green'});
   }
 
   end() {
@@ -70824,6 +70858,7 @@ class Story {
         }
       }
     }
+    this.renderer.render(this.scene, this.camera);
   }
 
   getScenePosition(index) {
@@ -70831,9 +70866,8 @@ class Story {
   }
 
   getSceneSize() {
-    const size = new three__WEBPACK_IMPORTED_MODULE_0__["Vector2"]();
-    this.renderer.getSize(size);
-    return size;
+    this.renderer.getSize(this.sceneSize);
+    return this.sceneSize;
   }
 
   bubblePositionAnimationTick(index, from, to) {
@@ -70885,12 +70919,14 @@ class Story {
   }
 
   render() {
-    // this.controls.update();
     this.renderer.render(this.scene, this.camera);
 
-    if (this.animationRequest) {
-      requestAnimationFrame(this.render);
-    }
+    // this.controls.update();
+
+
+    // if (this.animationRequest) {
+    //   requestAnimationFrame(this.render);
+    // }
   }
 }
 
@@ -71182,6 +71218,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+const box = new three__WEBPACK_IMPORTED_MODULE_0__["Box3"]();
+
 class Lantern extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
   constructor() {
     super();
@@ -71275,7 +71313,7 @@ class Lantern extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
       ..._common_material_reflectivity__WEBPACK_IMPORTED_MODULE_3__["default"].soft,
     }));
 
-    const currentGroupSize = new three__WEBPACK_IMPORTED_MODULE_0__["Box3"]().setFromObject(this).getSize();
+    const currentGroupSize = box.setFromObject(this).getSize();
 
     this.add(cylinderMesh);
     cylinderMesh.position.set(0, currentGroupSize.y / 2 + this.baseSphere.radius / 2 + this.middleCylinder.height / 2, 0);
@@ -71284,8 +71322,8 @@ class Lantern extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
   addTop() {
     this.top = new three__WEBPACK_IMPORTED_MODULE_0__["Group"]();
 
-    const box = new three__WEBPACK_IMPORTED_MODULE_0__["BoxBufferGeometry"](this.topBox.width, this.topBox.height, this.topBox.width);
-    const boxMesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](box, Object(_common_helpers__WEBPACK_IMPORTED_MODULE_4__["getMaterial"])({
+    const topBox = new three__WEBPACK_IMPORTED_MODULE_0__["BoxBufferGeometry"](this.topBox.width, this.topBox.height, this.topBox.width);
+    const boxMesh = new three__WEBPACK_IMPORTED_MODULE_0__["Mesh"](topBox, Object(_common_helpers__WEBPACK_IMPORTED_MODULE_4__["getMaterial"])({
       color: this.topBox.color,
       flatShading: true,
       ..._common_material_reflectivity__WEBPACK_IMPORTED_MODULE_3__["default"].soft,
@@ -71313,9 +71351,9 @@ class Lantern extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
     trapezoidMesh.position.set(0, this.topBox.height / 2 + this.topTrapezoid.height / 2, 0);
     capMesh.position.set(0, this.topBox.height / 2 + this.topTrapezoid.height + this.topCap.height / 2, 0);
 
-    const currentGroupSize = new three__WEBPACK_IMPORTED_MODULE_0__["Box3"]().setFromObject(this).getSize();
+    const currentGroupSize = box.setFromObject(this).getSize();
     this.add(this.top);
-    const currentElementSize = new three__WEBPACK_IMPORTED_MODULE_0__["Box3"]().setFromObject(this.top).getSize();
+    const currentElementSize = box.setFromObject(this.top).getSize();
 
     this.top.position.set(0, currentGroupSize.y / 2 + 50 + currentElementSize.y, 0);
   }
@@ -71628,6 +71666,7 @@ class Road extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
     const color = new three__WEBPACK_IMPORTED_MODULE_0__["Color"]();
 
     const beginning = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"](positionArray[0], positionArray[1], positionArray[2]);
+    const currentVector = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"]();
 
     for (let i = 0; i < positionCount; i++) {
       color.setStyle(this.road.mainColor);
@@ -71636,8 +71675,8 @@ class Road extends three__WEBPACK_IMPORTED_MODULE_0__["Group"] {
       const y = positionArray[i * 3 + 1];
       const z = positionArray[i * 3 + 2];
 
-      const vector = new three__WEBPACK_IMPORTED_MODULE_0__["Vector3"](x, y, z);
-      const angle = vector.angleTo(beginning) * three__WEBPACK_IMPORTED_MODULE_0__["Math"].RAD2DEG;
+      currentVector.set(x, y, z);
+      const angle = currentVector.angleTo(beginning) * three__WEBPACK_IMPORTED_MODULE_0__["Math"].RAD2DEG;
 
       const inRightDegree = Math.floor(angle / stripeDegree) % 3 === 1;
       const offset = Math.sqrt(Math.pow(x, 2) + Math.pow(z, 2)) - this.road.radius;
