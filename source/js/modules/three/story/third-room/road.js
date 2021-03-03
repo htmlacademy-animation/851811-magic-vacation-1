@@ -42,6 +42,7 @@ class Road extends THREE.Group {
     const color = new THREE.Color();
 
     const beginning = new THREE.Vector3(positionArray[0], positionArray[1], positionArray[2]);
+    const currentVector = new THREE.Vector3();
 
     for (let i = 0; i < positionCount; i++) {
       color.setStyle(this.road.mainColor);
@@ -50,8 +51,8 @@ class Road extends THREE.Group {
       const y = positionArray[i * 3 + 1];
       const z = positionArray[i * 3 + 2];
 
-      const vector = new THREE.Vector3(x, y, z);
-      const angle = vector.angleTo(beginning) * THREE.Math.RAD2DEG;
+      currentVector.set(x, y, z);
+      const angle = currentVector.angleTo(beginning) * THREE.Math.RAD2DEG;
 
       const inRightDegree = Math.floor(angle / stripeDegree) % 3 === 1;
       const offset = Math.sqrt(Math.pow(x, 2) + Math.pow(z, 2)) - this.road.radius;

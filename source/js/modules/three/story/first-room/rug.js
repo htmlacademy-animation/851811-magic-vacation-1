@@ -43,12 +43,13 @@ class Rug extends THREE.Group {
     const color = new THREE.Color();
 
     const beginning = new THREE.Vector3(positionArray[0], positionArray[1], positionArray[2]);
+    const currentVector = new THREE.Vector3();
 
     for (let i = 0; i < positionCount; i++) {
       color.setStyle(this.rug.mainColor);
 
-      const vector = new THREE.Vector3(positionArray[i * 3], positionArray[i * 3 + 1], positionArray[i * 3 + 2]);
-      const angle = vector.angleTo(beginning) * THREE.Math.RAD2DEG;
+      currentVector.set(positionArray[i * 3], positionArray[i * 3 + 1], positionArray[i * 3 + 2]);
+      const angle = currentVector.angleTo(beginning) * THREE.Math.RAD2DEG;
 
       const isStripe = Math.floor(angle / stripeDegree) % 2 === 1;
 

@@ -5,6 +5,8 @@ import colors from '../../common/colors';
 import materialReflectivity from '../../common/material-reflectivity';
 import {getMaterial} from '../../common/helpers';
 
+const box = new THREE.Box3();
+
 class Lantern extends THREE.Group {
   constructor() {
     super();
@@ -98,7 +100,7 @@ class Lantern extends THREE.Group {
       ...materialReflectivity.soft,
     }));
 
-    const currentGroupSize = new THREE.Box3().setFromObject(this).getSize();
+    const currentGroupSize = box.setFromObject(this).getSize();
 
     this.add(cylinderMesh);
     cylinderMesh.position.set(0, currentGroupSize.y / 2 + this.baseSphere.radius / 2 + this.middleCylinder.height / 2, 0);
@@ -107,8 +109,8 @@ class Lantern extends THREE.Group {
   addTop() {
     this.top = new THREE.Group();
 
-    const box = new THREE.BoxBufferGeometry(this.topBox.width, this.topBox.height, this.topBox.width);
-    const boxMesh = new THREE.Mesh(box, getMaterial({
+    const topBox = new THREE.BoxBufferGeometry(this.topBox.width, this.topBox.height, this.topBox.width);
+    const boxMesh = new THREE.Mesh(topBox, getMaterial({
       color: this.topBox.color,
       flatShading: true,
       ...materialReflectivity.soft,
@@ -136,9 +138,9 @@ class Lantern extends THREE.Group {
     trapezoidMesh.position.set(0, this.topBox.height / 2 + this.topTrapezoid.height / 2, 0);
     capMesh.position.set(0, this.topBox.height / 2 + this.topTrapezoid.height + this.topCap.height / 2, 0);
 
-    const currentGroupSize = new THREE.Box3().setFromObject(this).getSize();
+    const currentGroupSize = box.setFromObject(this).getSize();
     this.add(this.top);
-    const currentElementSize = new THREE.Box3().setFromObject(this.top).getSize();
+    const currentElementSize = box.setFromObject(this.top).getSize();
 
     this.top.position.set(0, currentGroupSize.y / 2 + 50 + currentElementSize.y, 0);
   }

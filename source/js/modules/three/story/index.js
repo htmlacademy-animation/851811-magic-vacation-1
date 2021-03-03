@@ -22,6 +22,8 @@ const ScreenId = {
   story: 1,
 };
 
+const box = new THREE.Box3();
+
 export default class Story {
   constructor() {
     this.innerWidth = window.innerWidth;
@@ -175,6 +177,8 @@ export default class Story {
     ];
 
     this.currentScene = 0;
+
+    this.sceneSize = new THREE.Vector2();
 
     this.render = this.render.bind(this);
     this.handleResize = this.handleResize.bind(this);
@@ -364,7 +368,7 @@ export default class Story {
 
     this.intro.position.z = 400;
 
-    const box = new THREE.Box3().setFromObject(this.roomGroup);
+    box.setFromObject(this.roomGroup);
     box.center(this.roomGroup.position); // this re-sets the mesh position
     this.roomGroup.position.multiplyScalar(-1);
 
@@ -439,9 +443,8 @@ export default class Story {
   }
 
   getSceneSize() {
-    const size = new THREE.Vector2();
-    this.renderer.getSize(size);
-    return size;
+    this.renderer.getSize(this.sceneSize);
+    return this.sceneSize;
   }
 
   bubblePositionAnimationTick(index, from, to) {

@@ -4,6 +4,9 @@ import {SVGLoader} from 'three/examples/jsm/loaders/SVGLoader.js';
 import colors from '../../common/colors';
 import materialReflectivity from '../../common/material-reflectivity';
 
+const size = new THREE.Vector3();
+const box = new THREE.Box3();
+
 const svgPaths = [
   {
     name: `flamingo`,
@@ -117,8 +120,7 @@ const createSvgGroup = (data, settings) => {
       if (settings.children) {
         const content = settings.children;
 
-        const size = new THREE.Vector3();
-        new THREE.Box3().setFromObject(content).getSize(size);
+        box.setFromObject(content).getSize(size);
         content.position.set(size.x / 2, -size.y / 2, 1);
 
         group.add(content);
