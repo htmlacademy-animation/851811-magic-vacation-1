@@ -5,6 +5,7 @@ import colors from '../../common/colors';
 import materialReflectivity from '../../common/material-reflectivity';
 import {loadModel} from '../../common/load-model';
 import {setMeshParams, getMaterial} from '../../common/helpers';
+import {isMobile} from '../../../helpers';
 import Saturn from '../../common/objects/saturn';
 
 class IntroRoom extends THREE.Group {
@@ -16,27 +17,46 @@ class IntroRoom extends THREE.Group {
         name: `keyhole`,
         scale: 1,
         position: {x: -1000, y: 1000, z: 10},
+        ...!isMobile && {
+          receiveShadow: true,
+        }
       },
       {
         name: `flamingo`,
         scale: {x: -2, y: 2, z: 2},
         position: {x: -200, y: 150, z: 100},
         rotate: {x: 20, y: 0, z: 0},
+        ...!isMobile && {
+          receiveShadow: true,
+          castShadow: true,
+        }
       },
       {
         name: `snowflake`,
         scale: 1.2,
         position: {x: -300, y: 0, z: 100},
         rotate: {x: 20, y: 40, z: 0},
+        ...!isMobile && {
+          receiveShadow: true,
+          castShadow: true,
+        }
       },
       {
         name: `question`,
         position: {x: 150, y: -100, z: 100},
+        ...!isMobile && {
+          receiveShadow: true,
+          castShadow: true,
+        }
       },
       {
         name: `leaf-1`,
         scale: {x: -1.2, y: 1.2, z: 1.2},
         position: {x: 250, y: 200, z: 100},
+        ...!isMobile && {
+          receiveShadow: true,
+          castShadow: true,
+        }
       },
     ];
 
@@ -50,6 +70,10 @@ class IntroRoom extends THREE.Group {
         scale: 0.5,
         position: {x: 70, y: 80, z: 100},
         rotate: {x: 90, y: 140, z: -30},
+        ...!isMobile && {
+          receiveShadow: true,
+          castShadow: true,
+        }
       },
       {
         name: `suitcase`,
@@ -58,6 +82,10 @@ class IntroRoom extends THREE.Group {
         scale: 0.4,
         position: {x: -50, y: -100, z: 30},
         rotate: {x: 40, y: -120, z: 20},
+        ...!isMobile && {
+          receiveShadow: true,
+          castShadow: true,
+        }
       },
       {
         name: `watermelon`,
@@ -66,6 +94,10 @@ class IntroRoom extends THREE.Group {
         scale: 1,
         position: {x: -370, y: -100, z: 40},
         rotate: {x: 0, y: 0, z: 130},
+        ...!isMobile && {
+          receiveShadow: true,
+          castShadow: true,
+        }
       },
     ];
 

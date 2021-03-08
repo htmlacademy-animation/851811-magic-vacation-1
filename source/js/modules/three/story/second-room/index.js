@@ -5,6 +5,7 @@ import colors from '../../common/colors';
 import materialReflectivity from '../../common/material-reflectivity';
 import {loadModel} from '../../common/load-model';
 import {setMeshParams, getMaterial} from '../../common/helpers';
+import {isMobile} from '../../../helpers';
 import Pyramid from './pyramid';
 import Lantern from './lantern';
 import Wall from '../../common/objects/wall';
@@ -21,14 +22,10 @@ class SecondRoom extends THREE.Group {
         scale: 0.3,
         position: {x: 0, y: 0, z: 0},
         rotate: {x: 0, y: -45, z: 0},
-      },
-      {
-        name: `suitcase`,
-        type: `gltf`,
-        path: `img/models/suitcase.gltf`,
-        scale: 0.3,
-        position: {x: -110, y: 0, z: 230},
-        rotate: {x: 0, y: -20, z: 0},
+        ...!isMobile && {
+          receiveShadow: true,
+          castShadow: true,
+        }
       },
     ];
 
@@ -51,6 +48,10 @@ class SecondRoom extends THREE.Group {
       scale: 0.32,
       position: {x: 0, y: 40, z: 110},
       rotate: {x: 0, y: 3, z: 0},
+      ...!isMobile && {
+        receiveShadow: true,
+        castShadow: true,
+      }
     });
     this.add(pyramid);
   }
@@ -61,6 +62,10 @@ class SecondRoom extends THREE.Group {
       scale: 0.32,
       position: {x: 120, y: 20, z: 170},
       rotate: {x: 0, y: 60, z: 0},
+      ...!isMobile && {
+        receiveShadow: true,
+        castShadow: true,
+      }
     });
     this.add(lantern);
   }
@@ -72,6 +77,10 @@ class SecondRoom extends THREE.Group {
         scale: 0.7,
         position: {x: -70, y: 90, z: 100},
         rotate: {x: 0, y: 45, z: 0},
+        ...!isMobile && {
+          receiveShadow: true,
+          castShadow: true,
+        }
       });
       this.add(leaf1);
       const leaf2 = leaf.clone();
@@ -79,6 +88,10 @@ class SecondRoom extends THREE.Group {
         scale: 0.5,
         position: {x: -80, y: 30, z: 120},
         rotate: {x: 0, y: 45, z: 40},
+        ...!isMobile && {
+          receiveShadow: true,
+          castShadow: true,
+        }
       });
       this.add(leaf2);
     });

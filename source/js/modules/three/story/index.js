@@ -4,11 +4,13 @@ import {animateEasing, animateEasingWithFramerate, tick} from '../../canvas/comm
 import bezierEasing from '../../canvas/common/bezier-easing';
 // import getRawShaderMaterialAttrs from '../common/hue-and-bubbles-raw-shader';
 import loadManager from '../common/load-manager';
+import {isMobile} from '../../helpers';
 
 import IntroRoom from './intro-room';
 import FirstRoom from './first-room';
 import SecondRoom from './second-room';
 import ThirdRoom from './third-room';
+import getSuitcase from '../common/objects/get-suitcase';
 
 const easeInOut = bezierEasing(0.42, 0, 0.58, 1);
 const easeIn = bezierEasing(0.42, 0, 1, 1);
@@ -164,10 +166,12 @@ export default class Story {
       {
         light: new THREE.PointLight(0xf6f2ff, 0.6, 875, 2),
         position: {x: -785, y: -350, z: 710},
+        ...!isMobile && {castShadow: true},
       },
       {
         light: new THREE.PointLight(0xf5ffff, 0.95, 975, 2),
         position: {x: 730, y: 800, z: 985},
+        ...!isMobile && {castShadow: true},
       },
       {
         light: new THREE.AmbientLight(0x404040),
@@ -245,9 +249,12 @@ export default class Story {
   createLight(lights) {
     const lightGroup = new THREE.Group();
 
-    lights.forEach(({light, position}) => {
+    lights.forEach(({light, position, castShadow}) => {
       if (position) {
         light.position.set(...Object.values(position));
+      }
+      if (castShadow) {
+        light.castShadow = true;
       }
       lightGroup.add(light);
     });
@@ -325,6 +332,9 @@ export default class Story {
     this.renderer.setClearColor(this.backgroundColor, 1);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.innerWidth, this.innerHeight);
+    if (!isMobile) {
+      this.renderer.shadowMap.enabled = true;
+    }
 
     this.camera = new THREE.PerspectiveCamera(this.fov, this.aspect, this.near, this.far);
     // this.controls = new OrbitControls(this.camera, this.canvasElement);
@@ -386,6 +396,10 @@ export default class Story {
     this.pivot.position.y = 130;
 
     this.scene.add(this.intro);
+
+    getSuitcase((mesh) => {
+      this.scene.add(mesh);
+    });
 
     this.setLight();
 

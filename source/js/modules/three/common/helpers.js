@@ -32,6 +32,12 @@ export const setMeshParams = (mesh, params) => {
   if (params.rotate) {
     mesh.rotation.copy(new THREE.Euler(params.rotate.x * THREE.Math.DEG2RAD, params.rotate.y * THREE.Math.DEG2RAD, params.rotate.z * THREE.Math.DEG2RAD, params.rotationOrder || `XYZ`));
   }
+  if (params.castShadow) {
+    mesh.castShadow = true;
+  }
+  if (params.receiveShadow) {
+    mesh.receiveShadow = true;
+  }
 };
 
 export const getMaterial = (options = {}) => {

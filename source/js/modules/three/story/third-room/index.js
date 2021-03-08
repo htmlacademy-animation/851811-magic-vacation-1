@@ -4,6 +4,7 @@ import colors from '../../common/colors';
 import materialReflectivity from '../../common/material-reflectivity';
 import {loadModel} from '../../common/load-model';
 import {setMeshParams, getMaterial} from '../../common/helpers';
+import {isMobile} from '../../../helpers';
 import Snowman from './snowman';
 import Road from './road';
 import Wall from '../../common/objects/wall';
@@ -21,6 +22,22 @@ class ThirdRoom extends THREE.Group {
         scale: 0.3,
         position: {x: 0, y: 0, z: 0},
         rotate: {x: 0, y: -45, z: 0},
+        ...!isMobile && {
+          receiveShadow: true,
+          castShadow: true,
+        }
+      },
+      {
+        name: `compass`,
+        type: `gltf`,
+        path: `img/models/compass.gltf`,
+        scale: 0.3,
+        position: {x: 0, y: 0, z: 0},
+        rotate: {x: 0, y: -45, z: 0},
+        ...!isMobile && {
+          receiveShadow: true,
+          castShadow: true,
+        }
       },
     ];
 
@@ -43,6 +60,10 @@ class ThirdRoom extends THREE.Group {
       scale: 0.35,
       position: {x: -35, y: 40, z: 140},
       rotate: {x: 10, y: 40, z: 0},
+      ...!isMobile && {
+        receiveShadow: true,
+        castShadow: true,
+      }
     });
     this.add(snowman);
   }
@@ -53,6 +74,9 @@ class ThirdRoom extends THREE.Group {
       scale: 0.3,
       position: {x: 0, y: 0, z: 0},
       rotate: {x: 0, y: 45, z: 180},
+      ...!isMobile && {
+        receiveShadow: true,
+      }
     });
     this.add(road);
   }
@@ -63,6 +87,10 @@ class ThirdRoom extends THREE.Group {
       scale: 0.3,
       position: {x: 0, y: 0, z: 0},
       rotate: {x: 0, y: 45, z: 180},
+      ...!isMobile && {
+        receiveShadow: true,
+        castShadow: true,
+      }
     });
     this.add(cylinders);
   }
