@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import {loadModel} from '../../common/load-model';
 import {setMeshParams, getMaterial, getCircleDegrees} from '../../common/helpers';
 import materialReflectivity from '../material-reflectivity';
+import {isMobile} from '../../../helpers';
 
 class Wall extends THREE.Group {
   constructor({wallMaterialReflectivity, wallColor, floorColor} = {}) {
@@ -17,6 +18,9 @@ class Wall extends THREE.Group {
       scale: 0.3,
       position: {x: 0, y: 5, z: 1},
       rotate: {x: 0, y: -45, z: 0},
+      ...!isMobile && {
+        receiveShadow: true,
+      }
     };
 
     this.floor = {
@@ -30,6 +34,9 @@ class Wall extends THREE.Group {
       position: {x: 0, y: -1, z: 0},
       rotate: {x: -90, y: -45, z: 0},
       rotationOrder: `YXZ`,
+      ...!isMobile && {
+        receiveShadow: true,
+      }
     };
 
     this.constructChildren = this.constructChildren.bind(this);
