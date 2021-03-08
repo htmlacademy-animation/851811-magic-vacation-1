@@ -32,6 +32,14 @@ class FirstRoom extends THREE.Group {
         position: {x: -110, y: 0, z: 230},
         rotate: {x: 0, y: -20, z: 0},
       },
+      {
+        name: `dog`,
+        type: `gltf`,
+        path: `img/models/dog.gltf`,
+        scale: 0.3,
+        position: {x: 20, y: 0, z: 200},
+        rotate: {x: 0, y: 20, z: 0},
+      },
     ];
 
     this.constructChildren = this.constructChildren.bind(this);
