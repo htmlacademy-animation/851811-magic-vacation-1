@@ -4,6 +4,7 @@ import {animateEasing, animateEasingWithFramerate, tick} from '../../canvas/comm
 import bezierEasing from '../../canvas/common/bezier-easing';
 // import getRawShaderMaterialAttrs from '../common/hue-and-bubbles-raw-shader';
 import loadManager from '../common/load-manager';
+import {isMobile} from '../../helpers';
 
 import IntroRoom from './intro-room';
 import FirstRoom from './first-room';
@@ -165,12 +166,12 @@ export default class Story {
       {
         light: new THREE.PointLight(0xf6f2ff, 0.6, 875, 2),
         position: {x: -785, y: -350, z: 710},
-        castShadow: true,
+        ...!isMobile && {castShadow: true},
       },
       {
         light: new THREE.PointLight(0xf5ffff, 0.95, 975, 2),
         position: {x: 730, y: 800, z: 985},
-        castShadow: true,
+        ...!isMobile && {castShadow: true},
       },
       {
         light: new THREE.AmbientLight(0x404040),
@@ -331,7 +332,9 @@ export default class Story {
     this.renderer.setClearColor(this.backgroundColor, 1);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.innerWidth, this.innerHeight);
-    this.renderer.shadowMap.enabled = true;
+    if (!isMobile) {
+      this.renderer.shadowMap.enabled = true;
+    }
 
     this.camera = new THREE.PerspectiveCamera(this.fov, this.aspect, this.near, this.far);
     // this.controls = new OrbitControls(this.camera, this.canvasElement);
