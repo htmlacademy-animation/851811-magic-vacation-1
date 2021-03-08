@@ -22,6 +22,14 @@ class ThirdRoom extends THREE.Group {
         position: {x: 0, y: 0, z: 0},
         rotate: {x: 0, y: -45, z: 0},
       },
+      {
+        name: `compass`,
+        type: `gltf`,
+        path: `img/models/compass.gltf`,
+        scale: 0.3,
+        position: {x: 0, y: 0, z: 0},
+        rotate: {x: 0, y: -45, z: 0},
+      },
     ];
 
     this.constructChildren = this.constructChildren.bind(this);
