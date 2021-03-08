@@ -326,6 +326,7 @@ export default class Story {
     this.renderer.setClearColor(this.backgroundColor, 1);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.innerWidth, this.innerHeight);
+    this.renderer.shadowMap.enabled = true;
 
     this.camera = new THREE.PerspectiveCamera(this.fov, this.aspect, this.near, this.far);
     // this.controls = new OrbitControls(this.camera, this.canvasElement);
