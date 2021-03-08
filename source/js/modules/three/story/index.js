@@ -9,6 +9,7 @@ import IntroRoom from './intro-room';
 import FirstRoom from './first-room';
 import SecondRoom from './second-room';
 import ThirdRoom from './third-room';
+import getSuitcase from '../common/objects/get-suitcase';
 
 const easeInOut = bezierEasing(0.42, 0, 0.58, 1);
 const easeIn = bezierEasing(0.42, 0, 1, 1);
@@ -386,6 +387,10 @@ export default class Story {
     this.pivot.position.y = 130;
 
     this.scene.add(this.intro);
+
+    getSuitcase((mesh) => {
+      this.scene.add(mesh);
+    });
 
     this.setLight();
 

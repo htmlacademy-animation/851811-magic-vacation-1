@@ -24,14 +24,6 @@ class FirstRoom extends THREE.Group {
         position: {x: 0, y: 0, z: 1},
         rotate: {x: 0, y: -45, z: 0},
       },
-      {
-        name: `suitcase`,
-        type: `gltf`,
-        path: `img/models/suitcase.gltf`,
-        scale: 0.3,
-        position: {x: -110, y: 0, z: 230},
-        rotate: {x: 0, y: -20, z: 0},
-      },
       ...this.dark
         ? [{
           name: `sonya`,
