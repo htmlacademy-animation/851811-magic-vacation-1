@@ -165,10 +165,12 @@ export default class Story {
       {
         light: new THREE.PointLight(0xf6f2ff, 0.6, 875, 2),
         position: {x: -785, y: -350, z: 710},
+        castShadow: true,
       },
       {
         light: new THREE.PointLight(0xf5ffff, 0.95, 975, 2),
         position: {x: 730, y: 800, z: 985},
+        castShadow: true,
       },
       {
         light: new THREE.AmbientLight(0x404040),
@@ -246,9 +248,12 @@ export default class Story {
   createLight(lights) {
     const lightGroup = new THREE.Group();
 
-    lights.forEach(({light, position}) => {
+    lights.forEach(({light, position, castShadow}) => {
       if (position) {
         light.position.set(...Object.values(position));
+      }
+      if (castShadow) {
+        light.castShadow = true;
       }
       lightGroup.add(light);
     });
