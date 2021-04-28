@@ -8,6 +8,15 @@ import {setMeshParams, getMaterial} from '../../common/helpers';
 import {isMobile} from '../../../helpers';
 import Saturn from '../../common/objects/saturn';
 
+import {
+  animateEasingWithFramerate,
+  tick
+} from '../../../canvas/common/helpers';
+import bezierEasing from '../../../canvas/common/bezier-easing';
+
+const easeOut = bezierEasing(0.0, 0.0, 0.58, 1.0);
+const linear = bezierEasing(0.0, 0.0, 1.0, 1.0);
+
 class IntroRoom extends THREE.Group {
   constructor() {
     super();
@@ -29,7 +38,8 @@ class IntroRoom extends THREE.Group {
         ...!isMobile && {
           receiveShadow: true,
           castShadow: true,
-        }
+        },
+        flightAnimation: true,
       },
       {
         name: `snowflake`,
@@ -39,7 +49,8 @@ class IntroRoom extends THREE.Group {
         ...!isMobile && {
           receiveShadow: true,
           castShadow: true,
-        }
+        },
+        flightAnimation: true,
       },
       {
         name: `question`,
@@ -47,7 +58,8 @@ class IntroRoom extends THREE.Group {
         ...!isMobile && {
           receiveShadow: true,
           castShadow: true,
-        }
+        },
+        flightAnimation: true,
       },
       {
         name: `leaf-1`,
@@ -56,7 +68,8 @@ class IntroRoom extends THREE.Group {
         ...!isMobile && {
           receiveShadow: true,
           castShadow: true,
-        }
+        },
+        flightAnimation: true,
       },
     ];
 
@@ -73,7 +86,8 @@ class IntroRoom extends THREE.Group {
         ...!isMobile && {
           receiveShadow: true,
           castShadow: true,
-        }
+        },
+        flightAnimation: true,
       },
       {
         name: `suitcase`,
@@ -85,7 +99,8 @@ class IntroRoom extends THREE.Group {
         ...!isMobile && {
           receiveShadow: true,
           castShadow: true,
-        }
+        },
+        flightAnimation: true,
       },
       {
         name: `watermelon`,
@@ -97,11 +112,38 @@ class IntroRoom extends THREE.Group {
         ...!isMobile && {
           receiveShadow: true,
           castShadow: true,
-        }
+        },
+        flightAnimation: true,
       },
     ];
 
-    this.constructChildren = this.constructChildren.bind(this);
+    this.saturn = {
+      name: `saturn`,
+      scale: 0.5,
+      position: {x: 300, y: 0, z: 100},
+      flightAnimation: true,
+    };
+
+    this.animationDuration = 2000;
+
+    this.animationObjects = [...this.svgs, ...this.models, this.saturn].reduce((acc, object) => ({
+      ...acc,
+      [object.name]: {
+        name: object.name,
+        finalSettings: {
+          position: object.position,
+          ...object.scale && {scale: object.scale},
+          ...object.rotate && {rotate: object.rotate},
+        },
+        initialSettings: {
+          position: {x: 0, y: 0, z: 0},
+          ...object.scale && {scale: typeof object.scale === `number` ? 0 : {x: 0, y: 0, z: 0}},
+          ...object.rotate && {rotate: {x: 0, y: 0, z: 0}},
+        },
+        maxAmplitude: Math.random() * (30 - 5) + 5,
+        positionChangeTimeout: Math.random() * 300,
+      },
+    }), {});
 
     this.constructChildren();
   }
@@ -116,8 +158,13 @@ class IntroRoom extends THREE.Group {
     this.svgs.forEach((params) => {
       getSvgObject({name: params.name}, (mesh) => {
         mesh.name = params.name;
-        setMeshParams(mesh, params);
         this.add(mesh);
+        if (params.flightAnimation) {
+          this.animationObjects[params.name].ref = mesh;
+          setMeshParams(mesh, this.animationObjects[params.name].initialSettings);
+        } else {
+          setMeshParams(mesh, params);
+        }
       });
     });
   }
@@ -128,18 +175,70 @@ class IntroRoom extends THREE.Group {
 
       loadModel(params, material, (mesh) => {
         mesh.name = params.name;
-        setMeshParams(mesh, params);
         this.add(mesh);
+        this.animationObjects[params.name].ref = mesh;
+        setMeshParams(mesh, this.animationObjects[params.name].initialSettings);
       });
     });
   }
 
   addSaturn() {
     const saturn = new Saturn({basic: true});
-    saturn.scale.set(0.5, 0.5, 0.5);
-    saturn.position.set(300, 0, 100);
     this.add(saturn);
+    this.animationObjects.saturn.ref = saturn;
+    setMeshParams(saturn, this.animationObjects.saturn.initialSettings);
+  }
+
+  flightAnimationTick(object) {
+    return (progress) => {
+      const {ref, initialSettings, finalSettings} = object;
+      const params = progressEachSetting(initialSettings, finalSettings, progress);
+      setMeshParams(ref, params);
+    };
+  }
+
+  positionAnimationTick(object) {
+    return (progress) => {
+      const {ref, maxAmplitude, finalSettings} = object;
+      const offset = maxAmplitude * Math.sin(progress * 10 * Math.PI);
+      const y = offset + finalSettings.position.y;
+
+      setMeshParams(ref, {...finalSettings, position: {...finalSettings.position, y}});
+      if (progress >= 1) {
+        this.onAnimationEnd();
+      }
+    };
+  }
+
+  startAnimation() {
+    Object.values(this.animationObjects).forEach((object) => {
+      this.updateObjectPosition(object);
+    });
+  }
+
+  updateObjectPosition(object) {
+    const ref = object.ref;
+    if (!ref) {
+      return;
+    }
+
+    animateEasingWithFramerate(this.flightAnimationTick(object), this.animationDuration, easeOut)
+      .then(() => {
+        setTimeout(() => {
+          animateEasingWithFramerate(this.positionAnimationTick(object), this.animationDuration * 5, linear);
+        }, object.positionChangeTimeout);
+      });
   }
 }
 
 export default IntroRoom;
+
+function progressEachSetting(initial, final, progress) {
+  if (typeof initial === `number`) {
+    return tick(initial, final, progress);
+  }
+
+  return Object.keys(initial).reduce((acc, key) => {
+    return {...acc, [key]: progressEachSetting(initial[key], final[key], progress)};
+  }, {});
+}

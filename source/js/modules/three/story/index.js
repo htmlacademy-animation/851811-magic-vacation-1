@@ -312,6 +312,10 @@ export default class Story {
       loadManager.onLoad = () => {
         this.scene.visible = true;
         this.renderer.render(this.scene, this.camera);
+        this.intro.startAnimation();
+        this.intro.onAnimationEnd = () => {
+          this.introAnimationRequest = false;
+        };
       };
     }
 
@@ -396,6 +400,7 @@ export default class Story {
     this.pivot.position.y = 130;
 
     this.scene.add(this.intro);
+    this.introAnimationRequest = true;
 
     getSuitcase((mesh) => {
       this.scene.add(mesh);
@@ -428,12 +433,12 @@ export default class Story {
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(this.innerWidth, this.innerHeight);
 
-    const magnifiedIndex = this.rooms.findIndex((texture) => texture.options.magnify);
+    // const magnifiedIndex = this.rooms.findIndex((texture) => texture.options.magnify);
 
-    const {width} = this.getSceneSize();
-    const pixelRatio = this.renderer.getPixelRatio();
+    // const {width} = this.getSceneSize();
+    // const pixelRatio = this.renderer.getPixelRatio();
 
-    this.materials[magnifiedIndex].uniforms.magnification.value.resolution = [width * pixelRatio, width / this.textureRatio * pixelRatio];
+    // this.materials[magnifiedIndex].uniforms.magnification.value.resolution = [width * pixelRatio, width / this.textureRatio * pixelRatio];
   }
 
   changeScene(index) {
@@ -522,11 +527,9 @@ export default class Story {
   render() {
     this.renderer.render(this.scene, this.camera);
 
-    // this.controls.update();
 
-
-    // if (this.animationRequest) {
-    //   requestAnimationFrame(this.render);
-    // }
+    if (this.introAnimationRequest) {
+      requestAnimationFrame(this.render);
+    }
   }
 }
