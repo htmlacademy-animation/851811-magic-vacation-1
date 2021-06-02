@@ -210,7 +210,7 @@ class IntroRoom extends THREE.Group {
     animateEasingWithFramerate(this.flightAnimationTick(object), this.animationDuration, easeOut)
       .then(() => {
         setTimeout(() => {
-          animateEasingWithFramerate(this.positionAnimationTick(object), this.animationDuration * 5, linear);
+          animateEasingWithFramerate(this.positionAnimationTick(object), this.animationDuration * 7, linear);
         }, object.positionChangeTimeout);
       });
   }
@@ -229,6 +229,11 @@ function progressEachSetting(initial, final, progress) {
 }
 
 function getObjectsWithAnimationProps(objects) {
+  const minAmplitude = 2;
+  const maxAmplitude = 10;
+
+  const positionChangeTimeout = 500;
+
   return objects.reduce((acc, object) => {
     return {
       ...acc,
@@ -244,8 +249,8 @@ function getObjectsWithAnimationProps(objects) {
           ...object.scale && {scale: getInitialObjectScale(object)},
           ...object.rotate && {rotate: initialCoords},
         },
-        maxAmplitude: Math.random() * (30 - 5) + 5,
-        positionChangeTimeout: Math.random() * 300,
+        maxAmplitude: Math.random() * (maxAmplitude - minAmplitude) + minAmplitude,
+        positionChangeTimeout: Math.random() * positionChangeTimeout,
       },
     };
   }, {});
