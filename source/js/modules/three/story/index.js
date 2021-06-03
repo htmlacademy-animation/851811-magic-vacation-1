@@ -369,8 +369,14 @@ export default class Story {
     this.scene.add(this.intro);
     this.introAnimationRequest = true;
 
-    getSuitcase((mesh) => {
+    getSuitcase((mesh, animateSuitcase) => {
       this.scene.add(mesh);
+
+      this.animateSuitcase = () => animateSuitcase(mesh);
+      if (this.currentScene === 1 && !this.suitcaseAnimated) {
+        this.animateSuitcase();
+        this.suitcaseAnimated = true;
+      }
     });
 
     this.setLight();
@@ -403,6 +409,10 @@ export default class Story {
     this.currentScene = index;
     this.setCamera();
     this.setLight();
+
+    if (this.currentScene === 1 && this.animateSuitcase && !this.suitcaseAnimated) {
+      this.animateSuitcase();
+    }
 
     if (index >= 1) {
       const roomIndex = index - 1;
