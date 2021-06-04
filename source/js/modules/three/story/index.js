@@ -38,12 +38,10 @@ export default class Story {
 
     this.rooms = [
       {
-        // src: `img/screen__textures/scene-1.png`,
         options: {hueShift: 0.0},
         Elements: FirstRoom,
       },
       {
-        // src: `img/screen__textures/scene-2.png`,
         options: {hueShift: -0.26, magnify: true},
         animationSettings: {
           hue: {
@@ -56,12 +54,10 @@ export default class Story {
         Elements: SecondRoom,
       },
       {
-        // src: `img/screen__textures/scene-3.png`,
         options: {hueShift: 0.0},
         Elements: ThirdRoom,
       },
       {
-        // src: `img/screen__textures/scene-4.png`,
         options: {hueShift: 0.0},
         Elements: FirstRoom,
         elementsOptions: {dark: true},
@@ -341,12 +337,9 @@ export default class Story {
     }
 
     this.camera = new THREE.PerspectiveCamera(this.fov, this.aspect, this.near, this.far);
-    // this.controls = new OrbitControls(this.camera, this.canvasElement);
 
     this.setCamera();
 
-    // this.controls.autoRotate = true;
-    // this.controls.update();
 
     this.scene = new THREE.Scene();
 
@@ -354,37 +347,11 @@ export default class Story {
 
     this.roomGroup = new THREE.Group();
 
-    // const geometry = new THREE.PlaneGeometry(1, 1);
-
     this.materials = this.rooms.map((room, index) => {
-      // const rawShaderMaterialAttrs = getRawShaderMaterialAttrs({
-      //   map: {
-      //     value: loadedTexture.src,
-      //   },
-      //   options: {
-      //     value: loadedTexture.options,
-      //   },
-      //   ...this.addBubbleUniform(index),
-      // });
-
-      // const material = new THREE.RawShaderMaterial(rawShaderMaterialAttrs);
-
-      // material.needsUpdate = true;
-
-      // const image = new THREE.Mesh(geometry, material);
-      // image.scale.x = this.innerHeight * this.textureRatio / (this.textureHeight / this.innerHeight);
-      // image.scale.y = this.innerHeight / (this.textureHeight / this.innerHeight);
-      // image.position.x = this.getScenePosition(index);
-      // image.position.z = this.camera.position.z * 0.5;
-
-      // this.scene.add(image);
-
       const Elements = room.Elements;
       const elements = new Elements(room.elementsOptions);
       elements.rotation.y = index * 90 * THREE.Math.DEG2RAD;
       this.roomGroup.add(elements);
-
-      // return material;
     });
 
     this.intro.position.z = 400;
@@ -402,13 +369,17 @@ export default class Story {
     this.scene.add(this.intro);
     this.introAnimationRequest = true;
 
-    getSuitcase((mesh) => {
+    getSuitcase((mesh, animateSuitcase) => {
       this.scene.add(mesh);
+
+      this.animateSuitcase = () => animateSuitcase(mesh);
+      if (this.currentScene === 1 && !this.suitcaseAnimated) {
+        this.animateSuitcase();
+        this.suitcaseAnimated = true;
+      }
     });
 
     this.setLight();
-
-    // this.scene.overrideMaterial = new THREE.MeshBasicMaterial({color: 'green'});
   }
 
   end() {
@@ -432,19 +403,16 @@ export default class Story {
     this.camera.aspect = this.innerWidth / this.innerHeight;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(this.innerWidth, this.innerHeight);
-
-    // const magnifiedIndex = this.rooms.findIndex((texture) => texture.options.magnify);
-
-    // const {width} = this.getSceneSize();
-    // const pixelRatio = this.renderer.getPixelRatio();
-
-    // this.materials[magnifiedIndex].uniforms.magnification.value.resolution = [width * pixelRatio, width / this.textureRatio * pixelRatio];
   }
 
   changeScene(index) {
     this.currentScene = index;
     this.setCamera();
     this.setLight();
+
+    if (this.currentScene === 1 && this.animateSuitcase && !this.suitcaseAnimated) {
+      this.animateSuitcase();
+    }
 
     if (index >= 1) {
       const roomIndex = index - 1;

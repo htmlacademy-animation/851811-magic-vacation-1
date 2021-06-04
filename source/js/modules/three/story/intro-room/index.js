@@ -17,6 +17,8 @@ import bezierEasing from '../../../canvas/common/bezier-easing';
 const easeOut = bezierEasing(0.0, 0.0, 0.58, 1.0);
 const linear = bezierEasing(0.0, 0.0, 1.0, 1.0);
 
+const initialCoords = {x: 0, y: 0, z: 0};
+
 class IntroRoom extends THREE.Group {
   constructor() {
     super();
@@ -126,24 +128,7 @@ class IntroRoom extends THREE.Group {
 
     this.animationDuration = 2000;
 
-    this.animationObjects = [...this.svgs, ...this.models, this.saturn].reduce((acc, object) => ({
-      ...acc,
-      [object.name]: {
-        name: object.name,
-        finalSettings: {
-          position: object.position,
-          ...object.scale && {scale: object.scale},
-          ...object.rotate && {rotate: object.rotate},
-        },
-        initialSettings: {
-          position: {x: 0, y: 0, z: 0},
-          ...object.scale && {scale: typeof object.scale === `number` ? 0 : {x: 0, y: 0, z: 0}},
-          ...object.rotate && {rotate: {x: 0, y: 0, z: 0}},
-        },
-        maxAmplitude: Math.random() * (30 - 5) + 5,
-        positionChangeTimeout: Math.random() * 300,
-      },
-    }), {});
+    this.animationObjects = getObjectsWithAnimationProps([...this.svgs, ...this.models, this.saturn]);
 
     this.constructChildren();
   }
@@ -225,7 +210,7 @@ class IntroRoom extends THREE.Group {
     animateEasingWithFramerate(this.flightAnimationTick(object), this.animationDuration, easeOut)
       .then(() => {
         setTimeout(() => {
-          animateEasingWithFramerate(this.positionAnimationTick(object), this.animationDuration * 5, linear);
+          animateEasingWithFramerate(this.positionAnimationTick(object), this.animationDuration * 7, linear);
         }, object.positionChangeTimeout);
       });
   }
@@ -241,4 +226,36 @@ function progressEachSetting(initial, final, progress) {
   return Object.keys(initial).reduce((acc, key) => {
     return {...acc, [key]: progressEachSetting(initial[key], final[key], progress)};
   }, {});
+}
+
+function getObjectsWithAnimationProps(objects) {
+  const minAmplitude = 2;
+  const maxAmplitude = 10;
+
+  const positionChangeTimeout = 500;
+
+  return objects.reduce((acc, object) => {
+    return {
+      ...acc,
+      [object.name]: {
+        name: object.name,
+        finalSettings: {
+          position: object.position,
+          ...object.scale && {scale: object.scale},
+          ...object.rotate && {rotate: object.rotate},
+        },
+        initialSettings: {
+          position: initialCoords,
+          ...object.scale && {scale: getInitialObjectScale(object)},
+          ...object.rotate && {rotate: initialCoords},
+        },
+        maxAmplitude: Math.random() * (maxAmplitude - minAmplitude) + minAmplitude,
+        positionChangeTimeout: Math.random() * positionChangeTimeout,
+      },
+    };
+  }, {});
+}
+
+function getInitialObjectScale(object) {
+  return typeof object.scale === `number` ? 0 : initialCoords;
 }
