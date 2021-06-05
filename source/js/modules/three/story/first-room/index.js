@@ -11,6 +11,7 @@ import Saturn from '../../common/objects/saturn';
 import Wall from '../../common/objects/wall';
 import getDog from './get-dog';
 import getSaturn from './get-saturn';
+import getSonya from './get-sonya';
 
 class FirstRoom extends THREE.Group {
   constructor({dark} = {}) {
@@ -31,20 +32,9 @@ class FirstRoom extends THREE.Group {
           castShadow: true,
         }
       },
-      ...this.dark ? [{
-        name: `sonya`,
-        type: `gltf`,
-        path: `img/models/sonya.gltf`,
-        scale: 0.3,
-        position: {x: 30, y: 60, z: 170},
-        rotate: {x: 0, y: -30, z: 0},
-        ...!isMobile && {
-          receiveShadow: true,
-          castShadow: true,
-        }
-      }] : [],
     ];
 
+    this.startAnimation = this.startAnimation.bind(this);
     this.constructChildren = this.constructChildren.bind(this);
     this.constructChildren();
   }
@@ -56,7 +46,9 @@ class FirstRoom extends THREE.Group {
     this.addRug();
     this.addSaturn();
 
-    if (!this.dark) {
+    if (this.dark) {
+      this.addSonya();
+    } else {
       this.addDog();
     }
   }
@@ -144,6 +136,21 @@ class FirstRoom extends THREE.Group {
         this.add(mesh);
       });
     });
+  }
+
+  addSonya() {
+    getSonya((mesh, animateSonya) => {
+      this.add(mesh);
+
+      this.animateSonya = () => animateSonya(mesh);
+    });
+  }
+
+  startAnimation() {
+    if (!this.sonyaAnimated && this.animateSonya) {
+      this.animateSonya();
+      this.sonyaAnimated = true;
+    }
   }
 }
 
