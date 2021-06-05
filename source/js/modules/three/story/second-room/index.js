@@ -76,7 +76,7 @@ class SecondRoom extends THREE.Group {
       this.add(leaf1);
       this.add(leaf2);
 
-      this.animateLeaves = () => animateLeaves(leaf1, leaf2);
+      this.animateLeaves = (callback) => animateLeaves(leaf1, leaf2, callback);
     });
   }
 
@@ -101,9 +101,9 @@ class SecondRoom extends THREE.Group {
     });
   }
 
-  startAnimation() {
+  startAnimation(callback) {
     if (!this.leavesAnimated && this.animateLeaves) {
-      this.animateLeaves();
+      this.animateLeaves(callback);
       this.leavesAnimated = true;
     }
   }

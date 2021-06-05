@@ -61,7 +61,7 @@ export default (callback) => {
     };
   };
 
-  const animateSonya = (object) => {
+  const animateSonya = (object, animationEndCallback) => {
     if (!object) {
       return;
     }
@@ -73,7 +73,7 @@ export default (callback) => {
     const originalRightHandRotation = getOriginalRotation(rightHand);
 
     const {duration, easing} = sonyaAnimationSettings;
-    animateEasingWithFramerate(sonyaAnimationTick(object), duration, easing);
+    animateEasingWithFramerate(sonyaAnimationTick(object), duration, easing).then(animationEndCallback);
     animateEasingWithFramerate(handAnimationTick(leftHand, originalLeftHandRotation), duration, easing);
     animateEasingWithFramerate(handAnimationTick(rightHand, originalRightHandRotation, true), duration, easing);
   };

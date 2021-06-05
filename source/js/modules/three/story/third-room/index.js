@@ -111,13 +111,13 @@ class ThirdRoom extends THREE.Group {
     getCompass((mesh, animateCompass) => {
       this.add(mesh);
 
-      this.animateCompass = () => animateCompass(mesh);
+      this.animateCompass = (callback) => animateCompass(mesh, callback);
     });
   }
 
-  startAnimation() {
+  startAnimation(callback) {
     if (!this.compassAnimated && this.animateCompass) {
-      this.animateCompass();
+      this.animateCompass(callback);
       this.compassAnimated = true;
     }
   }

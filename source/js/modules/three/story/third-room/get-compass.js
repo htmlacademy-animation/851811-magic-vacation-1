@@ -38,7 +38,7 @@ export default (callback) => {
     };
   };
 
-  const animateCompass = (object) => {
+  const animateCompass = (object, animationEndCallback) => {
     if (!object) {
       return;
     }
@@ -47,7 +47,7 @@ export default (callback) => {
     const originalHandRotation = getOriginalRotation(hand);
 
     const {duration, easing} = tailAnimationSettings;
-    animateEasingWithFramerate(compassAnimationTick(hand, originalHandRotation), duration, easing);
+    animateEasingWithFramerate(compassAnimationTick(hand, originalHandRotation), duration, easing).then(animationEndCallback);
   };
 
 

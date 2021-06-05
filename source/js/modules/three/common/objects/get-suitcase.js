@@ -46,14 +46,14 @@ export default (callback) => {
     };
   };
 
-  const animateSuitcase = (object) => {
+  const animateSuitcase = (object, animationEndCallback) => {
     if (!object) {
       return;
     }
 
     const {duration, easing} = suitcaseAnimationSettings;
     setTimeout(() => {
-      animateEasingWithFramerate(suitcaseAnimationTick(object), duration, easing);
+      animateEasingWithFramerate(suitcaseAnimationTick(object), duration, easing).then(animationEndCallback);
     }, 1000);
   };
 

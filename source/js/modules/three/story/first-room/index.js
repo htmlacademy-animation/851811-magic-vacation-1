@@ -98,10 +98,7 @@ class FirstRoom extends THREE.Group {
       getSaturn((mesh, animateSaturn) => {
         this.add(mesh);
 
-        if (!this.saturnAnimated) {
-          animateSaturn(mesh);
-          this.saturnAnimated = true;
-        }
+        this.animateSaturn = (callback) => animateSaturn(mesh, callback);
       });
     }
   }
@@ -142,13 +139,18 @@ class FirstRoom extends THREE.Group {
     getSonya((mesh, animateSonya) => {
       this.add(mesh);
 
-      this.animateSonya = () => animateSonya(mesh);
+      this.animateSonya = (callback) => animateSonya(mesh, callback);
     });
   }
 
-  startAnimation() {
+  startAnimation(callback) {
+    if (!this.saturnAnimated && this.animateSaturn) {
+      this.animateSaturn(callback);
+      this.saturnAnimated = true;
+    }
+
     if (!this.sonyaAnimated && this.animateSonya) {
-      this.animateSonya();
+      this.animateSonya(callback);
       this.sonyaAnimated = true;
     }
   }

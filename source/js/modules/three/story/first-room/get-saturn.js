@@ -47,7 +47,7 @@ export default (callback) => {
     };
   };
 
-  const animateSaturn = (object) => {
+  const animateSaturn = (object, animationEndCallback) => {
     if (!object) {
       return;
     }
@@ -58,7 +58,7 @@ export default (callback) => {
     const originalRingRotation = getOriginalRotation(ring);
 
     setTimeout(() => {
-      animateEasingWithFramerate(saturnAnimationTick(object), duration, easing);
+      animateEasingWithFramerate(saturnAnimationTick(object), duration, easing).then(animationEndCallback);
       animateEasingWithFramerate(ringAnimationTick(ring, originalRingRotation), duration, easing);
     }, 1000);
   };

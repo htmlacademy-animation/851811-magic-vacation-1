@@ -71,7 +71,7 @@ export default (callback) => {
     };
   };
 
-  const animateLeaves = (leaf1, leaf2) => {
+  const animateLeaves = (leaf1, leaf2, animationEndCallback) => {
     if (!leaf1 || !leaf2) {
       return;
     }
@@ -79,7 +79,7 @@ export default (callback) => {
     const {duration, easing} = leafAnimationSettings;
 
     animateEasingWithFramerate(leftAnimationTick(leaf1, leaf1AnimationSettings), duration, easing);
-    animateEasingWithFramerate(leftAnimationTick(leaf2, leaf2AnimationSettings), duration, easing);
+    animateEasingWithFramerate(leftAnimationTick(leaf2, leaf2AnimationSettings), duration, easing).then(animationEndCallback);
   };
 
   getSvgObject({name: `leaf-2`}, (leaf) => {
