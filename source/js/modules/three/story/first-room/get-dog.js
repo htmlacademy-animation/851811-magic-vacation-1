@@ -1,7 +1,5 @@
-import * as THREE from 'three';
-
 import {loadModel} from '../../common/load-model';
-import {setMeshParams} from '../../common/helpers';
+import {setMeshParams, getOriginalRotation} from '../../common/helpers';
 import {isMobile} from '../../../helpers';
 import bezierEasing from '../../../canvas/common/bezier-easing';
 import {animateEasingWithFramerate} from '../../../canvas/common/helpers';
@@ -79,12 +77,4 @@ function getTailRotate(progress, originalRotation) {
 
 function getTail(dog) {
   return dog.children[0].getObjectByName(`Tail`);
-}
-
-function getOriginalRotation(tail) {
-  return {
-    x: tail.rotation.x / THREE.Math.DEG2RAD,
-    y: tail.rotation.y / THREE.Math.DEG2RAD,
-    z: tail.rotation.z / THREE.Math.DEG2RAD,
-  };
 }

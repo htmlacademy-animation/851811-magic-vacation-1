@@ -76,6 +76,7 @@ class Saturn extends THREE.Group {
     }));
     mesh.rotation.copy(new THREE.Euler(20 * THREE.Math.DEG2RAD, 0, 18 * THREE.Math.DEG2RAD), `XYZ`);
 
+    mesh.name = `Ring`;
     this.add(mesh);
   }
 

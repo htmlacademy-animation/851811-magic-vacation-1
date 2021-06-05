@@ -10,6 +10,7 @@ import Rug from './rug';
 import Saturn from '../../common/objects/saturn';
 import Wall from '../../common/objects/wall';
 import getDog from './get-dog';
+import getSaturn from './get-saturn';
 
 class FirstRoom extends THREE.Group {
   constructor({dark} = {}) {
@@ -89,16 +90,28 @@ class FirstRoom extends THREE.Group {
   }
 
   addSaturn() {
-    const saturn = new Saturn({dark: this.dark});
-    setMeshParams(saturn, {
-      scale: 0.3,
-      position: {x: 30, y: 150, z: 100},
-      ...!isMobile && {
-        receiveShadow: true,
-        castShadow: true,
-      }
-    });
-    this.add(saturn);
+    if (this.dark) {
+      const saturn = new Saturn({dark: this.dark});
+      setMeshParams(saturn, {
+        scale: 0.3,
+        position: {x: 30, y: 150, z: 100},
+        ...!isMobile && {
+          receiveShadow: true,
+          castShadow: true,
+        }
+      });
+
+      this.add(saturn);
+    } else {
+      getSaturn((mesh, animateSaturn) => {
+        this.add(mesh);
+
+        if (!this.saturnAnimated) {
+          animateSaturn(mesh);
+          this.saturnAnimated = true;
+        }
+      });
+    }
   }
 
   addWall() {
