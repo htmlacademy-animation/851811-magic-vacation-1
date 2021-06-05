@@ -63,6 +63,7 @@ export default class Story {
         elementsOptions: {dark: true},
       },
     ];
+    this.roomAnimations = {};
     this.textureHeight = 1024;
     this.textureWidth = 2048;
     this.textureRatio = this.textureWidth / this.textureHeight;
@@ -352,6 +353,10 @@ export default class Story {
       const elements = new Elements(room.elementsOptions);
       elements.rotation.y = index * 90 * THREE.Math.DEG2RAD;
       this.roomGroup.add(elements);
+      this.roomAnimations = {
+        ...this.roomAnimations,
+        [index + 1]: elements.startAnimation,
+      };
     });
 
     this.intro.position.z = 400;
@@ -412,6 +417,11 @@ export default class Story {
 
     if (this.currentScene === 1 && this.animateSuitcase && !this.suitcaseAnimated) {
       this.animateSuitcase();
+    }
+
+    const roomAnimation = this.roomAnimations[this.currentScene];
+    if (roomAnimation) {
+      roomAnimation();
     }
 
     if (index >= 1) {

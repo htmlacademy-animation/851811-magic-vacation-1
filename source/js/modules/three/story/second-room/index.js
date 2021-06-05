@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 
-import getSvgObject from '../../common/svg-object';
 import colors from '../../common/colors';
 import materialReflectivity from '../../common/material-reflectivity';
 import {loadModel} from '../../common/load-model';
@@ -9,6 +8,7 @@ import {isMobile} from '../../../helpers';
 import Pyramid from './pyramid';
 import Lantern from './lantern';
 import Wall from '../../common/objects/wall';
+import getLeaves from './get-leaves';
 
 class SecondRoom extends THREE.Group {
   constructor() {
@@ -29,6 +29,7 @@ class SecondRoom extends THREE.Group {
       },
     ];
 
+    this.startAnimation = this.startAnimation.bind(this);
     this.constructChildren = this.constructChildren.bind(this);
 
     this.constructChildren();
@@ -39,7 +40,7 @@ class SecondRoom extends THREE.Group {
     this.loadModels();
     this.addPyramid();
     this.addLantern();
-    this.addLeaf();
+    this.addLeaves();
   }
 
   addPyramid() {
@@ -70,30 +71,12 @@ class SecondRoom extends THREE.Group {
     this.add(lantern);
   }
 
-  addLeaf() {
-    getSvgObject({name: `leaf-2`}, (leaf) => {
-      const leaf1 = leaf.clone();
-      setMeshParams(leaf1, {
-        scale: 0.7,
-        position: {x: -70, y: 90, z: 100},
-        rotate: {x: 0, y: 45, z: 0},
-        ...!isMobile && {
-          receiveShadow: true,
-          castShadow: true,
-        }
-      });
+  addLeaves() {
+    getLeaves((leaf1, leaf2, animateLeaves) => {
       this.add(leaf1);
-      const leaf2 = leaf.clone();
-      setMeshParams(leaf2, {
-        scale: 0.5,
-        position: {x: -80, y: 30, z: 120},
-        rotate: {x: 0, y: 45, z: 40},
-        ...!isMobile && {
-          receiveShadow: true,
-          castShadow: true,
-        }
-      });
       this.add(leaf2);
+
+      this.animateLeaves = () => animateLeaves(leaf1, leaf2);
     });
   }
 
@@ -116,6 +99,13 @@ class SecondRoom extends THREE.Group {
         this.add(mesh);
       });
     });
+  }
+
+  startAnimation() {
+    if (!this.leavesAnimated && this.animateLeaves) {
+      this.animateLeaves();
+      this.leavesAnimated = true;
+    }
   }
 }
 
