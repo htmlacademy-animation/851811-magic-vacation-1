@@ -167,7 +167,16 @@ class IntroRoom extends THREE.Group {
     getSuitcase((mesh, animateSuitcase) => {
       this.suitcase = mesh;
       this.add(mesh);
-      animateSuitcase(mesh);
+      animateSuitcase(mesh, () => {
+        this.setIdleAnimation({
+          maxAmplitude: 1,
+          positionChangeTimeout: 300,
+          ref: mesh,
+          finalSettings: {
+            position: mesh.position,
+          }
+        });
+      });
     });
   }
 
@@ -203,10 +212,14 @@ class IntroRoom extends THREE.Group {
 
     animateEasingWithFramerate(this.flightAnimationTick(object), this.animationDuration, easeOut)
       .then(() => {
-        setTimeout(() => {
-          animateEasingWithFramerate(this.positionAnimationTick(object), this.animationDuration * 7, linear).then(this.onAnimationEnd);
-        }, object.positionChangeTimeout);
+        this.setIdleAnimation(object);
       });
+  }
+
+  setIdleAnimation(object) {
+    setTimeout(() => {
+      animateEasingWithFramerate(this.positionAnimationTick(object), this.animationDuration * 7, linear).then(this.onAnimationEnd);
+    }, object.positionChangeTimeout);
   }
 }
 
