@@ -63,6 +63,8 @@ export default class Story {
         elementsOptions: {dark: true},
       },
     ];
+    this.roomAnimations = {};
+    this.roomAnimationsCount = 0;
     this.textureHeight = 1024;
     this.textureWidth = 2048;
     this.textureRatio = this.textureWidth / this.textureHeight;
@@ -352,6 +354,10 @@ export default class Story {
       const elements = new Elements(room.elementsOptions);
       elements.rotation.y = index * 90 * THREE.Math.DEG2RAD;
       this.roomGroup.add(elements);
+      this.roomAnimations = {
+        ...this.roomAnimations,
+        [index + 1]: elements.startAnimation,
+      };
     });
 
     this.intro.position.z = 400;
@@ -372,9 +378,13 @@ export default class Story {
     getSuitcase((mesh, animateSuitcase) => {
       this.scene.add(mesh);
 
-      this.animateSuitcase = () => animateSuitcase(mesh);
+      this.animateSuitcase = (callback) => animateSuitcase(mesh, callback);
       if (this.currentScene === 1 && !this.suitcaseAnimated) {
-        this.animateSuitcase();
+        this.roomAnimationsCount += 1;
+        this.render();
+        this.animateSuitcase(() => {
+          this.roomAnimationsCount -= 1;
+        });
         this.suitcaseAnimated = true;
       }
     });
@@ -412,6 +422,16 @@ export default class Story {
 
     if (this.currentScene === 1 && this.animateSuitcase && !this.suitcaseAnimated) {
       this.animateSuitcase();
+    }
+
+    const roomAnimation = this.roomAnimations[this.currentScene];
+    if (roomAnimation) {
+      this.roomAnimationsCount += 1;
+
+      this.render();
+      roomAnimation(() => {
+        this.roomAnimationsCount -= 1;
+      });
     }
 
     if (index >= 1) {
@@ -495,8 +515,7 @@ export default class Story {
   render() {
     this.renderer.render(this.scene, this.camera);
 
-
-    if (this.introAnimationRequest) {
+    if (this.introAnimationRequest || this.roomAnimationsCount > 0) {
       requestAnimationFrame(this.render);
     }
   }

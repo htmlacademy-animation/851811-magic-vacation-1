@@ -48,3 +48,11 @@ export const getMaterial = (options = {}) => {
     ...rest,
   });
 };
+
+export const getOriginalRotation = (object) => {
+  return {
+    x: object.rotation.x / THREE.Math.DEG2RAD,
+    y: object.rotation.y / THREE.Math.DEG2RAD,
+    z: object.rotation.z / THREE.Math.DEG2RAD,
+  };
+};

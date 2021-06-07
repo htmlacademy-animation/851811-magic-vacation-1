@@ -9,6 +9,7 @@ import Snowman from './snowman';
 import Road from './road';
 import Wall from '../../common/objects/wall';
 import Cylinders from './cylinders';
+import getCompass from './get-compass';
 
 class ThirdRoom extends THREE.Group {
   constructor() {
@@ -27,20 +28,9 @@ class ThirdRoom extends THREE.Group {
           castShadow: true,
         }
       },
-      {
-        name: `compass`,
-        type: `gltf`,
-        path: `img/models/compass.gltf`,
-        scale: 0.3,
-        position: {x: 0, y: 0, z: 0},
-        rotate: {x: 0, y: -45, z: 0},
-        ...!isMobile && {
-          receiveShadow: true,
-          castShadow: true,
-        }
-      },
     ];
 
+    this.startAnimation = this.startAnimation.bind(this);
     this.constructChildren = this.constructChildren.bind(this);
 
     this.constructChildren();
@@ -51,6 +41,7 @@ class ThirdRoom extends THREE.Group {
     this.addSnowman();
     this.addRoad();
     this.addCylinders();
+    this.addCompass();
     this.loadModels();
   }
 
@@ -114,6 +105,21 @@ class ThirdRoom extends THREE.Group {
         this.add(mesh);
       });
     });
+  }
+
+  addCompass() {
+    getCompass((mesh, animateCompass) => {
+      this.add(mesh);
+
+      this.animateCompass = (callback) => animateCompass(mesh, callback);
+    });
+  }
+
+  startAnimation(callback) {
+    if (!this.compassAnimated && this.animateCompass) {
+      this.animateCompass(callback);
+      this.compassAnimated = true;
+    }
   }
 }
 

@@ -9,6 +9,9 @@ import {isMobile} from '../../../helpers';
 import Rug from './rug';
 import Saturn from '../../common/objects/saturn';
 import Wall from '../../common/objects/wall';
+import getDog from './get-dog';
+import getSaturn from './get-saturn';
+import getSonya from './get-sonya';
 
 class FirstRoom extends THREE.Group {
   constructor({dark} = {}) {
@@ -29,33 +32,9 @@ class FirstRoom extends THREE.Group {
           castShadow: true,
         }
       },
-      ...this.dark
-        ? [{
-          name: `sonya`,
-          type: `gltf`,
-          path: `img/models/sonya.gltf`,
-          scale: 0.3,
-          position: {x: 30, y: 60, z: 170},
-          rotate: {x: 0, y: -30, z: 0},
-          ...!isMobile && {
-            receiveShadow: true,
-            castShadow: true,
-          }
-        }]
-        : [{
-          name: `dog`,
-          type: `gltf`,
-          path: `img/models/dog.gltf`,
-          scale: 0.3,
-          position: {x: 20, y: 0, z: 200},
-          rotate: {x: 0, y: 20, z: 0},
-          ...!isMobile && {
-            receiveShadow: true,
-            castShadow: true,
-          }
-        }],
     ];
 
+    this.startAnimation = this.startAnimation.bind(this);
     this.constructChildren = this.constructChildren.bind(this);
     this.constructChildren();
   }
@@ -66,6 +45,12 @@ class FirstRoom extends THREE.Group {
     this.addFlower();
     this.addRug();
     this.addSaturn();
+
+    if (this.dark) {
+      this.addSonya();
+    } else {
+      this.addDog();
+    }
   }
 
   addFlower() {
@@ -97,16 +82,25 @@ class FirstRoom extends THREE.Group {
   }
 
   addSaturn() {
-    const saturn = new Saturn({dark: this.dark});
-    setMeshParams(saturn, {
-      scale: 0.3,
-      position: {x: 30, y: 150, z: 100},
-      ...!isMobile && {
-        receiveShadow: true,
-        castShadow: true,
-      }
-    });
-    this.add(saturn);
+    if (this.dark) {
+      const saturn = new Saturn({dark: this.dark});
+      setMeshParams(saturn, {
+        scale: 0.3,
+        position: {x: 30, y: 150, z: 100},
+        ...!isMobile && {
+          receiveShadow: true,
+          castShadow: true,
+        }
+      });
+
+      this.add(saturn);
+    } else {
+      getSaturn((mesh, animateSaturn) => {
+        this.add(mesh);
+
+        this.animateSaturn = (callback) => animateSaturn(mesh, callback);
+      });
+    }
   }
 
   addWall() {
@@ -116,6 +110,17 @@ class FirstRoom extends THREE.Group {
       floorColor: colors[this.dark ? `ShadowedDarkPurple` : `DarkPurple`],
     });
     this.add(wall);
+  }
+
+  addDog() {
+    getDog((mesh, animateDog) => {
+      this.add(mesh);
+
+      if (!this.dogAnimated) {
+        animateDog(mesh);
+        this.dogAnimated = true;
+      }
+    });
   }
 
   loadModels() {
@@ -128,6 +133,26 @@ class FirstRoom extends THREE.Group {
         this.add(mesh);
       });
     });
+  }
+
+  addSonya() {
+    getSonya((mesh, animateSonya) => {
+      this.add(mesh);
+
+      this.animateSonya = (callback) => animateSonya(mesh, callback);
+    });
+  }
+
+  startAnimation(callback) {
+    if (!this.saturnAnimated && this.animateSaturn) {
+      this.animateSaturn(callback);
+      this.saturnAnimated = true;
+    }
+
+    if (!this.sonyaAnimated && this.animateSonya) {
+      this.animateSonya(callback);
+      this.sonyaAnimated = true;
+    }
   }
 }
 

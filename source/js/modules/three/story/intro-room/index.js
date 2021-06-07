@@ -189,9 +189,6 @@ class IntroRoom extends THREE.Group {
       const y = offset + finalSettings.position.y;
 
       setMeshParams(ref, {...finalSettings, position: {...finalSettings.position, y}});
-      if (progress >= 1) {
-        this.onAnimationEnd();
-      }
     };
   }
 
@@ -210,7 +207,7 @@ class IntroRoom extends THREE.Group {
     animateEasingWithFramerate(this.flightAnimationTick(object), this.animationDuration, easeOut)
       .then(() => {
         setTimeout(() => {
-          animateEasingWithFramerate(this.positionAnimationTick(object), this.animationDuration * 7, linear);
+          animateEasingWithFramerate(this.positionAnimationTick(object), this.animationDuration * 7, linear).then(this.onAnimationEnd);
         }, object.positionChangeTimeout);
       });
   }
