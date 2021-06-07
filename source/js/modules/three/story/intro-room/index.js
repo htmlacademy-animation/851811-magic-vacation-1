@@ -7,6 +7,7 @@ import {loadModel} from '../../common/load-model';
 import {setMeshParams, getMaterial} from '../../common/helpers';
 import {isMobile} from '../../../helpers';
 import Saturn from '../../common/objects/saturn';
+import getSuitcase from './get-suitcase';
 
 import {
   animateEasingWithFramerate,
@@ -92,19 +93,6 @@ class IntroRoom extends THREE.Group {
         flightAnimation: true,
       },
       {
-        name: `suitcase`,
-        type: `gltf`,
-        path: `img/models/suitcase.gltf`,
-        scale: 0.4,
-        position: {x: -50, y: -100, z: 30},
-        rotate: {x: 40, y: -120, z: 20},
-        ...!isMobile && {
-          receiveShadow: true,
-          castShadow: true,
-        },
-        flightAnimation: true,
-      },
-      {
         name: `watermelon`,
         type: `gltf`,
         path: `img/models/watermelon.gltf`,
@@ -137,6 +125,7 @@ class IntroRoom extends THREE.Group {
     this.loadSvgs();
     this.loadModels();
     this.addSaturn();
+    this.addSuitcase();
   }
 
   loadSvgs() {
@@ -174,6 +163,23 @@ class IntroRoom extends THREE.Group {
     setMeshParams(saturn, this.animationObjects.saturn.initialSettings);
   }
 
+  addSuitcase() {
+    getSuitcase((mesh, animateSuitcase) => {
+      this.suitcase = mesh;
+      this.add(mesh);
+      animateSuitcase(mesh, () => {
+        this.setIdleAnimation({
+          maxAmplitude: 1,
+          positionChangeTimeout: 300,
+          ref: mesh,
+          finalSettings: {
+            position: mesh.position,
+          }
+        });
+      });
+    });
+  }
+
   flightAnimationTick(object) {
     return (progress) => {
       const {ref, initialSettings, finalSettings} = object;
@@ -206,10 +212,14 @@ class IntroRoom extends THREE.Group {
 
     animateEasingWithFramerate(this.flightAnimationTick(object), this.animationDuration, easeOut)
       .then(() => {
-        setTimeout(() => {
-          animateEasingWithFramerate(this.positionAnimationTick(object), this.animationDuration * 7, linear).then(this.onAnimationEnd);
-        }, object.positionChangeTimeout);
+        this.setIdleAnimation(object);
       });
+  }
+
+  setIdleAnimation(object) {
+    setTimeout(() => {
+      animateEasingWithFramerate(this.positionAnimationTick(object), this.animationDuration * 7, linear).then(this.onAnimationEnd);
+    }, object.positionChangeTimeout);
   }
 }
 
