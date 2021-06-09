@@ -1,13 +1,12 @@
 import * as THREE from 'three';
 
 import getSvgObject from '../../common/svg-object';
-import colors from '../../common/colors';
-import materialReflectivity from '../../common/material-reflectivity';
 import {loadModel} from '../../common/load-model';
 import {setMeshParams, getMaterial} from '../../common/helpers';
 import {isMobile} from '../../../helpers';
 import Saturn from '../../common/objects/saturn';
 import getSuitcase from './get-suitcase';
+import getAirplane from './get-airplane';
 
 import {
   animateEasingWithFramerate,
@@ -78,21 +77,6 @@ class IntroRoom extends THREE.Group {
 
     this.models = [
       {
-        name: `airplane`,
-        type: `obj`,
-        path: `img/models/airplane.obj`,
-        materialReflectivity: materialReflectivity.basic,
-        color: colors.White,
-        scale: 0.5,
-        position: {x: 70, y: 80, z: 100},
-        rotate: {x: 90, y: 140, z: -30},
-        ...!isMobile && {
-          receiveShadow: true,
-          castShadow: true,
-        },
-        flightAnimation: true,
-      },
-      {
         name: `watermelon`,
         type: `gltf`,
         path: `img/models/watermelon.gltf`,
@@ -126,6 +110,7 @@ class IntroRoom extends THREE.Group {
     this.loadModels();
     this.addSaturn();
     this.addSuitcase();
+    this.addAirplane();
   }
 
   loadSvgs() {
@@ -171,6 +156,22 @@ class IntroRoom extends THREE.Group {
         this.setIdleAnimation({
           maxAmplitude: 1,
           positionChangeTimeout: 300,
+          ref: mesh,
+          finalSettings: {
+            position: mesh.position,
+          }
+        });
+      });
+    });
+  }
+
+  addAirplane() {
+    getAirplane((mesh, animateAirplane) => {
+      this.add(mesh);
+      animateAirplane(mesh, () => {
+        this.setIdleAnimation({
+          maxAmplitude: 1,
+          positionChangeTimeout: 250,
           ref: mesh,
           finalSettings: {
             position: mesh.position,

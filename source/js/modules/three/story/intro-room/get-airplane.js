@@ -1,10 +1,12 @@
 import * as THREE from 'three';
 
 import {loadModel} from '../../common/load-model';
-import {setMeshParams} from '../../common/helpers';
+import {setMeshParams, getMaterial} from '../../common/helpers';
 import {isMobile} from '../../../helpers';
 import bezierEasing from '../../../canvas/common/bezier-easing';
 import {animateEasingWithFramerate, tick} from '../../../canvas/common/helpers';
+import colors from '../../common/colors';
+import materialReflectivity from '../../common/material-reflectivity';
 import {getChild} from './helpers';
 
 const easeIn = bezierEasing(0.45, 0.03, 0.85, 0.8);
@@ -27,50 +29,43 @@ const scaleAnimationSettings = {
 const positionAnimationSettings = {
   ...animationSettings,
   position: {
-    min: {x: 0, y: -50, z: -30},
-    max: {...initialCoords, z: 100},
+    min: {x: 70, y: -50, z: 0},
+    max: initialCoords,
   },
 };
 
 const rotationAnimationSettings = {
   ...animationSettings,
   rotate: {
-    min: 90,
-    max: 0,
+    min: {x: 270, y: 200, z: -240},
+    max: {x: 90, y: 140, z: -30},
   },
 };
 
-const flightAnimationSettings = {
-  ...animationSettings,
-  positionY: {
-    min: 0,
-    max: 200,
-  },
-};
-
-
-const suitcaseParams = {
-  name: `suitcase`,
-  type: `gltf`,
-  path: `img/models/suitcase.gltf`,
-  scale: 0.4,
-  position: {x: -50, y: -100 - flightAnimationSettings.positionY.max, z: 30},
-  rotate: {x: 40, y: -120, z: 20},
+const airplaneParams = {
+  name: `airplane`,
+  type: `obj`,
+  path: `img/models/airplane.obj`,
+  materialReflectivity: materialReflectivity.basic,
+  color: colors.White,
+  scale: 0.5,
+  position: {x: 100, y: 80, z: 100},
+  rotate: rotationAnimationSettings.rotate,
   ...!isMobile && {
     receiveShadow: true,
     castShadow: true,
   },
+  flightAnimation: true,
 };
 
 const GroupName = {
   scale: `scale`,
   position: `position`,
-  rotation: `rotation`,
-  flight: `flight`,
+  airplane: `airplane`,
 };
 
 export default (callback) => {
-  const animateSuitcase = (object, animationEndCallback) => {
+  const animateAirplane = (object, animationEndCallback) => {
     if (!object) {
       return;
     }
@@ -81,23 +76,21 @@ export default (callback) => {
     Object.keys(groups).forEach((key) => {
       const group = groups[key];
       const groupTick = animationTicks[key];
-      animateEasingWithFramerate(groupTick(group), duration, easing).then(key === GroupName.flight ? animationEndCallback : null);
+      animateEasingWithFramerate(groupTick(group), duration, easing).then(key === GroupName.airplane ? animationEndCallback : null);
     });
   };
 
+  const material = getMaterial({color: airplaneParams.color, ...airplaneParams.materialReflectivity});
 
-  loadModel(suitcaseParams, null, (mesh) => {
-    mesh.name = suitcaseParams.name;
-    setMeshParams(mesh, suitcaseParams);
+  loadModel(airplaneParams, material, (mesh) => {
+    mesh.name = airplaneParams.name;
+    setMeshParams(mesh, airplaneParams);
 
     const scaleGroup = getIsolationGroup(GroupName.scale, mesh);
     const positionGroup = getIsolationGroup(GroupName.position, scaleGroup);
-    const rotationGroup = getIsolationGroup(GroupName.rotation, positionGroup);
-    const flightGroup = getIsolationGroup(GroupName.flight, rotationGroup);
+    const parentGroup = getIsolationGroup(`parent`, positionGroup);
 
-    const parentGroup = getIsolationGroup(`parent`, flightGroup);
-
-    callback(parentGroup, animateSuitcase);
+    callback(parentGroup, animateAirplane);
   });
 };
 
@@ -105,8 +98,7 @@ export default (callback) => {
 const animationTicks = {
   [GroupName.scale]: (object) => getGenericTick(object, calcScaleParams),
   [GroupName.position]: (object) => getGenericTick(object, calcPositionParams),
-  [GroupName.rotation]: (object) => getGenericTick(object, calcRotationParams),
-  [GroupName.flight]: (object) => getGenericTick(object, calcFlightParams),
+  [GroupName.airplane]: (object) => getGenericTick(object, calcRotationParams),
 };
 
 function getGenericTick(object, paramsFunc) {
@@ -127,36 +119,25 @@ function calcScaleParams(progress) {
 function calcPositionParams(progress) {
   const {position} = positionAnimationSettings;
 
+  const offsetSine = Math.sin(progress * Math.PI - Math.PI * 1 / 9);
+
   return {
     position: {
-      x: tick(position.min.x, position.max.x, progress),
+      x: offsetSine * (position.max.x - position.min.x),
       y: tick(position.min.y, position.max.y, progress),
       z: tick(position.min.z, position.max.z, progress),
     },
   };
 }
 
-
 function calcRotationParams(progress) {
   const {rotate} = rotationAnimationSettings;
 
-  const amplitude = rotate.max - rotate.min;
-  const sine = Math.sin(progress * Math.PI);
-  const x = amplitude * sine;
-
   return {
-    rotate: {...initialCoords, x},
-  };
-}
-
-function calcFlightParams(progress) {
-  const {positionY} = flightAnimationSettings;
-
-  return {
-    position: {
-      x: 0,
-      y: tick(positionY.min, positionY.max, progress),
-      z: 0,
+    rotate: {
+      x: tick(rotate.min.y, rotate.max.y, progress),
+      y: tick(rotate.min.y, rotate.max.y, progress),
+      z: tick(rotate.min.z, rotate.max.z, progress ** 2),
     },
   };
 }
@@ -169,15 +150,13 @@ function getIsolationGroup(name, child) {
 }
 
 function getIsolatedChildren(parent) {
-  const flight = getChild(parent, GroupName.flight);
-  const rotation = getChild(flight, GroupName.rotation);
-  const position = getChild(rotation, GroupName.position);
+  const position = getChild(parent, GroupName.position);
   const scale = getChild(position, GroupName.scale);
+  const airplane = getChild(scale, GroupName.airplane);
 
   return {
-    flight,
-    rotation,
     position,
     scale,
+    airplane,
   };
 }
