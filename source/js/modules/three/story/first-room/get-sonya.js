@@ -111,7 +111,7 @@ function getHandRotate(progress, originalRotation, isRight) {
   const {rotate} = handAnimationSettings;
   const amplitude = rotate.max - rotate.min;
   const sine = Math.sin(progress * Math.PI * count);
-  const sign = isRight ? -1 : 1;
+  const sign = isRight ? 1 : -1;
   const y = originalRotation.y - (amplitude * sine * sign);
 
   return {...originalRotation, y};
