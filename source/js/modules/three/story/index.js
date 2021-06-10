@@ -1,8 +1,7 @@
 import * as THREE from 'three';
-// import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import {animateEasing, animateEasingWithFramerate, tick} from '../../canvas/common/helpers';
 import bezierEasing from '../../canvas/common/bezier-easing';
-// import getRawShaderMaterialAttrs from '../common/hue-and-bubbles-raw-shader';
 import loadManager from '../common/load-manager';
 import {isMobile} from '../../helpers';
 
@@ -300,6 +299,9 @@ export default class Story {
       this.camera.position.set(...Object.values(this.cameraSettings.room.position));
       this.camera.rotation.x = this.cameraSettings.room.rotation * THREE.Math.DEG2RAD;
     }
+    if (this.controls) {
+      this.controls.update();
+    }
   }
 
   init(screenName) {
@@ -342,6 +344,8 @@ export default class Story {
 
     this.setCamera();
 
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.update();
 
     this.scene = new THREE.Scene();
 
