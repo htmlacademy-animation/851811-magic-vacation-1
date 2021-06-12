@@ -6,6 +6,7 @@ import {isMobile} from '../../helpers';
 import CameraRig from '../common/camera-rig';
 import {getLightConfig, createLight} from '../common/lights';
 import {ScreenName, ScreenId} from '../common/vars';
+import {setMeshParams} from '../common/helpers';
 
 import IntroRoom from './intro-room';
 import FirstRoom from './first-room';
@@ -219,15 +220,20 @@ export default class Story {
       });
     } else {
       const roomIndex = index - 1;
+      const rotate = roomIndex * 90;
       const settings = {
         ...this.cameraSettings.room,
-        rigRotation: {...this.cameraSettings.room.rigRotation, y: roomIndex * 90}
+        rigRotation: {...this.cameraSettings.room.rigRotation, y: rotate}
       };
       this.rig.changeStateTo(settings, () => {
         this.rigUpdating = false;
       });
       if (this.rotateSuitcase) {
-        this.rotateSuitcase({x: 0, y: roomIndex * 90, z: 0});
+        this.rotateSuitcase({x: 0, y: rotate, z: 0});
+      }
+      const light = this.scene.getObjectByName(`light-room`);
+      if (light) {
+        setMeshParams(light, {rotate: {x: 0, y: rotate, z: 0}});
       }
     }
 
