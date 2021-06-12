@@ -4,6 +4,8 @@ import bezierEasing from '../../canvas/common/bezier-easing';
 import loadManager from '../common/load-manager';
 import {isMobile} from '../../helpers';
 import CameraRig from '../common/camera-rig';
+import {getLightConfig, createLight} from '../common/lights';
+import {ScreenName, ScreenId} from '../common/vars';
 
 import IntroRoom from './intro-room';
 import FirstRoom from './first-room';
@@ -13,18 +15,6 @@ import getSuitcase from '../common/objects/get-suitcase';
 
 const easeInOut = bezierEasing(0.42, 0, 0.58, 1);
 const easeIn = bezierEasing(0.42, 0, 1, 1);
-
-const ScreenName = {
-  top: `intro`,
-  story: `room`,
-  intro: `intro`,
-  room: `room`,
-};
-
-const ScreenId = {
-  intro: 0,
-  room: 1,
-};
 
 const box = new THREE.Box3();
 
@@ -139,46 +129,11 @@ export default class Story {
       },
     };
 
-    this.introLights = [
-      {
-        light: new THREE.HemisphereLight(0xffffff, 0x444444),
-        position: {x: 0, y: 300, z: 0},
-      },
-      {
-        light: new THREE.DirectionalLight(0xffffff, 0.3),
-        position: {x: 75, y: 300, z: 75},
-      },
-      {
-        light: new THREE.AmbientLight(0x404040),
-      }
-    ];
-
-    this.roomLights = [
-      {
-        light: new THREE.DirectionalLight(0xffffff, 0.84),
-        position: {x: 0, y: this.position.z * Math.tan(-15 * THREE.Math.DEG2RAD), z: this.position.z},
-      },
-      {
-        light: new THREE.DirectionalLight(0xffffff, 0.5),
-        position: {x: 0, y: 500, z: 0},
-      },
-      {
-        light: new THREE.PointLight(0xf6f2ff, 0.6, 875, 2),
-        position: {x: -785, y: -350, z: 710},
-        ...!isMobile && {castShadow: true},
-      },
-      {
-        light: new THREE.PointLight(0xf5ffff, 0.95, 975, 2),
-        position: {x: 730, y: 800, z: 985},
-        ...!isMobile && {castShadow: true},
-      },
-      {
-        light: new THREE.AmbientLight(0x404040),
-      },
-      {
-        light: new THREE.AmbientLight(0x404040),
-      }
-    ];
+    const lights = getLightConfig(this.position.z);
+    this.screenLights = {
+      [ScreenName.intro]: () => createLight(lights.intro, ScreenName.intro),
+      [ScreenName.room]: () => createLight(lights.room, ScreenName.room),
+    };
 
     this.currentScene = 0;
 
@@ -189,13 +144,6 @@ export default class Story {
     this.updateScreenSize = this.updateScreenSize.bind(this);
     this.animateHue = this.animateHue.bind(this);
     this.getHueAnimationSettings = this.getHueAnimationSettings.bind(this);
-    this.createIntroLight = this.createIntroLight.bind(this);
-    this.createRoomLight = this.createRoomLight.bind(this);
-
-    this.screenLights = {
-      [ScreenName.intro]: this.createIntroLight,
-      [ScreenName.room]: this.createRoomLight,
-    };
   }
 
   resetBubbles() {
@@ -243,36 +191,6 @@ export default class Story {
     const texture = this.rooms[index];
 
     return texture.animationSettings && texture.animationSettings.hue;
-  }
-
-  createLight(lights) {
-    const lightGroup = new THREE.Group();
-
-    lights.forEach(({light, position, castShadow}) => {
-      if (position) {
-        light.position.set(...Object.values(position));
-      }
-      if (castShadow) {
-        light.castShadow = true;
-      }
-      lightGroup.add(light);
-    });
-
-    return lightGroup;
-  }
-
-  createIntroLight() {
-    const light = this.createLight(this.introLights);
-    light.name = `light-${ScreenName.intro}`;
-
-    return light;
-  }
-
-  createRoomLight() {
-    const light = this.createLight(this.roomLights);
-    light.name = `light-${ScreenName.room}`;
-
-    return light;
   }
 
   setLight() {
