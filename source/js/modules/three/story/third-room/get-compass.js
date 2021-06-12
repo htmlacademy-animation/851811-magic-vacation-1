@@ -74,5 +74,5 @@ function getCompassRotate(progress, originalRotation) {
 }
 
 function getHand(compass) {
-  return compass.children[0].getObjectByName(`ArrowCenter`);
+  return compass.getObjectByName(`ArrowCenter`);
 }

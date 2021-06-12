@@ -7,7 +7,6 @@ import bezierEasing from '../../../canvas/common/bezier-easing';
 import {animateEasingWithFramerate, tick} from '../../../canvas/common/helpers';
 import colors from '../../common/colors';
 import materialReflectivity from '../../common/material-reflectivity';
-import {getChild} from './helpers';
 
 const easeIn = bezierEasing(0.45, 0.03, 0.85, 0.8);
 
@@ -150,9 +149,9 @@ function getIsolationGroup(name, child) {
 }
 
 function getIsolatedChildren(parent) {
-  const position = getChild(parent, GroupName.position);
-  const scale = getChild(position, GroupName.scale);
-  const airplane = getChild(scale, GroupName.airplane);
+  const position = parent.getObjectByName(GroupName.position);
+  const scale = position.getObjectByName(GroupName.scale);
+  const airplane = scale.getObjectByName(GroupName.airplane);
 
   return {
     position,

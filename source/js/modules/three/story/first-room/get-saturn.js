@@ -104,5 +104,5 @@ function getRingRotate(progress, originalRotation) {
 }
 
 function getRing(saturn) {
-  return saturn.children[0].getObjectByName(`Ring`);
+  return saturn.getObjectByName(`Ring`);
 }
