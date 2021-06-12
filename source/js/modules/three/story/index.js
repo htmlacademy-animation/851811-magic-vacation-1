@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import {animateEasing, animateEasingWithFramerate, tick} from '../../canvas/common/helpers';
 import bezierEasing from '../../canvas/common/bezier-easing';
 import loadManager from '../common/load-manager';
 import {isMobile} from '../../helpers';
+import CameraRig from '../common/camera-rig';
 
 import IntroRoom from './intro-room';
 import FirstRoom from './first-room';
@@ -15,13 +15,15 @@ const easeInOut = bezierEasing(0.42, 0, 0.58, 1);
 const easeIn = bezierEasing(0.42, 0, 1, 1);
 
 const ScreenName = {
+  top: `intro`,
+  story: `room`,
   intro: `intro`,
   room: `room`,
 };
 
 const ScreenId = {
-  top: 0,
-  story: 1,
+  intro: 0,
+  room: 1,
 };
 
 const box = new THREE.Box3();
@@ -121,19 +123,19 @@ export default class Story {
     this.fov = this.getFov();
     this.aspect = this.innerWidth / this.innerHeight;
     this.near = 0.1;
-    this.far = 1405;
+    this.far = 1605;
     this.position = {
-      z: 1405,
+      z: 1605,
     };
 
     this.cameraSettings = {
       intro: {
-        position: {x: 0, y: 0, z: this.position.z},
-        rotation: 0,
+        rigPosition: {x: 0, y: 0, z: this.position.z},
+        rigRotation: {x: 0, y: 0, z: 0},
       },
       room: {
-        position: {x: 0, y: 0, z: 400},
-        rotation: 0, // 15
+        rigPosition: {x: 0, y: 0, z: 600},
+        rigRotation: {x: 0, y: 15, z: 0},
       },
     };
 
@@ -291,22 +293,33 @@ export default class Story {
     }
   }
 
-  setCamera() {
+  setRigPosition(index) {
+    this.rigUpdating = true;
     if (this.currentScene === 0) {
-      this.camera.position.set(...Object.values(this.cameraSettings.intro.position));
-      this.camera.rotation.x = this.cameraSettings.intro.rotation * THREE.Math.DEG2RAD;
+      this.rig.changeStateTo(this.cameraSettings.intro, () => {
+        this.rigUpdating = false;
+      });
     } else {
-      this.camera.position.set(...Object.values(this.cameraSettings.room.position));
-      this.camera.rotation.x = this.cameraSettings.room.rotation * THREE.Math.DEG2RAD;
+      const roomIndex = index - 1;
+      const settings = {
+        ...this.cameraSettings.room,
+        rigRotation: {...this.cameraSettings.room.rigRotation, y: roomIndex * 90}
+      };
+      this.rig.changeStateTo(settings, () => {
+        this.rigUpdating = false;
+      });
     }
+
     if (this.controls) {
       this.controls.update();
     }
   }
 
-  init(screenName) {
+  init(rawName) {
+    const screenName = ScreenName[rawName];
+
     if (!this.initialized) {
-      this.prepareScene();
+      this.prepareScene(screenName);
       this.initialized = true;
       this.scene.visible = false;
       loadManager.onLoad = () => {
@@ -327,7 +340,7 @@ export default class Story {
     this.changeScene(ScreenId[screenName]);
   }
 
-  prepareScene() {
+  prepareScene(screenName) {
     this.canvasElement = document.getElementById(this.canvasSelector);
     this.canvasElement.width = this.innerWidth;
     this.canvasElement.height = this.innerHeight;
@@ -342,12 +355,13 @@ export default class Story {
 
     this.camera = new THREE.PerspectiveCamera(this.fov, this.aspect, this.near, this.far);
 
-    this.setCamera();
-
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.update();
-
     this.scene = new THREE.Scene();
+
+    this.rig = new CameraRig(this.cameraSettings[screenName]);
+    this.rig.addObjectToCameraNull(this.camera);
+    this.scene.add(this.rig);
+    this.setRigPosition();
+    this.setRigAnimation();
 
     this.intro = new IntroRoom();
 
@@ -364,7 +378,7 @@ export default class Story {
       };
     });
 
-    this.intro.position.z = 400;
+    this.intro.position.z = 600;
 
     box.setFromObject(this.roomGroup);
     box.center(this.roomGroup.position); // this re-sets the mesh position
@@ -373,7 +387,7 @@ export default class Story {
     this.pivot = new THREE.Group();
     this.scene.add(this.pivot);
     this.pivot.add(this.roomGroup);
-    this.pivot.position.z = -200;
+    this.pivot.position.z = 0;
     this.pivot.position.y = 130;
 
     this.scene.add(this.intro);
@@ -421,7 +435,7 @@ export default class Story {
 
   changeScene(index) {
     this.currentScene = index;
-    this.setCamera();
+    this.setRigPosition(index);
     this.setLight();
 
     if (this.currentScene === 1 && this.animateSuitcase && !this.suitcaseAnimated) {
@@ -440,9 +454,6 @@ export default class Story {
 
     if (index >= 1) {
       const roomIndex = index - 1;
-
-      this.pivot.rotation.y = -roomIndex * 90 * THREE.Math.DEG2RAD;
-
 
       if (this.rooms[roomIndex].options.magnify) {
         this.resetBubbles();
@@ -516,11 +527,36 @@ export default class Story {
     animateEasingWithFramerate(this.hueIntensityAnimationTick(this.currentScene, initalHue, finalHue * offset), duration * offset, this.defaultHueIntensityEasingFn).then(this.animateHue);
   }
 
+  setRigAnimation() {
+    let startTime = -1;
+    let time = -1;
+    this.updateRig = () => {
+      const nowT = Date.now();
+
+      if (startTime < 0) {
+        startTime = time = nowT;
+
+        return;
+      }
+
+      const t = (nowT - startTime) * 0.001;
+      const dt = (nowT - time) * 0.001;
+
+      this.rig.update(dt, t);
+
+      time = nowT;
+    };
+  }
+
   render() {
     this.renderer.render(this.scene, this.camera);
 
     if (this.introAnimationRequest || this.roomAnimationsCount > 0) {
       requestAnimationFrame(this.render);
+    }
+
+    if (this.rigUpdating) {
+      this.updateRig();
     }
   }
 }
