@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 
 import {loadModel} from '../../common/load-model';
-import {setMeshParams} from '../../common/helpers';
+import {setMeshParams, progressEachSetting} from '../../common/helpers';
 import {isMobile} from '../../../helpers';
 import bezierEasing from '../../../canvas/common/bezier-easing';
 import {animateEasingWithFramerate, tick} from '../../../canvas/common/helpers';
@@ -128,11 +128,7 @@ function calcPositionParams(progress) {
   const {position} = positionAnimationSettings;
 
   return {
-    position: {
-      x: tick(position.min.x, position.max.x, progress),
-      y: tick(position.min.y, position.max.y, progress),
-      z: tick(position.min.z, position.max.z, progress),
-    },
+    position: progressEachSetting(position.min, position.max, progress, tick),
   };
 }
 

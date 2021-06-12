@@ -56,3 +56,13 @@ export const getOriginalRotation = (object) => {
     z: object.rotation.z / THREE.Math.DEG2RAD,
   };
 };
+
+export const progressEachSetting = (initial, final, progress, tick) => {
+  if (typeof initial === `number`) {
+    return tick(initial, final, progress);
+  }
+
+  return Object.keys(initial).reduce((acc, key) => {
+    return {...acc, [key]: progressEachSetting(initial[key], final[key], progress, tick)};
+  }, {});
+};
