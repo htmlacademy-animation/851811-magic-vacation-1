@@ -66,3 +66,17 @@ export const progressEachSetting = (initial, final, progress, tick) => {
     return {...acc, [key]: progressEachSetting(initial[key], final[key], progress, tick)};
   }, {});
 };
+
+export const tweenEasing = (progress) => {
+  //  Smoother end:
+  const pseudoHalf1 = 1 / 5;
+  const pseudoHalf2 = 4 / 5;
+
+  if (progress < pseudoHalf1) {
+    progress = pseudoHalf1 * (1 - Math.cos((progress * Math.PI) / (2 * pseudoHalf1)));
+  } else {
+    progress = pseudoHalf1 + pseudoHalf2 * Math.sin(((progress - pseudoHalf1) * Math.PI) / (2 * pseudoHalf2));
+  }
+
+  return progress;
+};
