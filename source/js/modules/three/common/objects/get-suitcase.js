@@ -1,5 +1,5 @@
 import {loadModel} from '../../common/load-model';
-import {setMeshParams} from '../../common/helpers';
+import {setMeshParams, tweenEasing, getOriginalRotation, progressEachSetting} from '../../common/helpers';
 import {isMobile} from '../../../helpers';
 import bezierEasing from '../../../canvas/common/bezier-easing';
 import {animateEasingWithFramerate, tick} from '../../../canvas/common/helpers';
@@ -18,11 +18,16 @@ const suitcaseAnimationSettings = {
     100: {x: 1, y: 1, z: 1},
   },
   positionY: {
-    min: -50,
-    max: -93,
+    min: 43,
+    max: 0,
   },
   easing: linear,
   duration: 2000,
+};
+
+const suitcaseRotationSettings = {
+  easing: tweenEasing,
+  duration: 1500,
 };
 
 const suitcaseParams = {
@@ -30,7 +35,7 @@ const suitcaseParams = {
   type: `gltf`,
   path: `img/models/suitcase.gltf`,
   scale: 0.3,
-  position: {x: -105, y: suitcaseAnimationSettings.positionY.min, z: 30},
+  position: {x: -105, y: suitcaseAnimationSettings.positionY.min, z: 230},
   rotate: {x: 0, y: -20, z: 0},
   ...!isMobile && {
     receiveShadow: true,
@@ -39,13 +44,6 @@ const suitcaseParams = {
 };
 
 export default (callback) => {
-  const suitcaseAnimationTick = (object) => {
-    return (progress) => {
-      const params = calcSuitcaseParams(progress);
-      setMeshParams(object, params);
-    };
-  };
-
   const animateSuitcase = (object, animationEndCallback) => {
     if (!object) {
       return;
@@ -57,12 +55,29 @@ export default (callback) => {
     }, 1000);
   };
 
+  const rotateSuitcase = (rotation, object) => {
+    if (!object) {
+      return;
+    }
+
+    const {duration, easing} = suitcaseRotationSettings;
+    const originalRotation = getOriginalRotation(object);
+    animateEasingWithFramerate(suitcaseRotationTick(originalRotation, rotation, object), duration, easing);
+  };
+
 
   loadModel(suitcaseParams, null, (mesh) => {
     mesh.name = suitcaseParams.name;
     setMeshParams(mesh, suitcaseParams);
-    callback(mesh, animateSuitcase);
+    callback(mesh, animateSuitcase, rotateSuitcase);
   });
+};
+
+const suitcaseAnimationTick = (object) => {
+  return (progress) => {
+    const params = calcSuitcaseParams(progress);
+    setMeshParams(object, params);
+  };
 };
 
 function calcSuitcaseParams(progress) {
@@ -95,6 +110,13 @@ function getSuitcaseScale(percent, progress) {
     z: tick(from.z, to.z, progress) * originalScale,
   };
 }
+
+const suitcaseRotationTick = (from, to, object) => {
+  return (progress) => {
+    setMeshParams(object, {rotate: progressEachSetting(from, to, progress, tick)});
+  };
+};
+
 
 function getFrom(percent, array) {
   return array[closest(`from`, Object.keys(array), percent)];

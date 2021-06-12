@@ -308,6 +308,9 @@ export default class Story {
       this.rig.changeStateTo(settings, () => {
         this.rigUpdating = false;
       });
+      if (this.rotateSuitcase) {
+        this.rotateSuitcase({x: 0, y: roomIndex * 90, z: 0});
+      }
     }
 
     if (this.controls) {
@@ -393,10 +396,14 @@ export default class Story {
     this.scene.add(this.intro);
     this.introAnimationRequest = true;
 
-    getSuitcase((mesh, animateSuitcase) => {
-      this.scene.add(mesh);
+    getSuitcase((suitcase, animateSuitcase, rotateSuitcase) => {
+      const rotationGroup = new THREE.Group();
+      this.roomGroup.add(rotationGroup);
+      rotationGroup.add(suitcase);
+      rotationGroup.position.y = 0;
 
-      this.animateSuitcase = (callback) => animateSuitcase(mesh, callback);
+      this.animateSuitcase = (callback) => animateSuitcase(suitcase, callback);
+      this.rotateSuitcase = (rotation) => rotateSuitcase(rotation, rotationGroup);
       if (this.currentScene === 1 && !this.suitcaseAnimated) {
         this.roomAnimationsCount += 1;
         this.render();
