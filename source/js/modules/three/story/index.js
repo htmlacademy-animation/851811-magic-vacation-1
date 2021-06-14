@@ -1,10 +1,12 @@
 import * as THREE from 'three';
-// import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import {animateEasing, animateEasingWithFramerate, tick} from '../../canvas/common/helpers';
 import bezierEasing from '../../canvas/common/bezier-easing';
-// import getRawShaderMaterialAttrs from '../common/hue-and-bubbles-raw-shader';
 import loadManager from '../common/load-manager';
 import {isMobile} from '../../helpers';
+import CameraRig from '../common/camera-rig';
+import {getLightConfig, createLight} from '../common/lights';
+import {ScreenName, ScreenId} from '../common/vars';
+import {setMeshParams} from '../common/helpers';
 
 import IntroRoom from './intro-room';
 import FirstRoom from './first-room';
@@ -14,16 +16,6 @@ import getSuitcase from '../common/objects/get-suitcase';
 
 const easeInOut = bezierEasing(0.42, 0, 0.58, 1);
 const easeIn = bezierEasing(0.42, 0, 1, 1);
-
-const ScreenName = {
-  intro: `intro`,
-  room: `room`,
-};
-
-const ScreenId = {
-  top: 0,
-  story: 1,
-};
 
 const box = new THREE.Box3();
 
@@ -122,62 +114,27 @@ export default class Story {
     this.fov = this.getFov();
     this.aspect = this.innerWidth / this.innerHeight;
     this.near = 0.1;
-    this.far = 1405;
+    this.far = 1605;
     this.position = {
-      z: 1405,
+      z: 1605,
     };
 
     this.cameraSettings = {
       intro: {
-        position: {x: 0, y: 0, z: this.position.z},
-        rotation: 0,
+        rigPosition: {x: 0, y: 0, z: this.position.z},
+        rigRotation: {x: 0, y: 0, z: 0},
       },
       room: {
-        position: {x: 0, y: 0, z: 400},
-        rotation: 0, // 15
+        rigPosition: {x: 0, y: 0, z: 600},
+        rigRotation: {x: 0, y: 15, z: 0},
       },
     };
 
-    this.introLights = [
-      {
-        light: new THREE.HemisphereLight(0xffffff, 0x444444),
-        position: {x: 0, y: 300, z: 0},
-      },
-      {
-        light: new THREE.DirectionalLight(0xffffff, 0.3),
-        position: {x: 75, y: 300, z: 75},
-      },
-      {
-        light: new THREE.AmbientLight(0x404040),
-      }
-    ];
-
-    this.roomLights = [
-      {
-        light: new THREE.DirectionalLight(0xffffff, 0.84),
-        position: {x: 0, y: this.position.z * Math.tan(-15 * THREE.Math.DEG2RAD), z: this.position.z},
-      },
-      {
-        light: new THREE.DirectionalLight(0xffffff, 0.5),
-        position: {x: 0, y: 500, z: 0},
-      },
-      {
-        light: new THREE.PointLight(0xf6f2ff, 0.6, 875, 2),
-        position: {x: -785, y: -350, z: 710},
-        ...!isMobile && {castShadow: true},
-      },
-      {
-        light: new THREE.PointLight(0xf5ffff, 0.95, 975, 2),
-        position: {x: 730, y: 800, z: 985},
-        ...!isMobile && {castShadow: true},
-      },
-      {
-        light: new THREE.AmbientLight(0x404040),
-      },
-      {
-        light: new THREE.AmbientLight(0x404040),
-      }
-    ];
+    const lights = getLightConfig(this.position.z);
+    this.screenLights = {
+      [ScreenName.intro]: () => createLight(lights.intro, ScreenName.intro),
+      [ScreenName.room]: () => createLight(lights.room, ScreenName.room),
+    };
 
     this.currentScene = 0;
 
@@ -188,13 +145,6 @@ export default class Story {
     this.updateScreenSize = this.updateScreenSize.bind(this);
     this.animateHue = this.animateHue.bind(this);
     this.getHueAnimationSettings = this.getHueAnimationSettings.bind(this);
-    this.createIntroLight = this.createIntroLight.bind(this);
-    this.createRoomLight = this.createRoomLight.bind(this);
-
-    this.screenLights = {
-      [ScreenName.intro]: this.createIntroLight,
-      [ScreenName.room]: this.createRoomLight,
-    };
   }
 
   resetBubbles() {
@@ -244,36 +194,6 @@ export default class Story {
     return texture.animationSettings && texture.animationSettings.hue;
   }
 
-  createLight(lights) {
-    const lightGroup = new THREE.Group();
-
-    lights.forEach(({light, position, castShadow}) => {
-      if (position) {
-        light.position.set(...Object.values(position));
-      }
-      if (castShadow) {
-        light.castShadow = true;
-      }
-      lightGroup.add(light);
-    });
-
-    return lightGroup;
-  }
-
-  createIntroLight() {
-    const light = this.createLight(this.introLights);
-    light.name = `light-${ScreenName.intro}`;
-
-    return light;
-  }
-
-  createRoomLight() {
-    const light = this.createLight(this.roomLights);
-    light.name = `light-${ScreenName.room}`;
-
-    return light;
-  }
-
   setLight() {
     const [current, previous] = this.currentScene === 0 ? [ScreenName.intro, ScreenName.room] : [ScreenName.room, ScreenName.intro];
 
@@ -292,19 +212,41 @@ export default class Story {
     }
   }
 
-  setCamera() {
+  setRigPosition(index) {
+    this.rigUpdating = true;
     if (this.currentScene === 0) {
-      this.camera.position.set(...Object.values(this.cameraSettings.intro.position));
-      this.camera.rotation.x = this.cameraSettings.intro.rotation * THREE.Math.DEG2RAD;
+      this.rig.changeStateTo(this.cameraSettings.intro, () => {
+        this.rigUpdating = false;
+      });
     } else {
-      this.camera.position.set(...Object.values(this.cameraSettings.room.position));
-      this.camera.rotation.x = this.cameraSettings.room.rotation * THREE.Math.DEG2RAD;
+      const roomIndex = index - 1;
+      const rotate = roomIndex * 90;
+      const settings = {
+        ...this.cameraSettings.room,
+        rigRotation: {...this.cameraSettings.room.rigRotation, y: rotate}
+      };
+      this.rig.changeStateTo(settings, () => {
+        this.rigUpdating = false;
+      });
+      if (this.rotateSuitcase) {
+        this.rotateSuitcase({x: 0, y: rotate, z: 0});
+      }
+      const light = this.scene.getObjectByName(`light-room`);
+      if (light) {
+        setMeshParams(light, {rotate: {x: 0, y: rotate, z: 0}});
+      }
+    }
+
+    if (this.controls) {
+      this.controls.update();
     }
   }
 
-  init(screenName) {
+  init(rawName) {
+    const screenName = ScreenName[rawName];
+
     if (!this.initialized) {
-      this.prepareScene();
+      this.prepareScene(screenName);
       this.initialized = true;
       this.scene.visible = false;
       loadManager.onLoad = () => {
@@ -325,7 +267,7 @@ export default class Story {
     this.changeScene(ScreenId[screenName]);
   }
 
-  prepareScene() {
+  prepareScene(screenName) {
     this.canvasElement = document.getElementById(this.canvasSelector);
     this.canvasElement.width = this.innerWidth;
     this.canvasElement.height = this.innerHeight;
@@ -340,10 +282,13 @@ export default class Story {
 
     this.camera = new THREE.PerspectiveCamera(this.fov, this.aspect, this.near, this.far);
 
-    this.setCamera();
-
-
     this.scene = new THREE.Scene();
+
+    this.rig = new CameraRig(this.cameraSettings[screenName]);
+    this.rig.addObjectToCameraNull(this.camera);
+    this.scene.add(this.rig);
+    this.setRigPosition();
+    this.setRigAnimation();
 
     this.intro = new IntroRoom();
 
@@ -360,7 +305,7 @@ export default class Story {
       };
     });
 
-    this.intro.position.z = 400;
+    this.intro.position.z = 600;
 
     box.setFromObject(this.roomGroup);
     box.center(this.roomGroup.position); // this re-sets the mesh position
@@ -369,16 +314,20 @@ export default class Story {
     this.pivot = new THREE.Group();
     this.scene.add(this.pivot);
     this.pivot.add(this.roomGroup);
-    this.pivot.position.z = -200;
+    this.pivot.position.z = 0;
     this.pivot.position.y = 130;
 
     this.scene.add(this.intro);
     this.introAnimationRequest = true;
 
-    getSuitcase((mesh, animateSuitcase) => {
-      this.scene.add(mesh);
+    getSuitcase((suitcase, animateSuitcase, rotateSuitcase) => {
+      const rotationGroup = new THREE.Group();
+      this.roomGroup.add(rotationGroup);
+      rotationGroup.add(suitcase);
+      rotationGroup.position.y = 0;
 
-      this.animateSuitcase = (callback) => animateSuitcase(mesh, callback);
+      this.animateSuitcase = (callback) => animateSuitcase(suitcase, callback);
+      this.rotateSuitcase = (rotation) => rotateSuitcase(rotation, rotationGroup);
       if (this.currentScene === 1 && !this.suitcaseAnimated) {
         this.roomAnimationsCount += 1;
         this.render();
@@ -417,7 +366,7 @@ export default class Story {
 
   changeScene(index) {
     this.currentScene = index;
-    this.setCamera();
+    this.setRigPosition(index);
     this.setLight();
 
     if (this.currentScene === 1 && this.animateSuitcase && !this.suitcaseAnimated) {
@@ -436,9 +385,6 @@ export default class Story {
 
     if (index >= 1) {
       const roomIndex = index - 1;
-
-      this.pivot.rotation.y = -roomIndex * 90 * THREE.Math.DEG2RAD;
-
 
       if (this.rooms[roomIndex].options.magnify) {
         this.resetBubbles();
@@ -512,11 +458,36 @@ export default class Story {
     animateEasingWithFramerate(this.hueIntensityAnimationTick(this.currentScene, initalHue, finalHue * offset), duration * offset, this.defaultHueIntensityEasingFn).then(this.animateHue);
   }
 
+  setRigAnimation() {
+    let startTime = -1;
+    let time = -1;
+    this.updateRig = () => {
+      const nowT = Date.now();
+
+      if (startTime < 0) {
+        startTime = time = nowT;
+
+        return;
+      }
+
+      const t = (nowT - startTime) * 0.001;
+      const dt = (nowT - time) * 0.001;
+
+      this.rig.update(dt, t);
+
+      time = nowT;
+    };
+  }
+
   render() {
     this.renderer.render(this.scene, this.camera);
 
     if (this.introAnimationRequest || this.roomAnimationsCount > 0) {
       requestAnimationFrame(this.render);
+    }
+
+    if (this.rigUpdating) {
+      this.updateRig();
     }
   }
 }

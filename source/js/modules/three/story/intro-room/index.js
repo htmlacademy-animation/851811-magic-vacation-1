@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 import getSvgObject from '../../common/svg-object';
 import {loadModel} from '../../common/load-model';
-import {setMeshParams, getMaterial} from '../../common/helpers';
+import {setMeshParams, getMaterial, progressEachSetting} from '../../common/helpers';
 import {isMobile} from '../../../helpers';
 import Saturn from '../../common/objects/saturn';
 import getSuitcase from './get-suitcase';
@@ -184,7 +184,7 @@ class IntroRoom extends THREE.Group {
   flightAnimationTick(object) {
     return (progress) => {
       const {ref, initialSettings, finalSettings} = object;
-      const params = progressEachSetting(initialSettings, finalSettings, progress);
+      const params = progressEachSetting(initialSettings, finalSettings, progress, tick);
       setMeshParams(ref, params);
     };
   }
@@ -225,16 +225,6 @@ class IntroRoom extends THREE.Group {
 }
 
 export default IntroRoom;
-
-function progressEachSetting(initial, final, progress) {
-  if (typeof initial === `number`) {
-    return tick(initial, final, progress);
-  }
-
-  return Object.keys(initial).reduce((acc, key) => {
-    return {...acc, [key]: progressEachSetting(initial[key], final[key], progress)};
-  }, {});
-}
 
 function getObjectsWithAnimationProps(objects) {
   const minAmplitude = 2;

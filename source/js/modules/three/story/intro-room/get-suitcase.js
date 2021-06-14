@@ -1,11 +1,10 @@
 import * as THREE from 'three';
 
 import {loadModel} from '../../common/load-model';
-import {setMeshParams} from '../../common/helpers';
+import {setMeshParams, progressEachSetting} from '../../common/helpers';
 import {isMobile} from '../../../helpers';
 import bezierEasing from '../../../canvas/common/bezier-easing';
 import {animateEasingWithFramerate, tick} from '../../../canvas/common/helpers';
-import {getChild} from './helpers';
 
 const easeIn = bezierEasing(0.45, 0.03, 0.85, 0.8);
 
@@ -128,11 +127,7 @@ function calcPositionParams(progress) {
   const {position} = positionAnimationSettings;
 
   return {
-    position: {
-      x: tick(position.min.x, position.max.x, progress),
-      y: tick(position.min.y, position.max.y, progress),
-      z: tick(position.min.z, position.max.z, progress),
-    },
+    position: progressEachSetting(position.min, position.max, progress, tick),
   };
 }
 
@@ -169,10 +164,10 @@ function getIsolationGroup(name, child) {
 }
 
 function getIsolatedChildren(parent) {
-  const flight = getChild(parent, GroupName.flight);
-  const rotation = getChild(flight, GroupName.rotation);
-  const position = getChild(rotation, GroupName.position);
-  const scale = getChild(position, GroupName.scale);
+  const flight = parent.getObjectByName(GroupName.flight);
+  const rotation = flight.getObjectByName(GroupName.rotation);
+  const position = rotation.getObjectByName(GroupName.position);
+  const scale = position.getObjectByName(GroupName.scale);
 
   return {
     flight,

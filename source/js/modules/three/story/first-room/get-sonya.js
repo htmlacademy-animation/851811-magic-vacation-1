@@ -118,5 +118,5 @@ function getHandRotate(progress, originalRotation, isRight) {
 }
 
 function getHand(sonya, name) {
-  return sonya.children[0].children[0].getObjectByName(name);
+  return sonya.getObjectByName(name);
 }

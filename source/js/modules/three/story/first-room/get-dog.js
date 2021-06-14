@@ -76,5 +76,5 @@ function getTailRotate(progress, originalRotation) {
 }
 
 function getTail(dog) {
-  return dog.children[0].getObjectByName(`Tail`);
+  return dog.getObjectByName(`Tail`);
 }
