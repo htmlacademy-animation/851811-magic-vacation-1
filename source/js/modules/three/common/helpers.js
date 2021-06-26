@@ -67,7 +67,7 @@ export const progressEachSetting = (initial, final, progress, tick) => {
   }, {});
 };
 
-export const tweenEasing = (progress) => {
+export const smootherEndEasing = (progress) => {
   //  Smoother end:
   const pseudoHalf1 = 1 / 5;
   const pseudoHalf2 = 4 / 5;
