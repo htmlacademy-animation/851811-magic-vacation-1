@@ -3,32 +3,41 @@ import {setMeshParams} from './helpers';
 
 import TweenState from './tween-state';
 
+const defaultTiltAmplitude = 1;
+
 class CameraRig extends THREE.Group {
   constructor(settings) {
     super();
 
     this._position = settings.rigPosition;
     this._rotation = settings.rigRotation;
+    this._tilt = settings.rigTilt;
     this._positionChanged = true;
     this._rotationChanged = true;
+    this._tiltChanged = true;
     this.tween = null;
 
     this.constructRigElements();
 
     this.invalidate();
+
+    this.mouseMoveTimer = null;
   }
 
   constructRigElements() {
     const rotationTrack = new THREE.Group();
     const positionTrack = new THREE.Group();
+    const tiltTrack = new THREE.Group();
     const cameraNull = new THREE.Group();
 
     this.add(rotationTrack);
     rotationTrack.add(positionTrack);
-    positionTrack.add(cameraNull);
+    positionTrack.add(tiltTrack);
+    tiltTrack.add(cameraNull);
 
     this.positionTrack = positionTrack;
     this.rotationTrack = rotationTrack;
+    this.tiltTrack = tiltTrack;
     this.cameraNull = cameraNull;
   }
 
@@ -56,6 +65,30 @@ class CameraRig extends THREE.Group {
     return this._rotation;
   }
 
+  set rigTilt(value) {
+    if (isValueTheSame(value, this._tilt)) {
+      return;
+    }
+    this._tilt = value;
+    this._tiltChanged = true;
+  }
+
+  get rigTilt() {
+    return this._tilt;
+  }
+
+  handleMouseMove(event, callback) {
+    const positionY = (window.innerHeight / 2 - event.pageY) / window.innerHeight;
+    const x = defaultTiltAmplitude * positionY;
+
+    this._tilt = {...this.rigTilt, x};
+    setMeshParams(this.tiltTrack, {rotate: this._tilt});
+    this._tiltChanged = true;
+
+    clearTimeout(this.mouseMoveTimer);
+    this.mouseMoveTimer = setTimeout(callback, 500);
+  }
+
   invalidate() {
     if (this._positionChanged) {
       setMeshParams(this.positionTrack, {position: this._position});
@@ -65,6 +98,11 @@ class CameraRig extends THREE.Group {
     if (this._rotationChanged) {
       setMeshParams(this.rotationTrack, {rotate: this._rotation});
       this._rotationChanged = false;
+    }
+
+    if (this._tiltChanged) {
+      setMeshParams(this.tiltTrack, {rotate: this._tilt});
+      this._tiltChanged = false;
     }
   }
 

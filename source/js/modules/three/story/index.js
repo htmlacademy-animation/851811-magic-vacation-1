@@ -19,6 +19,8 @@ const easeIn = bezierEasing(0.42, 0, 1, 1);
 
 const box = new THREE.Box3();
 
+const defaultTilt = {x: 0, y: 0, z: 0};
+
 export default class Story {
   constructor() {
     this.innerWidth = window.innerWidth;
@@ -123,10 +125,12 @@ export default class Story {
       intro: {
         rigPosition: {x: 0, y: 0, z: this.position.z},
         rigRotation: {x: 0, y: 0, z: 0},
+        rigTilt: defaultTilt,
       },
       room: {
         rigPosition: {x: 0, y: 0, z: 600},
         rigRotation: {x: 0, y: 15, z: 0},
+        rigTilt: defaultTilt,
       },
     };
 
@@ -221,9 +225,17 @@ export default class Story {
     } else {
       const roomIndex = index - 1;
       const rotate = roomIndex * 90;
+
+      const rigRotation = {...this.cameraSettings.room.rigRotation, y: rotate};
+      const rigTilt = {
+        ...this.cameraSettings.room.rigTilt,
+        ...roomIndex === 0 && {x: 0}
+      };
+
       const settings = {
         ...this.cameraSettings.room,
-        rigRotation: {...this.cameraSettings.room.rigRotation, y: rotate}
+        rigRotation,
+        rigTilt,
       };
 
       this.intro.fadeOutAnimation();
@@ -262,6 +274,14 @@ export default class Story {
           this.introAnimationRequest = false;
         };
       };
+
+      window.addEventListener(`mousemove`, (event) => {
+        this.mouseMoving = true;
+
+        this.rig.handleMouseMove(event, () => {
+          this.mouseMoving = false;
+        });
+      });
     }
 
     if (!this.animationRequest) {
@@ -487,7 +507,7 @@ export default class Story {
   render() {
     this.renderer.render(this.scene, this.camera);
 
-    if (this.introAnimationRequest || this.roomAnimationsCount > 0) {
+    if (this.introAnimationRequest || this.roomAnimationsCount > 0 || this.mouseMoving) {
       requestAnimationFrame(this.render);
     }
 
