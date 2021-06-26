@@ -7,6 +7,7 @@ import {isMobile} from '../../../helpers';
 import Saturn from '../../common/objects/saturn';
 import getSuitcase from './get-suitcase';
 import getAirplane from './get-airplane';
+import {animateKeyholePlane, resetKeyholePlane} from './animate-keyhole-plane';
 
 import {
   animateEasingWithFramerate,
@@ -30,7 +31,7 @@ class IntroRoom extends THREE.Group {
         position: {x: -1000, y: 1000, z: 10},
         ...!isMobile && {
           receiveShadow: true,
-        }
+        },
       },
       {
         name: `flamingo`,
@@ -102,6 +103,9 @@ class IntroRoom extends THREE.Group {
 
     this.animationObjects = getObjectsWithAnimationProps([...this.svgs, ...this.models, this.saturn]);
 
+    this.fadeOutAnimation = this.fadeOutAnimation.bind(this);
+    this.resetFadeOutAnimation = this.resetFadeOutAnimation.bind(this);
+
     this.constructChildren();
   }
 
@@ -123,6 +127,11 @@ class IntroRoom extends THREE.Group {
           setMeshParams(mesh, this.animationObjects[params.name].initialSettings);
         } else {
           setMeshParams(mesh, params);
+        }
+        if (params.name === `keyhole`) {
+          const keyholePlane = mesh.getObjectByName(`keyhole-plane`);
+          this.animateKeyholePlane = () => animateKeyholePlane(keyholePlane);
+          this.resetKeyholePlane = () => resetKeyholePlane(keyholePlane);
         }
       });
     });
@@ -221,6 +230,20 @@ class IntroRoom extends THREE.Group {
     setTimeout(() => {
       animateEasingWithFramerate(this.positionAnimationTick(object), this.animationDuration * 7, linear).then(this.onAnimationEnd);
     }, object.positionChangeTimeout);
+  }
+
+  fadeOutAnimation() {
+    if (!this.keyholePlaneAnimated && this.animateKeyholePlane) {
+      this.animateKeyholePlane();
+      this.keyholePlaneAnimated = true;
+    }
+  }
+
+  resetFadeOutAnimation() {
+    if (this.keyholePlaneAnimated && !this.keyholePlaneReset && this.resetKeyholePlane) {
+      this.resetKeyholePlane();
+      this.keyholePlaneReset = true;
+    }
   }
 }
 

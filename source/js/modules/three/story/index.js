@@ -225,12 +225,17 @@ export default class Story {
         ...this.cameraSettings.room,
         rigRotation: {...this.cameraSettings.room.rigRotation, y: rotate}
       };
+
+      this.intro.fadeOutAnimation();
       this.rig.changeStateTo(settings, () => {
+        this.intro.resetFadeOutAnimation();
         this.rigUpdating = false;
       });
+
       if (this.rotateSuitcase) {
         this.rotateSuitcase({x: 0, y: rotate, z: 0});
       }
+
       const light = this.scene.getObjectByName(`light-room`);
       if (light) {
         setMeshParams(light, {rotate: {x: 0, y: rotate, z: 0}});
