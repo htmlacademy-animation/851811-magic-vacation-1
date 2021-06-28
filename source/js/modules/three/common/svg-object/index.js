@@ -53,11 +53,16 @@ const svgPaths = [
     cap: 2,
     color: colors.DarkPurple,
     materialReflectivity: materialReflectivity.basic,
-    children: new THREE.Mesh(new THREE.PlaneGeometry(2000, 2000), new THREE.MeshStandardMaterial({
-      color: new THREE.Color(colors.Purple),
-      side: THREE.DoubleSide,
-      ...materialReflectivity.basic,
-    })),
+    children: [
+      {
+        name: `keyhole-plane`,
+        content: new THREE.Mesh(new THREE.PlaneGeometry(2000, 2000), new THREE.MeshStandardMaterial({
+          color: new THREE.Color(colors.Purple),
+          side: THREE.DoubleSide,
+          ...materialReflectivity.basic,
+        })),
+      }
+    ],
   },
   {
     name: `flower`,
@@ -118,13 +123,17 @@ const createSvgGroup = (data, settings) => {
       geometry.applyMatrix4(new THREE.Matrix4().makeScale(1, -1, 1));
       const mesh = new THREE.Mesh(geometry, material);
 
-      if (settings.children) {
-        const content = settings.children;
+      if (settings.children && Array.isArray(settings.children)) {
+        settings.children.forEach(({name, content}) => {
+          content.castShadow = true;
+          content.receiveShadow = true;
+          content.name = name;
 
-        box.setFromObject(content).getSize(size);
-        content.position.set(size.x / 2, -size.y / 2, 1);
+          box.setFromObject(content).getSize(size);
+          content.position.set(size.x / 2, -size.y / 2, 1);
 
-        group.add(content);
+          group.add(content);
+        });
       }
 
       group.add(mesh);
