@@ -4,6 +4,7 @@ import {SVGLoader} from 'three/examples/jsm/loaders/SVGLoader.js';
 import colors from '../../common/colors';
 import materialReflectivity from '../../common/material-reflectivity';
 import loadManager from '../load-manager';
+import {getMaterial} from '../../common/helpers';
 
 const size = new THREE.Vector3();
 const box = new THREE.Box3();
@@ -56,8 +57,8 @@ const svgPaths = [
     children: [
       {
         name: `keyhole-plane`,
-        content: new THREE.Mesh(new THREE.PlaneGeometry(2000, 2000), new THREE.MeshStandardMaterial({
-          color: new THREE.Color(colors.Purple),
+        content: new THREE.Mesh(new THREE.PlaneGeometry(2000, 2000), getMaterial({
+          color: colors.Purple,
           side: THREE.DoubleSide,
           ...materialReflectivity.basic,
         })),
@@ -100,8 +101,8 @@ const createSvgGroup = (data, settings) => {
   for (let i = 0; i < paths.length; i++) {
     const path = paths[i];
 
-    const material = new THREE.MeshStandardMaterial({
-      color: new THREE.Color(settings.color),
+    const material = getMaterial({
+      color: settings.color,
       side: THREE.DoubleSide,
       ...settings.materialReflectivity,
     });
