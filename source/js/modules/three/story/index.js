@@ -323,7 +323,7 @@ export default class Story {
     this.setRigPosition();
     this.setRigAnimation();
 
-    this.intro = new IntroRoom();
+    this.intro = new IntroRoom(this.isPortrait);
 
     this.roomGroup = new THREE.Group();
 
@@ -396,6 +396,7 @@ export default class Story {
       this.isPortrait = isPortrait;
       this.cameraSettings = getCameraSettings(this.position.z, this.isPortrait);
       this.setRigPosition(this.currentScene);
+      this.intro.portrait = this.isPortrait;
     }
 
     this.updateScreenSize();
