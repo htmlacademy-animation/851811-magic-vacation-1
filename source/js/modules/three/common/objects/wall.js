@@ -24,7 +24,7 @@ class Wall extends THREE.Group {
     };
 
     this.floor = {
-      radius: 1350,
+      radius: 1650,
       color: floorColor,
       materialReflectivity: materialReflectivity.soft,
       segments: 8,
