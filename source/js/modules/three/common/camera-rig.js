@@ -35,9 +35,9 @@ class CameraRig extends THREE.Group {
 
     this.add(rotationTrack);
     rotationTrack.add(localRotationTrack);
-    localRotationTrack.add(positionTrack);
-    positionTrack.add(tiltTrack);
-    tiltTrack.add(cameraNull);
+    localRotationTrack.add(tiltTrack);
+    tiltTrack.add(positionTrack);
+    positionTrack.add(cameraNull);
 
     this.positionTrack = positionTrack;
     this.localRotationTrack = localRotationTrack;
