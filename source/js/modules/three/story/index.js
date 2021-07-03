@@ -219,7 +219,23 @@ export default class Story {
   setRigPosition(index) {
     this.rigUpdating = true;
     if (this.currentScene === 0) {
-      this.rig.changeStateTo(this.cameraSettings.intro, () => {
+      const isBack = this.previousScene > 1;
+
+      const rigRotation = {
+        ...this.cameraSettings.intro.rigRotation,
+        y: isBack ? this.rig.rigRotation.y : this.cameraSettings.intro.rigRotation.y
+      };
+      const settings = {
+        ...this.cameraSettings.intro,
+        rigRotation,
+      };
+
+      this.rig.changeStateTo(settings, () => {
+        if (isBack) {
+          setMeshParams(this.introPivot, {rotate: {x: 0, y: 0, z: 0}});
+          this.rig.rigRotation = this.cameraSettings.intro.rigRotation;
+        }
+
         this.rigUpdating = false;
       });
     } else {
@@ -251,6 +267,9 @@ export default class Story {
       const light = this.scene.getObjectByName(`light-room`);
       if (light) {
         setMeshParams(light, {rotate: {x: 0, y: rotate, z: 0}});
+      }
+      if (this.introPivot) {
+        setMeshParams(this.introPivot, {rotate: {x: 0, y: rotate, z: 0}});
       }
     }
 
@@ -330,19 +349,25 @@ export default class Story {
       };
     });
 
-    this.intro.position.z = 600;
-
     box.setFromObject(this.roomGroup);
     box.center(this.roomGroup.position); // this re-sets the mesh position
     this.roomGroup.position.multiplyScalar(-1);
 
-    this.pivot = new THREE.Group();
-    this.scene.add(this.pivot);
-    this.pivot.add(this.roomGroup);
-    this.pivot.position.z = 0;
-    this.pivot.position.y = 130;
+    box.setFromObject(this.intro);
+    box.center(this.intro.position); // this re-sets the mesh position
+    this.intro.position.multiplyScalar(-1);
 
-    this.scene.add(this.intro);
+    this.roomPivot = new THREE.Group();
+    this.scene.add(this.roomPivot);
+    this.roomPivot.add(this.roomGroup);
+    this.roomPivot.position.z = 0;
+    this.roomPivot.position.y = 130;
+
+    this.introPivot = new THREE.Group();
+    this.scene.add(this.introPivot);
+    this.introPivot.add(this.intro);
+    this.intro.position.z = 600;
+
     this.introAnimationRequest = true;
 
     getSuitcase((suitcase, animateSuitcase, rotateSuitcase) => {
@@ -390,6 +415,11 @@ export default class Story {
   }
 
   changeScene(index) {
+    if (index === this.currentScene) {
+      return;
+    }
+
+    this.previousScene = this.currentScene;
     this.currentScene = index;
     this.setRigPosition(index);
     this.setLight();
