@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {isMobile} from '../../helpers';
 
 export const getLathePointsForCircle = (borderWidth, height, radius) => {
   const points = [];
@@ -41,7 +42,14 @@ export const setMeshParams = (mesh, params) => {
 };
 
 export const getMaterial = (options = {}) => {
-  const {color, ...rest} = options;
+  const {color, matcapMaterial, ...rest} = options;
+
+  if (isMobile && matcapMaterial) {
+    const textureLoader = new THREE.TextureLoader();
+    const matcap = textureLoader.load(matcapMaterial);
+
+    return new THREE.MeshMatcapMaterial({color: new THREE.Color(color), matcap, ...rest});
+  }
 
   return new THREE.MeshStandardMaterial({
     color: new THREE.Color(color),
