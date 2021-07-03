@@ -188,6 +188,10 @@ export default class Story {
   }
 
   setLight() {
+    if (isMobile) {
+      return;
+    }
+
     const [current, previous] = this.currentScene === 0 ? [ScreenName.intro, ScreenName.room] : [ScreenName.room, ScreenName.intro];
 
     const currentLight = this.scene.getObjectByName(`light-${current}`);
