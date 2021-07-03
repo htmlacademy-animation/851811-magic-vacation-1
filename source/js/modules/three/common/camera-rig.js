@@ -11,9 +11,11 @@ class CameraRig extends THREE.Group {
 
     this._position = settings.rigPosition;
     this._rotation = settings.rigRotation;
+    this._localRotation = settings.rigLocalRotation;
     this._tilt = settings.rigTilt;
     this._positionChanged = true;
     this._rotationChanged = true;
+    this._localRotationChanged = true;
     this._tiltChanged = true;
     this.tween = null;
 
@@ -25,17 +27,20 @@ class CameraRig extends THREE.Group {
   }
 
   constructRigElements() {
+    const localRotationTrack = new THREE.Group();
     const rotationTrack = new THREE.Group();
     const positionTrack = new THREE.Group();
     const tiltTrack = new THREE.Group();
     const cameraNull = new THREE.Group();
 
     this.add(rotationTrack);
-    rotationTrack.add(positionTrack);
+    rotationTrack.add(localRotationTrack);
+    localRotationTrack.add(positionTrack);
     positionTrack.add(tiltTrack);
     tiltTrack.add(cameraNull);
 
     this.positionTrack = positionTrack;
+    this.localRotationTrack = localRotationTrack;
     this.rotationTrack = rotationTrack;
     this.tiltTrack = tiltTrack;
     this.cameraNull = cameraNull;
@@ -63,6 +68,18 @@ class CameraRig extends THREE.Group {
 
   get rigRotation() {
     return this._rotation;
+  }
+
+  set rigLocalRotation(value) {
+    if (isValueTheSame(value, this._localRotation)) {
+      return;
+    }
+    this._localRotation = value;
+    this._localRotationChanged = true;
+  }
+
+  get rigLocalRotation() {
+    return this._localRotation;
   }
 
   set rigTilt(value) {
@@ -98,6 +115,11 @@ class CameraRig extends THREE.Group {
     if (this._rotationChanged) {
       setMeshParams(this.rotationTrack, {rotate: this._rotation});
       this._rotationChanged = false;
+    }
+
+    if (this._localRotationChanged) {
+      setMeshParams(this.localRotationTrack, {rotate: this._localRotation});
+      this._localRotationChanged = false;
     }
 
     if (this._tiltChanged) {
