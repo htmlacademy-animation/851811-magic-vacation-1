@@ -13,18 +13,18 @@ import FirstRoom from './first-room';
 import SecondRoom from './second-room';
 import ThirdRoom from './third-room';
 import getSuitcase from '../common/objects/get-suitcase';
+import getCameraSettings from '../common/get-camera-settings';
 
 const easeInOut = bezierEasing(0.42, 0, 0.58, 1);
 const easeIn = bezierEasing(0.42, 0, 1, 1);
 
 const box = new THREE.Box3();
 
-const defaultTilt = {x: 0, y: 0, z: 0};
-
 export default class Story {
   constructor() {
     this.innerWidth = window.innerWidth;
     this.innerHeight = window.innerHeight;
+    this.isPortrait = window.innerHeight > window.innerWidth;
 
     this.canvasCenter = {x: this.innerWidth / 2, y: this.innerHeight / 2};
 
@@ -121,18 +121,7 @@ export default class Story {
       z: 1605,
     };
 
-    this.cameraSettings = {
-      intro: {
-        rigPosition: {x: 0, y: 0, z: this.position.z},
-        rigRotation: {x: 0, y: 0, z: 0},
-        rigTilt: defaultTilt,
-      },
-      room: {
-        rigPosition: {x: 0, y: 0, z: 600},
-        rigRotation: {x: 0, y: 15, z: 0},
-        rigTilt: defaultTilt,
-      },
-    };
+    this.cameraSettings = getCameraSettings(this.position.z, this.isPortrait);
 
     const lights = getLightConfig(this.position.z);
     this.screenLights = {
@@ -400,6 +389,14 @@ export default class Story {
   handleResize() {
     this.innerWidth = window.innerWidth;
     this.innerHeight = window.innerHeight;
+
+    const isPortrait = window.innerHeight > window.innerWidth;
+
+    if (isPortrait !== this.isPortrait) {
+      this.isPortrait = isPortrait;
+      this.cameraSettings = getCameraSettings(this.position.z, this.isPortrait);
+      this.setRigPosition(this.currentScene);
+    }
 
     this.updateScreenSize();
   }
