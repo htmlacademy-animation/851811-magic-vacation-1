@@ -59,6 +59,7 @@ class SecondRoom extends THREE.Group {
 
   addLantern() {
     const lantern = new Lantern();
+    lantern.name = `lantern`;
     setMeshParams(lantern, {
       scale: 0.32,
       position: {x: 120, y: 20, z: 170},
