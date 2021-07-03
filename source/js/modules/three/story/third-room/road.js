@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import {getLathePointsForCircle, getCircleDegrees} from '../../common/helpers';
 import colors from '../../common/colors';
 import {getMaterial} from '../../common/helpers';
+import materialReflectivity from '../../common/material-reflectivity';
 
 class Road extends THREE.Group {
   constructor() {
@@ -78,6 +79,7 @@ class Road extends THREE.Group {
       flatShading: true,
       vertexColors: true,
       color: new THREE.Color(this.road.mainColor),
+      ...materialReflectivity.basic,
     }));
 
     this.add(mesh);
