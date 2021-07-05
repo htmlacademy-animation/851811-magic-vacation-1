@@ -19,6 +19,8 @@ const easeIn = bezierEasing(0.42, 0, 1, 1);
 
 const box = new THREE.Box3();
 
+const defaultTilt = {x: 0, y: 0, z: 0};
+
 export default class Story {
   constructor() {
     this.innerWidth = window.innerWidth;
@@ -123,10 +125,12 @@ export default class Story {
       intro: {
         rigPosition: {x: 0, y: 0, z: this.position.z},
         rigRotation: {x: 0, y: 0, z: 0},
+        rigTilt: defaultTilt,
       },
       room: {
         rigPosition: {x: 0, y: 0, z: 600},
         rigRotation: {x: 0, y: 15, z: 0},
+        rigTilt: defaultTilt,
       },
     };
 
@@ -215,15 +219,39 @@ export default class Story {
   setRigPosition(index) {
     this.rigUpdating = true;
     if (this.currentScene === 0) {
-      this.rig.changeStateTo(this.cameraSettings.intro, () => {
+      const isBack = this.previousScene > 1;
+
+      const rigRotation = {
+        ...this.cameraSettings.intro.rigRotation,
+        y: isBack ? this.rig.rigRotation.y : this.cameraSettings.intro.rigRotation.y
+      };
+      const settings = {
+        ...this.cameraSettings.intro,
+        rigRotation,
+      };
+
+      this.rig.changeStateTo(settings, () => {
+        if (isBack) {
+          setMeshParams(this.introPivot, {rotate: {x: 0, y: 0, z: 0}});
+          this.rig.rigRotation = this.cameraSettings.intro.rigRotation;
+        }
+
         this.rigUpdating = false;
       });
     } else {
       const roomIndex = index - 1;
       const rotate = roomIndex * 90;
+
+      const rigRotation = {...this.cameraSettings.room.rigRotation, y: rotate};
+      const rigTilt = {
+        ...this.cameraSettings.room.rigTilt,
+        ...roomIndex === 0 && {x: 0}
+      };
+
       const settings = {
         ...this.cameraSettings.room,
-        rigRotation: {...this.cameraSettings.room.rigRotation, y: rotate}
+        rigRotation,
+        rigTilt,
       };
 
       this.intro.fadeOutAnimation();
@@ -239,6 +267,9 @@ export default class Story {
       const light = this.scene.getObjectByName(`light-room`);
       if (light) {
         setMeshParams(light, {rotate: {x: 0, y: rotate, z: 0}});
+      }
+      if (this.introPivot) {
+        setMeshParams(this.introPivot, {rotate: {x: 0, y: rotate, z: 0}});
       }
     }
 
@@ -262,6 +293,14 @@ export default class Story {
           this.introAnimationRequest = false;
         };
       };
+
+      window.addEventListener(`mousemove`, (event) => {
+        this.mouseMoving = true;
+
+        this.rig.handleMouseMove(event, () => {
+          this.mouseMoving = false;
+        });
+      });
     }
 
     if (!this.animationRequest) {
@@ -310,19 +349,25 @@ export default class Story {
       };
     });
 
-    this.intro.position.z = 600;
-
     box.setFromObject(this.roomGroup);
     box.center(this.roomGroup.position); // this re-sets the mesh position
     this.roomGroup.position.multiplyScalar(-1);
 
-    this.pivot = new THREE.Group();
-    this.scene.add(this.pivot);
-    this.pivot.add(this.roomGroup);
-    this.pivot.position.z = 0;
-    this.pivot.position.y = 130;
+    box.setFromObject(this.intro);
+    box.center(this.intro.position); // this re-sets the mesh position
+    this.intro.position.multiplyScalar(-1);
 
-    this.scene.add(this.intro);
+    this.roomPivot = new THREE.Group();
+    this.scene.add(this.roomPivot);
+    this.roomPivot.add(this.roomGroup);
+    this.roomPivot.position.z = 0;
+    this.roomPivot.position.y = 130;
+
+    this.introPivot = new THREE.Group();
+    this.scene.add(this.introPivot);
+    this.introPivot.add(this.intro);
+    this.intro.position.z = 600;
+
     this.introAnimationRequest = true;
 
     getSuitcase((suitcase, animateSuitcase, rotateSuitcase) => {
@@ -370,6 +415,11 @@ export default class Story {
   }
 
   changeScene(index) {
+    if (index === this.currentScene) {
+      return;
+    }
+
+    this.previousScene = this.currentScene;
     this.currentScene = index;
     this.setRigPosition(index);
     this.setLight();
@@ -487,7 +537,7 @@ export default class Story {
   render() {
     this.renderer.render(this.scene, this.camera);
 
-    if (this.introAnimationRequest || this.roomAnimationsCount > 0) {
+    if (this.introAnimationRequest || this.roomAnimationsCount > 0 || this.mouseMoving) {
       requestAnimationFrame(this.render);
     }
 

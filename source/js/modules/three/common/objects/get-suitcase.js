@@ -1,5 +1,5 @@
 import {loadModel} from '../../common/load-model';
-import {setMeshParams, tweenEasing, getOriginalRotation, progressEachSetting} from '../../common/helpers';
+import {setMeshParams, smootherEndEasing, getOriginalRotation, progressEachSetting} from '../../common/helpers';
 import {isMobile} from '../../../helpers';
 import bezierEasing from '../../../canvas/common/bezier-easing';
 import {animateEasingWithFramerate, tick} from '../../../canvas/common/helpers';
@@ -26,7 +26,7 @@ const suitcaseAnimationSettings = {
 };
 
 const suitcaseRotationSettings = {
-  easing: tweenEasing,
+  easing: smootherEndEasing,
   duration: 1500,
 };
 

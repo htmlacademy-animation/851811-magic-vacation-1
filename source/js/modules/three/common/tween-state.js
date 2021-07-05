@@ -1,4 +1,4 @@
-import {progressEachSetting, tweenEasing} from './helpers';
+import {progressEachSetting, smootherEndEasing} from './helpers';
 import {tick} from '../../canvas/common/helpers';
 
 class TweenState {
@@ -44,7 +44,7 @@ class TweenState {
     }
 
     let progress = (t - this.startTime) / this.duration;
-    let easeProgress = tweenEasing(progress);
+    let easeProgress = smootherEndEasing(progress);
 
     if (progress > 1) {
       progress = 1;
