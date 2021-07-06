@@ -30,4 +30,8 @@ const rooms = [
   animationSettings: room.animationSettings || {hue: {initalHue: defaultHue, finalHue: defaultHue, variation: defaultHue}}
 }));
 
+export const effectRoomIndex = rooms.findIndex((room) => room.options.magnify);
+
+export const effectRoom = rooms[effectRoomIndex];
+
 export default rooms;

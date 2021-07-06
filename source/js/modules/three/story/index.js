@@ -1,6 +1,8 @@
 import * as THREE from 'three';
-import {animateEasing, animateEasingWithFramerate, tick} from '../../canvas/common/helpers';
-import bezierEasing from '../../canvas/common/bezier-easing';
+import {EffectComposer} from 'three/examples/jsm/postprocessing/EffectComposer';
+import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass';
+import {ShaderPass} from 'three/examples/jsm/postprocessing/ShaderPass';
+
 import loadManager from '../common/load-manager';
 import {isMobile} from '../../helpers';
 import CameraRig from '../common/camera-rig';
@@ -9,13 +11,11 @@ import {ScreenName, ScreenId} from '../common/vars';
 import {setMeshParams} from '../common/helpers';
 import hideObjectsMobile from '../common/hide-objects-on-mobile';
 
-import rooms from '../common/get-room-settings';
+import rooms, {effectRoom, effectRoomIndex} from '../common/get-room-settings';
+import ProgressBar from './progress-bar';
 import getSuitcase from '../common/objects/get-suitcase';
 import getCameraSettings from '../common/get-camera-settings';
-import ProgressBar from './progress-bar';
-
-const easeInOut = bezierEasing(0.42, 0, 0.58, 1);
-const easeIn = bezierEasing(0.42, 0, 1, 1);
+import getEffectMaterial, {getBubbles, getHue} from '../common/get-effect-material';
 
 const box = new THREE.Box3();
 
@@ -24,63 +24,14 @@ export default class Story {
     this.innerWidth = window.innerWidth;
     this.innerHeight = window.innerHeight;
     this.isPortrait = window.innerHeight > window.innerWidth;
-
     this.canvasCenter = {x: this.innerWidth / 2, y: this.innerHeight / 2};
 
     this.canvasSelector = `background-canvas--story`;
 
     this.roomAnimations = {};
     this.roomAnimationsCount = 0;
-    this.textureHeight = 1024;
-    this.textureWidth = 2048;
-    this.textureRatio = this.textureWidth / this.textureHeight;
+
     this.backgroundColor = 0x5f458c;
-
-    this.hueIsAnimating = false;
-    this.defaultHueIntensityEasingFn = (timingFraction) => {
-      return easeInOut(Math.sin(timingFraction * Math.PI));
-    };
-
-    this.bubblesDuration = 3000;
-
-    this.defaultFlareAngles = [5.0 * Math.PI / 8.0, 7 * Math.PI / 8.0];
-    this.defaultFlareOffset = 0.8;
-
-    this.bubbles = [
-      {
-        radius: 120.0,
-        flareAngleStart: this.defaultFlareAngles[0],
-        flareAngleEnd: this.defaultFlareAngles[1],
-        flareOffset: this.defaultFlareOffset,
-        initialPosition: [this.canvasCenter.x - this.canvasCenter.x / 10, -100],
-        position: [this.canvasCenter.x - this.canvasCenter.x / 10, -100],
-        finalPosition: [this.canvasCenter.x - this.canvasCenter.x / 10, this.innerHeight + 100],
-        positionAmplitude: 50,
-        timeout: 0,
-      },
-      {
-        radius: 80.0,
-        flareAngleStart: this.defaultFlareAngles[0],
-        flareAngleEnd: this.defaultFlareAngles[1],
-        flareOffset: this.defaultFlareOffset,
-        initialPosition: [this.canvasCenter.x - this.innerWidth / 4, -100],
-        position: [this.canvasCenter.x - this.innerWidth / 4, -100],
-        finalPosition: [this.canvasCenter.x - this.innerWidth / 4, this.innerHeight + 100],
-        positionAmplitude: 40,
-        timeout: this.bubblesDuration / 5,
-      },
-      {
-        radius: 70.0,
-        flareAngleStart: this.defaultFlareAngles[0],
-        flareAngleEnd: this.defaultFlareAngles[1],
-        flareOffset: this.defaultFlareOffset,
-        initialPosition: [this.canvasCenter.x, -100],
-        position: [this.canvasCenter.x, -100],
-        finalPosition: [this.canvasCenter.x, this.innerHeight + 100],
-        positionAmplitude: 30,
-        timeout: this.bubblesDuration / 4,
-      },
-    ];
 
     this.initialized = false;
     this.animationRequest = null;
@@ -108,41 +59,6 @@ export default class Story {
     this.render = this.render.bind(this);
     this.handleResize = this.handleResize.bind(this);
     this.updateScreenSize = this.updateScreenSize.bind(this);
-    this.animateHue = this.animateHue.bind(this);
-    this.getHueAnimationSettings = this.getHueAnimationSettings.bind(this);
-  }
-
-  resetBubbles() {
-    this.bubbles.forEach((_, index) => {
-      this.bubbles[index].position = [...this.bubbles[index].initialPosition];
-    });
-  }
-
-  resetHue() {
-    const hueAnimationSettings = this.getHueAnimationSettings(this.currentScene);
-    if (!hueAnimationSettings) {
-      return;
-    }
-
-    this.rooms[this.currentScene].options.hueShift = hueAnimationSettings.initalHue;
-  }
-
-  addBubbleUniform(index) {
-    const {width} = this.getSceneSize();
-    const pixelRatio = this.renderer.getPixelRatio();
-
-    if (this.rooms[index].options.magnify) {
-      return {
-        magnification: {
-          value: {
-            bubbles: this.bubbles,
-            resolution: [width * pixelRatio, width / this.textureRatio * pixelRatio],
-          }
-        },
-      };
-    }
-
-    return {};
   }
 
   getFov() {
@@ -151,12 +67,6 @@ export default class Story {
     }
 
     return (32 * this.innerHeight) / Math.min(this.innerWidth * 1.3, this.innerHeight);
-  }
-
-  getHueAnimationSettings(index) {
-    const texture = this.rooms[index];
-
-    return texture.animationSettings && texture.animationSettings.hue;
   }
 
   setLight() {
@@ -307,6 +217,14 @@ export default class Story {
 
     this.scene = new THREE.Scene();
 
+    this.composer = new EffectComposer(this.renderer);
+    this.composer.setPixelRatio(window.devicePixelRatio);
+    this.composer.setPixelRatio(window.devicePixelRatio);
+    const renderPass = new RenderPass(this.scene, this.camera);
+    this.composer.addPass(renderPass);
+
+    this.setEffect();
+
     this.rig = new CameraRig(this.cameraSettings[screenName]);
     this.rig.addObjectToCameraNull(this.camera);
     this.scene.add(this.rig);
@@ -403,6 +321,11 @@ export default class Story {
     this.camera.aspect = this.innerWidth / this.innerHeight;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(this.innerWidth, this.innerHeight);
+
+    const {width, height} = this.getSceneSize();
+    const pixelRatio = this.renderer.getPixelRatio();
+    const resolution = [width * pixelRatio, height * pixelRatio];
+    this.effectMaterial.uniforms.magnification.value.resolution = resolution;
   }
 
   changeScene(index) {
@@ -429,20 +352,13 @@ export default class Story {
       });
     }
 
-    if (index >= 1) {
-      const roomIndex = index - 1;
+    this.bubbles.reset(this.effectMaterial);
+    this.hue.reset(this.effectMaterial, this.currentScene);
 
-      if (this.rooms[roomIndex].options.magnify) {
-        this.resetBubbles();
-        this.animateBubbles();
-      }
+    if (this.currentScene === effectRoomIndex) {
+      this.bubbles.animate(this.effectMaterial);
 
-      if (this.getHueAnimationSettings(roomIndex)) {
-        if (!this.hueIsAnimating) {
-          this.resetHue();
-          this.animateHue();
-        }
-      }
+      this.hue.animate(this.effectMaterial, this.currentScene);
     }
     this.renderer.render(this.scene, this.camera);
   }
@@ -454,54 +370,6 @@ export default class Story {
   getSceneSize() {
     this.renderer.getSize(this.sceneSize);
     return this.sceneSize;
-  }
-
-  bubblePositionAnimationTick(index, from, to) {
-    return (progress) => {
-      const pixelRatio = this.renderer.getPixelRatio();
-
-      const y = tick(from[1], to[1], progress) * pixelRatio;
-      const offset = this.bubbles[index].positionAmplitude * Math.pow(1 - progress, 0.8) * Math.sin(progress * Math.PI * 7);
-      const x = (offset + this.bubbles[index].initialPosition[0]) * pixelRatio;
-
-      this.bubbles[index].position = [x, y];
-    };
-  }
-
-  hueIntensityAnimationTick(index, from, to) {
-    return (progress) => {
-      const hueAnimationSettings = this.getHueAnimationSettings(index);
-      if (!hueAnimationSettings) {
-        this.rooms[index].options.hueShift = hueAnimationSettings.initalHue;
-        return;
-      }
-
-      const hueShift = tick(from, to, progress);
-      this.rooms[index].options.hueShift = hueShift;
-    };
-  }
-
-  animateBubbles() {
-    this.bubbles.forEach((bubble, index) => {
-      setTimeout(() => {
-        animateEasing(this.bubblePositionAnimationTick(index, this.bubbles[index].initialPosition, this.bubbles[index].finalPosition), this.bubblesDuration, easeIn);
-      }, this.bubbles[index].timeout);
-    });
-  }
-
-  animateHue() {
-    const hueAnimationSettings = this.getHueAnimationSettings(this.currentScene);
-    if (!hueAnimationSettings) {
-      this.hueIsAnimating = false;
-      return;
-    }
-
-    this.hueIsAnimating = true;
-
-    const {initalHue, finalHue, duration, variation} = hueAnimationSettings;
-    const offset = Math.random() * variation * 2 + (1 - variation);
-
-    animateEasingWithFramerate(this.hueIntensityAnimationTick(this.currentScene, initalHue, finalHue * offset), duration * offset, this.defaultHueIntensityEasingFn).then(this.animateHue);
   }
 
   setRigAnimation() {
@@ -525,8 +393,26 @@ export default class Story {
     };
   }
 
+  setEffect() {
+    const room = rooms[this.currentScene];
+    const pixelRatio = this.renderer.getPixelRatio();
+
+    this.bubbles = getBubbles(this.canvasCenter, pixelRatio, this.innerHeight, this.innerWidth);
+    this.hue = getHue();
+
+    const {width, height} = this.getSceneSize();
+    const resolution = [width * pixelRatio, height * pixelRatio];
+    this.bubbleUniform = this.bubbles.getUniform(effectRoom, resolution);
+
+    this.getEffectMaterial = (texture) => getEffectMaterial(texture, this.bubbleUniform, room.options);
+    this.effectMaterial = this.getEffectMaterial();
+
+    const effectPass = new ShaderPass(this.effectMaterial, `map`);
+    this.composer.addPass(effectPass);
+  }
+
   render() {
-    this.renderer.render(this.scene, this.camera);
+    this.composer.render();
 
     if (this.introAnimationRequest || this.roomAnimationsCount > 0 || this.mouseMoving) {
       requestAnimationFrame(this.render);
