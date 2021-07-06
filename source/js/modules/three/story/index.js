@@ -303,17 +303,16 @@ export default class Story {
 
       this.progressBar = new ProgressBar();
       this.scene.add(this.progressBar);
-      this.position.z = 700;
+      setMeshParams(this.progressBar, {position: {x: 0, y: 0, z: screenName === `intro` ? 600 : 0}});
 
       loadManager.onProgress = (_, itemsLoaded, itemsTotal) => {
         this.progressBar.setRatio(Math.round(itemsLoaded / itemsTotal * 100) / 100);
       };
 
       loadManager.onLoad = () => {
-        this.scene.remove(this.progressBar);
-
         this.intro.visible = true;
         this.roomGroup.visible = true;
+        this.scene.remove(this.progressBar);
         this.renderer.render(this.scene, this.camera);
         this.intro.startAnimation();
         this.intro.onAnimationEnd = () => {
