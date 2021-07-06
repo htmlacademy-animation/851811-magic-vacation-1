@@ -369,8 +369,6 @@ export default class Story {
     this.roomPivot = new THREE.Group();
     this.scene.add(this.roomPivot);
     this.roomPivot.add(this.roomGroup);
-    this.roomPivot.position.z = 0;
-    this.roomPivot.position.y = 130;
     setMeshParams(this.roomPivot, {position: {x: 0, y: 130, z: 0}, scale: this.isPortrait ? 0.8 : 1});
 
     this.introPivot = new THREE.Group();
