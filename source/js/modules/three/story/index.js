@@ -69,6 +69,15 @@ export default class Story {
     return (32 * this.innerHeight) / Math.min(this.innerWidth * 1.3, this.innerHeight);
   }
 
+  getScenePosition(index) {
+    return this.innerWidth * index;
+  }
+
+  getSceneSize() {
+    this.renderer.getSize(this.sceneSize);
+    return this.sceneSize;
+  }
+
   setLight() {
     if (isMobile) {
       return;
@@ -89,6 +98,27 @@ export default class Story {
     if (previousLight) {
       previousLight.visible = false;
     }
+  }
+
+  setRigAnimation() {
+    let startTime = -1;
+    let time = -1;
+    this.updateRig = () => {
+      const nowT = Date.now();
+
+      if (startTime < 0) {
+        startTime = time = nowT;
+
+        return;
+      }
+
+      const t = (nowT - startTime) * 0.001;
+      const dt = (nowT - time) * 0.001;
+
+      this.rig.update(dt, t);
+
+      time = nowT;
+    };
   }
 
   setRigPosition(index) {
@@ -153,51 +183,22 @@ export default class Story {
     }
   }
 
-  init(rawName) {
-    const screenName = ScreenName[rawName];
+  setEffect() {
+    const room = rooms[this.currentScene];
+    const pixelRatio = this.renderer.getPixelRatio();
 
-    if (!this.initialized) {
-      this.prepareScene(screenName);
-      this.initialized = true;
+    this.bubbles = getBubbles(this.canvasCenter, pixelRatio, this.innerHeight, this.innerWidth);
+    this.hue = getHue();
 
-      this.intro.visible = false;
-      this.roomGroup.visible = false;
+    const {width, height} = this.getSceneSize();
+    const resolution = [width * pixelRatio, height * pixelRatio];
+    this.bubbleUniform = this.bubbles.getUniform(effectRoom, resolution);
 
-      this.progressBar = new ProgressBar();
-      this.scene.add(this.progressBar);
-      this.position.z = 700;
+    this.getEffectMaterial = (texture) => getEffectMaterial(texture, this.bubbleUniform, room.options);
+    this.effectMaterial = this.getEffectMaterial();
 
-      loadManager.onProgress = (_, itemsLoaded, itemsTotal) => {
-        this.progressBar.setRatio(Math.round(itemsLoaded / itemsTotal * 100) / 100);
-      };
-
-      loadManager.onLoad = () => {
-        this.scene.remove(this.progressBar);
-
-        this.intro.visible = true;
-        this.roomGroup.visible = true;
-        this.renderer.render(this.scene, this.camera);
-        this.intro.startAnimation();
-        this.intro.onAnimationEnd = () => {
-          this.introAnimationRequest = false;
-        };
-      };
-
-      window.addEventListener(`mousemove`, (event) => {
-        this.mouseMoving = true;
-
-        this.rig.handleMouseMove(event, () => {
-          this.mouseMoving = false;
-        });
-      });
-    }
-
-    if (!this.animationRequest) {
-      window.addEventListener(`resize`, this.handleResize);
-      this.animationRequest = requestAnimationFrame(this.render);
-    }
-
-    this.changeScene(ScreenId[screenName]);
+    const effectPass = new ShaderPass(this.effectMaterial, `map`);
+    this.composer.addPass(effectPass);
   }
 
   prepareScene(screenName) {
@@ -290,6 +291,53 @@ export default class Story {
     hideObjectsMobile(this.scene);
   }
 
+  init(rawName) {
+    const screenName = ScreenName[rawName];
+
+    if (!this.initialized) {
+      this.prepareScene(screenName);
+      this.initialized = true;
+
+      this.intro.visible = false;
+      this.roomGroup.visible = false;
+
+      this.progressBar = new ProgressBar();
+      this.scene.add(this.progressBar);
+      this.position.z = 700;
+
+      loadManager.onProgress = (_, itemsLoaded, itemsTotal) => {
+        this.progressBar.setRatio(Math.round(itemsLoaded / itemsTotal * 100) / 100);
+      };
+
+      loadManager.onLoad = () => {
+        this.scene.remove(this.progressBar);
+
+        this.intro.visible = true;
+        this.roomGroup.visible = true;
+        this.renderer.render(this.scene, this.camera);
+        this.intro.startAnimation();
+        this.intro.onAnimationEnd = () => {
+          this.introAnimationRequest = false;
+        };
+      };
+
+      window.addEventListener(`mousemove`, (event) => {
+        this.mouseMoving = true;
+
+        this.rig.handleMouseMove(event, () => {
+          this.mouseMoving = false;
+        });
+      });
+    }
+
+    if (!this.animationRequest) {
+      window.addEventListener(`resize`, this.handleResize);
+      this.animationRequest = requestAnimationFrame(this.render);
+    }
+
+    this.changeScene(ScreenId[screenName]);
+  }
+
   end() {
     window.removeEventListener(`resize`, this.handleResize);
 
@@ -361,54 +409,6 @@ export default class Story {
       this.hue.animate(this.effectMaterial, this.currentScene);
     }
     this.renderer.render(this.scene, this.camera);
-  }
-
-  getScenePosition(index) {
-    return this.innerWidth * index;
-  }
-
-  getSceneSize() {
-    this.renderer.getSize(this.sceneSize);
-    return this.sceneSize;
-  }
-
-  setRigAnimation() {
-    let startTime = -1;
-    let time = -1;
-    this.updateRig = () => {
-      const nowT = Date.now();
-
-      if (startTime < 0) {
-        startTime = time = nowT;
-
-        return;
-      }
-
-      const t = (nowT - startTime) * 0.001;
-      const dt = (nowT - time) * 0.001;
-
-      this.rig.update(dt, t);
-
-      time = nowT;
-    };
-  }
-
-  setEffect() {
-    const room = rooms[this.currentScene];
-    const pixelRatio = this.renderer.getPixelRatio();
-
-    this.bubbles = getBubbles(this.canvasCenter, pixelRatio, this.innerHeight, this.innerWidth);
-    this.hue = getHue();
-
-    const {width, height} = this.getSceneSize();
-    const resolution = [width * pixelRatio, height * pixelRatio];
-    this.bubbleUniform = this.bubbles.getUniform(effectRoom, resolution);
-
-    this.getEffectMaterial = (texture) => getEffectMaterial(texture, this.bubbleUniform, room.options);
-    this.effectMaterial = this.getEffectMaterial();
-
-    const effectPass = new ShaderPass(this.effectMaterial, `map`);
-    this.composer.addPass(effectPass);
   }
 
   render() {
