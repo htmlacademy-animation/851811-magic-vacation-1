@@ -9,10 +9,7 @@ import {ScreenName, ScreenId} from '../common/vars';
 import {setMeshParams} from '../common/helpers';
 import hideObjectsMobile from '../common/hide-objects-on-mobile';
 
-import IntroRoom from './intro-room';
-import FirstRoom from './first-room';
-import SecondRoom from './second-room';
-import ThirdRoom from './third-room';
+import rooms from '../common/get-room-settings';
 import getSuitcase from '../common/objects/get-suitcase';
 import getCameraSettings from '../common/get-camera-settings';
 import ProgressBar from './progress-bar';
@@ -32,33 +29,6 @@ export default class Story {
 
     this.canvasSelector = `background-canvas--story`;
 
-    this.rooms = [
-      {
-        options: {hueShift: 0.0},
-        Elements: FirstRoom,
-      },
-      {
-        options: {hueShift: -0.26, magnify: true},
-        animationSettings: {
-          hue: {
-            initalHue: -0.1,
-            finalHue: -0.26,
-            duration: 3000,
-            variation: 0.3,
-          },
-        },
-        Elements: SecondRoom,
-      },
-      {
-        options: {hueShift: 0.0},
-        Elements: ThirdRoom,
-      },
-      {
-        options: {hueShift: 0.0},
-        Elements: FirstRoom,
-        elementsOptions: {dark: true},
-      },
-    ];
     this.roomAnimations = {};
     this.roomAnimationsCount = 0;
     this.textureHeight = 1024;
@@ -343,11 +313,13 @@ export default class Story {
     this.setRigPosition();
     this.setRigAnimation();
 
+    const [intro, ...slider] = rooms;
+
+    const {Elements: IntroRoom} = intro;
     this.intro = new IntroRoom(this.isPortrait);
 
     this.roomGroup = new THREE.Group();
-
-    this.materials = this.rooms.map((room, index) => {
+    slider.forEach((room, index) => {
       const Elements = room.Elements;
       const elements = new Elements(room.elementsOptions);
       elements.rotation.y = index * 90 * THREE.Math.DEG2RAD;
