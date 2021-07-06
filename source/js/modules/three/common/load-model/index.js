@@ -1,6 +1,10 @@
 import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader.js';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import loadManager from '../load-manager';
+import {getMaterial} from '../helpers';
+import {isMobile} from '../../../helpers';
+import materialReflectivity from '../material-reflectivity';
+import hideObjectsMobile from '../hide-objects-on-mobile';
 
 const onComplete = (obj3d, material, callback) => {
   if (material) {
@@ -11,6 +15,8 @@ const onComplete = (obj3d, material, callback) => {
     });
   }
 
+  hideObjectsMobile(obj3d);
+
   if (typeof callback === `function`) {
     callback.call(null, obj3d);
   }
@@ -20,6 +26,16 @@ const onGltfComplete = (gltf, material, callback) => {
   if (!gltf.scene) {
     return;
   }
+
+  if (isMobile) {
+    gltf.scene.traverse((object) => {
+      if (object.isMesh) {
+        const {color} = object.material;
+        object.material = getMaterial({color, ...materialReflectivity.basic});
+      }
+    });
+  }
+
   onComplete(gltf.scene, material, callback);
 };
 

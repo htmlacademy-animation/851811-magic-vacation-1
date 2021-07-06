@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import {getLathePointsForCircle, getCircleDegrees} from '../../common/helpers';
 import colors from '../../common/colors';
 import {getMaterial} from '../../common/helpers';
+import materialReflectivity from '../../common/material-reflectivity';
 
 class Rug extends THREE.Group {
   constructor({dark} = {}) {
@@ -71,6 +72,7 @@ class Rug extends THREE.Group {
       flatShading: true,
       vertexColors: true,
       color: new THREE.Color(this.rug.mainColor),
+      ...materialReflectivity.basic,
     }));
 
     this.add(mesh);

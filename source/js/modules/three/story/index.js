@@ -7,6 +7,7 @@ import CameraRig from '../common/camera-rig';
 import {getLightConfig, createLight} from '../common/lights';
 import {ScreenName, ScreenId} from '../common/vars';
 import {setMeshParams} from '../common/helpers';
+import hideObjectsMobile from '../common/hide-objects-on-mobile';
 
 import IntroRoom from './intro-room';
 import FirstRoom from './first-room';
@@ -188,6 +189,10 @@ export default class Story {
   }
 
   setLight() {
+    if (isMobile) {
+      return;
+    }
+
     const [current, previous] = this.currentScene === 0 ? [ScreenName.intro, ScreenName.room] : [ScreenName.room, ScreenName.intro];
 
     const currentLight = this.scene.getObjectByName(`light-${current}`);
@@ -379,6 +384,7 @@ export default class Story {
     });
 
     this.setLight();
+    hideObjectsMobile(this.scene);
   }
 
   end() {
