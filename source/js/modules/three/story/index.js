@@ -15,6 +15,7 @@ import SecondRoom from './second-room';
 import ThirdRoom from './third-room';
 import getSuitcase from '../common/objects/get-suitcase';
 import getCameraSettings from '../common/get-camera-settings';
+import ProgressBar from './progress-bar';
 
 const easeInOut = bezierEasing(0.42, 0, 0.58, 1);
 const easeIn = bezierEasing(0.42, 0, 1, 1);
@@ -278,9 +279,23 @@ export default class Story {
     if (!this.initialized) {
       this.prepareScene(screenName);
       this.initialized = true;
-      this.scene.visible = false;
+
+      this.intro.visible = false;
+      this.roomGroup.visible = false;
+
+      this.progressBar = new ProgressBar();
+      this.scene.add(this.progressBar);
+      this.position.z = 700;
+
+      loadManager.onProgress = (_, itemsLoaded, itemsTotal) => {
+        this.progressBar.setRatio(Math.round(itemsLoaded / itemsTotal * 100) / 100);
+      };
+
       loadManager.onLoad = () => {
-        this.scene.visible = true;
+        this.scene.remove(this.progressBar);
+
+        this.intro.visible = true;
+        this.roomGroup.visible = true;
         this.renderer.render(this.scene, this.camera);
         this.intro.startAnimation();
         this.intro.onAnimationEnd = () => {
@@ -354,8 +369,6 @@ export default class Story {
     this.roomPivot = new THREE.Group();
     this.scene.add(this.roomPivot);
     this.roomPivot.add(this.roomGroup);
-    this.roomPivot.position.z = 0;
-    this.roomPivot.position.y = 130;
     setMeshParams(this.roomPivot, {position: {x: 0, y: 130, z: 0}, scale: this.isPortrait ? 0.8 : 1});
 
     this.introPivot = new THREE.Group();
