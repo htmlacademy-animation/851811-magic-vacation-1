@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import getSvgObject from '../../common/svg-object';
+import getSvgObject from '../../common/get-svg-object';
 import colors from '../../common/colors';
 import materialReflectivity from '../../common/material-reflectivity';
 import {loadModel} from '../../common/load-model';

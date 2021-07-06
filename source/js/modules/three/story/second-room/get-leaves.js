@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import getSvgObject from '../../common/svg-object';
+import getSvgObject from '../../common/get-svg-object';
 import {setMeshParams} from '../../common/helpers';
 import {isMobile} from '../../../helpers';
 import bezierEasing from '../../../canvas/common/bezier-easing';

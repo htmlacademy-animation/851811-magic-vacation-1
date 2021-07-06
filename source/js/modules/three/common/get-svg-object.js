@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 
 import {SVGLoader} from 'three/examples/jsm/loaders/SVGLoader.js';
-import colors from '../../common/colors';
-import materialReflectivity from '../../common/material-reflectivity';
-import loadManager from '../load-manager';
-import {getMaterial} from '../../common/helpers';
+import colors from './colors';
+import materialReflectivity from './material-reflectivity';
+import loadManager from './load-manager';
+import {getMaterial} from './helpers';
 
 const size = new THREE.Vector3();
 const box = new THREE.Box3();

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import getSvgObject from '../../common/svg-object';
+import getSvgObject from '../../common/get-svg-object';
 import {loadModel} from '../../common/load-model';
 import {setMeshParams, getMaterial, progressEachSetting} from '../../common/helpers';
 import {isMobile} from '../../../helpers';

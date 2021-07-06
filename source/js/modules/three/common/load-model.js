@@ -1,10 +1,10 @@
 import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader.js';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
-import loadManager from '../load-manager';
-import {getMaterial} from '../helpers';
-import {isMobile} from '../../../helpers';
-import materialReflectivity from '../material-reflectivity';
-import hideObjectsMobile from '../hide-objects-on-mobile';
+import loadManager from './load-manager';
+import {getMaterial} from './helpers';
+import {isMobile} from './../../helpers';
+import materialReflectivity from './material-reflectivity';
+import hideObjectsMobile from './hide-objects-on-mobile';
 
 const onComplete = (obj3d, material, callback) => {
   if (material) {
