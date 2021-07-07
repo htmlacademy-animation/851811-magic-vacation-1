@@ -58,6 +58,7 @@ export default class Story {
 
     this.render = this.render.bind(this);
     this.handleResize = this.handleResize.bind(this);
+    this.handleMouseMove = this.handleMouseMove.bind(this);
     this.updateScreenSize = this.updateScreenSize.bind(this);
   }
 
@@ -319,18 +320,12 @@ export default class Story {
           this.introAnimationRequest = false;
         };
       };
-
-      window.addEventListener(`mousemove`, (event) => {
-        this.mouseMoving = true;
-
-        this.rig.handleMouseMove(event, () => {
-          this.mouseMoving = false;
-        });
-      });
     }
 
+    window.addEventListener(`mousemove`, this.handleMouseMove);
+    window.addEventListener(`resize`, this.handleResize);
+
     if (!this.animationRequest) {
-      window.addEventListener(`resize`, this.handleResize);
       this.animationRequest = requestAnimationFrame(this.render);
     }
 
@@ -339,7 +334,12 @@ export default class Story {
 
   end() {
     window.removeEventListener(`resize`, this.handleResize);
+    window.removeEventListener(`mousemove`, this.handleMouseMove);
 
+    this.introAnimationRequest = null;
+    this.roomAnimationsCount = 0;
+    this.mouseMoving = false;
+    this.rigUpdating = null;
     this.animationRequest = null;
   }
 
@@ -358,6 +358,14 @@ export default class Story {
     }
 
     this.updateScreenSize();
+  }
+
+  handleMouseMove(event) {
+    this.mouseMoving = true;
+
+    this.rig.handleMouseMove(event, () => {
+      this.mouseMoving = false;
+    });
   }
 
   updateScreenSize() {
