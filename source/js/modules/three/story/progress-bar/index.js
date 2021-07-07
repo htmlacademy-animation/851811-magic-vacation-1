@@ -60,7 +60,7 @@ class ProgressBar extends THREE.Group {
     }));
 
     box.setFromObject(this.bar).getSize(size);
-    this.barY = -size.y - 200;
+    this.barY = -size.y / 2;
     this.barXEnd = 0;
     this.barXStart = -this.barLength;
 
@@ -76,7 +76,7 @@ class ProgressBar extends THREE.Group {
     this.ratio = value;
 
     const x = tick(this.barXStart, this.barXEnd, this.ratio);
-    setMeshParams(this.bar, {position: {x, y: this.barYCenter, z: 5}});
+    setMeshParams(this.bar, {position: {x, y: this.barY, z: 5}});
   }
 }
 
