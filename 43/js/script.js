@@ -72988,7 +72988,7 @@ class Story {
     this.canvasElement.width = this.innerWidth;
     this.canvasElement.height = this.innerHeight;
 
-    this.renderer = new three__WEBPACK_IMPORTED_MODULE_0__["WebGLRenderer"]({canvas: this.canvasElement});
+    this.renderer = new three__WEBPACK_IMPORTED_MODULE_0__["WebGLRenderer"]({canvas: this.canvasElement, logarithmicDepthBuffer: true});
     this.renderer.setClearColor(this.backgroundColor, 1);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.innerWidth, this.innerHeight);
