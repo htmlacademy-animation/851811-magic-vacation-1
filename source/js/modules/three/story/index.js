@@ -206,7 +206,7 @@ export default class Story {
     this.canvasElement.width = this.innerWidth;
     this.canvasElement.height = this.innerHeight;
 
-    this.renderer = new THREE.WebGLRenderer({canvas: this.canvasElement});
+    this.renderer = new THREE.WebGLRenderer({canvas: this.canvasElement, logarithmicDepthBuffer: true});
     this.renderer.setClearColor(this.backgroundColor, 1);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.innerWidth, this.innerHeight);
