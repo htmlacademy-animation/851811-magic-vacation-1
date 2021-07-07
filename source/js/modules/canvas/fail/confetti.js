@@ -1,10 +1,5 @@
-import {
-  animateProgress,
-  animateEasing,
-  tick,
-  skewCtx,
-} from '../common/helpers';
-
+import {animateProgress, animateEasing, tick} from 'js/helpers/animation';
+import {skewCtx} from '../common/helpers';
 import {power} from '../common/time-functions';
 
 export default class Confetti {

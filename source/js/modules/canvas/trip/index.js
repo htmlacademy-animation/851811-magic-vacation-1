@@ -2,7 +2,7 @@
 import Plane from './plane';
 import Walrus from './walrus';
 import Snowflake from './snowflake';
-import {animateDuration} from '../common/helpers';
+import {animateDuration} from 'js/helpers/animation';
 
 const ANIMATION_DURATION = 1000;
 const TOTAL_DURATION = 3000;

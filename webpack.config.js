@@ -15,7 +15,10 @@ module.exports = {
   },
   resolve: {
     extensions: [".js", ".sass", ".scss", ".css"],
-    modules: ['./node_modules/'],
+    modules: [
+      path.join(`${path.resolve()}`, 'source'),
+      'node_modules',
+    ],
   },
   mode: 'development',
   devtool: `source-map`,

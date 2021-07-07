@@ -2,7 +2,7 @@
 import Main from './main';
 import Confetti from './confetti';
 import Tear from './tear';
-import {animateDuration} from '../common/helpers';
+import {animateDuration} from 'js/helpers/animation';
 
 const ANIMATION_DURATION = 1000;
 const TOTAL_DURATION = 3000;

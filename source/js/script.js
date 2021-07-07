@@ -11,7 +11,7 @@ import FullPageScroll from './modules/full-page-scroll';
 import document from './modules/document';
 import rules from './modules/rules';
 import intro from './modules/intro';
-import animateResult from './modules/svg/animate-result';
+import animateGameResult from './modules/svg/animate-game-result';
 
 const fullPageScroll = new FullPageScroll();
 fullPageScroll.init();
@@ -28,4 +28,4 @@ social();
 document();
 rules();
 intro({scene: fullPageScroll.getScene()});
-animateResult();
+animateGameResult();
