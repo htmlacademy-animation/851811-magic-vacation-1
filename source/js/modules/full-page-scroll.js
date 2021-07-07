@@ -2,6 +2,7 @@ import throttle from 'lodash/throttle';
 import gameCountdown from '../modules/countdown/animate-game-countdown';
 import PrizeAmountCountdown from '../modules/countdown/animate-prize-amount';
 import Scene from './webgl/story';
+import sonyaAnimation from '../modules/web-animation/animate-sonya';
 
 const PrizeType = {
   JOURNEYS: `primary`,
@@ -90,10 +91,12 @@ export default class FullPageScroll {
 
     if (isGame) {
       gameCountdown.startCountdown();
+      sonyaAnimation.start();
     }
 
     if (!isGame) {
       gameCountdown.endCountdown();
+      sonyaAnimation.end();
     }
   }
 

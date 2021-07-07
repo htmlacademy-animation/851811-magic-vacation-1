@@ -373,6 +373,7 @@ $screen--prizes--animation-duration: 0.4s;
     position: absolute;
     right: -8.5rem;
     bottom: 0;
+    transform: translate(200px, 200px);
 
     @media (min-width: $stop-scaling) {
       right: -85px;
