@@ -1,9 +1,5 @@
-import {
-  animateProgress,
-  rotateCtx,
-  rotateCoords,
-  tick
-} from '../common/helpers';
+import {rotateCtx, rotateCoords} from '../common/helpers';
+import {animateProgress, tick} from 'js/helpers/animation';
 
 export default class Plane {
   constructor({duration, ctx}) {

@@ -1,8 +1,5 @@
-import {
-  animateProgress,
-  tick,
-  getCoordsOfAngle
-} from '../common/helpers';
+import {getCoordsOfAngle} from 'js/helpers/math';
+import {animateProgress, tick} from 'js/helpers/animation';
 
 export default class Main {
   constructor({duration, ctx}) {

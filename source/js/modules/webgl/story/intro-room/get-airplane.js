@@ -2,9 +2,9 @@ import * as THREE from 'three';
 
 import {loadModel} from '../../common/load-model';
 import {setMeshParams, getMaterial} from '../../common/helpers';
-import {isMobile} from '../../../helpers';
-import bezierEasing from '../../../canvas/common/bezier-easing';
-import {animateEasingWithFramerate, tick} from '../../../canvas/common/helpers';
+import isMobile from 'js/helpers/is-mobile';
+import bezierEasing from 'js/helpers/bezier-easing';
+import {animateEasingWithFramerate, tick} from 'js/helpers/animation';
 import colors from '../../common/colors';
 import materialReflectivity from '../../common/material-reflectivity';
 

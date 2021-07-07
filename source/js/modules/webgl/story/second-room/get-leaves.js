@@ -2,9 +2,9 @@ import * as THREE from 'three';
 
 import getSvgObject from '../../common/get-svg-object';
 import {setMeshParams} from '../../common/helpers';
-import {isMobile} from '../../../helpers';
-import bezierEasing from '../../../canvas/common/bezier-easing';
-import {animateEasingWithFramerate} from '../../../canvas/common/helpers';
+import isMobile from 'js/helpers/is-mobile';
+import bezierEasing from 'js/helpers/bezier-easing';
+import {animateEasingWithFramerate} from 'js/helpers/animation';
 
 const withPause = bezierEasing(0.33, 0.97, 0.58, -0.06);
 

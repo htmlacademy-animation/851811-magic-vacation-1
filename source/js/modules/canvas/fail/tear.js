@@ -1,9 +1,4 @@
-import {
-  animateProgress,
-  animateEasing,
-  tick,
-} from '../common/helpers';
-
+import {animateProgress, animateEasing, tick} from 'js/helpers/animation';
 import {back} from '../common/time-functions';
 
 export default class Tear {

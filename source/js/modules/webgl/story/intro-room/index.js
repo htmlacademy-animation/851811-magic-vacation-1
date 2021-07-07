@@ -3,17 +3,13 @@ import * as THREE from 'three';
 import getSvgObject from '../../common/get-svg-object';
 import {loadModel} from '../../common/load-model';
 import {setMeshParams, getMaterial, progressEachSetting} from '../../common/helpers';
-import {isMobile} from '../../../helpers';
+import isMobile from 'js/helpers/is-mobile';
 import Saturn from '../../common/objects/saturn';
 import getSuitcase from './get-suitcase';
 import getAirplane from './get-airplane';
 import {animateKeyholePlane, resetKeyholePlane} from './animate-keyhole-plane';
-
-import {
-  animateEasingWithFramerate,
-  tick
-} from '../../../canvas/common/helpers';
-import bezierEasing from '../../../canvas/common/bezier-easing';
+import {animateEasingWithFramerate, tick} from 'js/helpers/animation';
+import bezierEasing from 'js/helpers/bezier-easing';
 
 const easeOut = bezierEasing(0.0, 0.0, 0.58, 1.0);
 const linear = bezierEasing(0.0, 0.0, 1.0, 1.0);

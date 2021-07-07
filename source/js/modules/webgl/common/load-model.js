@@ -2,7 +2,7 @@ import {OBJLoader} from 'three/examples/jsm/loaders/OBJLoader.js';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import loadManager from './load-manager';
 import {getMaterial} from './helpers';
-import {isMobile} from './../../helpers';
+import isMobile from 'js/helpers/is-mobile';
 import materialReflectivity from './material-reflectivity';
 import hideObjectsMobile from './hide-objects-on-mobile';
 

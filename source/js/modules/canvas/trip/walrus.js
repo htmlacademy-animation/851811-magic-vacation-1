@@ -1,9 +1,5 @@
-import {
-  animateEasing,
-  animateProgress,
-  rotateCtx,
-  tick
-} from '../common/helpers';
+import {rotateCtx} from '../common/helpers';
+import {animateProgress, animateEasing, tick} from 'js/helpers/animation';
 import {bounce, makeEaseOut} from '../common/time-functions';
 
 export default class Walrus {

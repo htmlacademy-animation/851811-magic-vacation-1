@@ -5,7 +5,7 @@ import colors from '../../common/colors';
 import materialReflectivity from '../../common/material-reflectivity';
 import {loadModel} from '../../common/load-model';
 import {setMeshParams, getMaterial} from '../../common/helpers';
-import {isMobile} from '../../../helpers';
+import isMobile from 'js/helpers/is-mobile';
 import Rug from './rug';
 import Saturn from '../../common/objects/saturn';
 import Wall from '../../common/objects/wall';

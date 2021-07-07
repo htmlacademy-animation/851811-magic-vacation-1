@@ -1,4 +1,4 @@
-import {isMobile} from "../../helpers";
+import isMobile from 'js/helpers/is-mobile';
 
 const names = [`surf.obj`, `Skis`, `Ski.1`, `Ski`, `SkiStick`, `SkiStick.1`, `lantern`, `Table`, `Starfish`];
 

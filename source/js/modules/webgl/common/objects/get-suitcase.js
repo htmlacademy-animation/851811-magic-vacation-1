@@ -1,8 +1,8 @@
 import {loadModel} from '../../common/load-model';
 import {setMeshParams, smootherEndEasing, getOriginalRotation, progressEachSetting} from '../../common/helpers';
-import {isMobile} from '../../../helpers';
-import bezierEasing from '../../../canvas/common/bezier-easing';
-import {animateEasingWithFramerate, tick} from '../../../canvas/common/helpers';
+import isMobile from 'js/helpers/is-mobile';
+import bezierEasing from 'js/helpers/bezier-easing';
+import {animateEasingWithFramerate, tick} from 'js/helpers/animation';
 
 const linear = bezierEasing(0.0, 0.0, 1.0, 1.0);
 

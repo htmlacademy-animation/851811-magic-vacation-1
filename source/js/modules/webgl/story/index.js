@@ -4,7 +4,7 @@ import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass';
 import {ShaderPass} from 'three/examples/jsm/postprocessing/ShaderPass';
 
 import loadManager from '../common/load-manager';
-import {isMobile} from '../../helpers';
+import isMobile from 'js/helpers/is-mobile';
 import CameraRig from '../common/camera-rig';
 import {getLightConfig, createLight} from '../common/lights';
 import {ScreenName, ScreenId} from '../common/vars';

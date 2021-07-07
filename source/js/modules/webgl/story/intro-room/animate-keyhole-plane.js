@@ -1,5 +1,5 @@
-import bezierEasing from '../../../canvas/common/bezier-easing';
-import {animateEasingWithFramerate, tick} from '../../../canvas/common/helpers';
+import bezierEasing from 'js/helpers/bezier-easing';
+import {animateEasingWithFramerate, tick} from 'js/helpers/animation';
 
 const easeIn = bezierEasing(0.45, 0.03, 0.85, 0.8);
 

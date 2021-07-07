@@ -4,7 +4,7 @@ import colors from '../../common/colors';
 import materialReflectivity from '../../common/material-reflectivity';
 import {loadModel} from '../../common/load-model';
 import {setMeshParams, getMaterial} from '../../common/helpers';
-import {isMobile} from '../../../helpers';
+import isMobile from 'js/helpers/is-mobile';
 import Snowman from './snowman';
 import Road from './road';
 import Wall from '../../common/objects/wall';

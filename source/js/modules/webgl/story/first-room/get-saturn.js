@@ -2,9 +2,9 @@ import * as THREE from 'three';
 
 import Saturn from '../../common/objects/saturn';
 import {setMeshParams, getOriginalRotation} from '../../common/helpers';
-import {isMobile} from '../../../helpers';
-import bezierEasing from '../../../canvas/common/bezier-easing';
-import {animateEasingWithFramerate} from '../../../canvas/common/helpers';
+import isMobile from 'js/helpers/is-mobile';
+import bezierEasing from 'js/helpers/bezier-easing';
+import {animateEasingWithFramerate} from 'js/helpers/animation';
 
 const easeIn = bezierEasing(0.45, 0.03, 0.85, 0.8);
 

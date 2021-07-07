@@ -1,5 +1,5 @@
 import {progressEachSetting, smootherEndEasing} from './helpers';
-import {tick} from '../../canvas/common/helpers';
+import {tick} from 'js/helpers/animation';
 
 class TweenState {
   constructor(object, newPosition, duration, onComplete) {

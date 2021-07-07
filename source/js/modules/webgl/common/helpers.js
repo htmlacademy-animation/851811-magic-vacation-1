@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {isMobile} from '../../helpers';
+import isMobile from 'js/helpers/is-mobile';
 import loadManager from './load-manager';
 
 export const getLathePointsForCircle = (borderWidth, height, radius) => {

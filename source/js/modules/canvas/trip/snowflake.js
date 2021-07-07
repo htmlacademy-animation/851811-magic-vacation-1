@@ -1,8 +1,5 @@
-import {
-  animateProgress,
-  tick,
-  skewCtx,
-} from '../common/helpers';
+import {skewCtx} from '../common/helpers';
+import {animateProgress, tick} from 'js/helpers/animation';
 
 export default class Snowflake {
   constructor(props) {

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import {getConeRadiusFromSideWidth} from '../../../canvas/common/helpers';
+import {getConeRadiusFromSideWidth} from 'js/helpers/math';
 import colors from '../../common/colors';
 import materialReflectivity from '../../common/material-reflectivity';
 import {getMaterial} from '../../common/helpers';

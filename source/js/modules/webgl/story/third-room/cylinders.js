@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import colors from '../../common/colors';
 import materialReflectivity from '../../common/material-reflectivity';
 import {getMaterial} from '../../common/helpers';
-import {getCoordsOfAngle} from '../../../canvas/common/helpers';
+import {getCoordsOfAngle} from 'js/helpers/math';
 
 class Cylinders extends THREE.Group {
   constructor() {

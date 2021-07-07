@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import {loadModel} from '../../common/load-model';
 import {setMeshParams, getMaterial, getCircleDegrees} from '../../common/helpers';
 import materialReflectivity from '../material-reflectivity';
-import {isMobile} from '../../../helpers';
+import isMobile from 'js/helpers/is-mobile';
 
 class Wall extends THREE.Group {
   constructor({wallMaterialReflectivity, wallColor, floorColor} = {}) {

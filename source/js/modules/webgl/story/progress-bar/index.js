@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import {tick} from '../../../canvas/common/helpers';
+import {tick} from 'js/helpers/animation';
 import {setMeshParams, getMaterial} from '../../common/helpers';
 import colors from '../../common/colors';
 import materialReflectivity from '../../common/material-reflectivity';
