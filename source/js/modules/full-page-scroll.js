@@ -1,7 +1,7 @@
 import throttle from 'lodash/throttle';
 import gameCountdown from '../modules/countdown/animate-game-countdown';
 import PrizeAmountCountdown from '../modules/countdown/animate-prize-amount';
-import Scene from './three/story';
+import Scene from './webgl/story';
 
 const PrizeType = {
   JOURNEYS: `primary`,
