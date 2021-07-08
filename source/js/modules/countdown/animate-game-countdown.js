@@ -1,5 +1,7 @@
+import {showFailureScreen} from '../chat';
+
 class Countdown {
-  constructor() {
+  constructor(onEnd) {
     this.animationDuration = 300000; // 5 минут
     this.timePerFrame = 1000; // обновляем раз в секунду
 
@@ -8,6 +10,8 @@ class Countdown {
     this.animationStartTime = null;
 
     this.animationRequest = null;
+
+    this.onEnd = onEnd;
 
     this.startCountdown = this.startCountdown.bind(this);
     this.endCountdown = this.endCountdown.bind(this);
@@ -26,11 +30,12 @@ class Countdown {
     if (this.animationRequest) {
       cancelAnimationFrame(this.animationRequest);
       this.animationRequest = null;
-      this.lastFrameUpdateTime = null;
-      this.timePassedSinceLastUpdate = null;
-      this.animationStartTime = null;
-      this.updateValues(this.animationDuration);
     }
+
+    this.lastFrameUpdateTime = null;
+    this.timePassedSinceLastUpdate = null;
+    this.animationStartTime = null;
+    this.updateValues(this.animationDuration);
   }
 
   draw(currentTime) {
@@ -48,7 +53,8 @@ class Countdown {
       const currentCountdownValue = this.getAmountOfTimeLeft(Math.round(currentTime / 1000) * 1000);
 
       if (currentCountdownValue < 0) {
-        this.animationRequest = null;
+        this.onEnd();
+        this.endCountdown();
         return;
       }
 
@@ -71,6 +77,10 @@ class Countdown {
   }
 
   updateValues(time) {
+    if (!this.minutes || !this.seconds) {
+      return;
+    }
+
     const minutes = new Date(time).getMinutes();
     const seconds = new Date(time).getSeconds();
 
@@ -82,6 +92,6 @@ class Countdown {
   }
 }
 
-const gameCountdown = new Countdown();
+const gameCountdown = new Countdown(showFailureScreen);
 
 export default gameCountdown;
