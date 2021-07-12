@@ -17,6 +17,16 @@
   @media (max-width: $mobile) and (orientation: landscape) {
     padding: 0.9rem 0;
   }
+
+  --active-link-accent: #{$c-purple};
+
+  &_background_blue {
+    --active-link-accent: #{$c-blue};
+  }
+
+  &_background_gray {
+    --active-link-accent: #{$c-blue-dark};
+  }
 }
 
 .page-header__wrapper {
@@ -312,12 +322,12 @@
 
     &:hover,
     &:focus {
-      color: $c-purple;
+      color: var(--active-link-accent);
       outline: none;
 
       &::after {
         opacity: 1;
-        background-color: $c-purple;
+        background-color: var(--active-link-accent);
         transform: scaleX(1);
         transform-origin: left top;
       }
