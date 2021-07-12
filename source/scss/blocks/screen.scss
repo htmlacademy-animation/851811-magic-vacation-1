@@ -486,7 +486,7 @@ $screen--bg-animation-delay: 0.2s;
   pointer-events: none;
 
   &.screen--show {
-    opacity: 1;
+    animation: fade-in 0.4s ease-out forwards;
     pointer-events: auto;
   }
 }

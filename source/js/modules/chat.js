@@ -3,6 +3,7 @@ import animateGameResult from '../modules/svg/animate-game-result';
 import gameCountdown from '../modules/countdown/animate-game-countdown';
 
 const playSelector = `.js-play`;
+const gameSelector = `.game`;
 const resultSelector = `.screen--result`;
 const formId = `message-form`;
 const fieldId = `message-field`;
@@ -11,6 +12,7 @@ const chatSelector = `.js-chat`;
 
 const visibleClass = `screen--show`;
 const hiddenClass = `screen--hidden`;
+const transitioningOutClass = `game--transitioning-out`;
 
 const binaryAnswers = [`да`, `нет`];
 
@@ -51,6 +53,7 @@ const messageList = document.getElementById(messageListId);
 const field = document.getElementById(fieldId);
 const results = [...document.querySelectorAll(resultSelector)];
 const chat = document.querySelector(chatSelector);
+const game = document.querySelector(gameSelector);
 
 function play() {
   const playBtn = document.querySelector(playSelector);
@@ -62,6 +65,8 @@ function play() {
 }
 
 function handlePlay() {
+  game.classList.remove(transitioningOutClass);
+
   results.forEach((el) => {
     el.classList.remove(visibleClass);
     el.classList.add(hiddenClass);
@@ -85,6 +90,7 @@ function handleFormSubmit(event) {
   const getAnswer = (question) => {
     const level = Object.keys(QuestionLevel).find((key) => QuestionLevel[key] === question);
     if (level) {
+      game.classList.add(transitioningOutClass);
       sonyaAnimation.end(() => showResultScreen(level));
       return;
     }
@@ -202,7 +208,8 @@ function showResultScreen(level) {
 }
 
 export function showFailureScreen() {
-  showScreen(ResultId.failure, Level.failure);
+  game.classList.add(transitioningOutClass);
+  sonyaAnimation.end(() => showScreen(ResultId.failure, Level.failure));
 }
 
 export default () => {

@@ -114,10 +114,33 @@
   left: 0;
   z-index: 100;
   opacity: 0.5;
-  // display: none; // временно для показа анимации
 }
 
 .game__button {
   margin: 0 30px 30px;
   display: block;
+}
+
+.game--transitioning-out {
+  .game__title,
+  .game__counter,
+  .chat__footer {
+    transition: transform 0.3s ease-out;
+  }
+
+  .game__title {
+    transform: translateX(-200px);
+  }
+
+  .game__counter {
+    transform: translateX(200px);
+  }
+
+  .chat__body {
+    animation: fade-in 0.3s ease-out reverse forwards;
+  }
+
+  .chat__footer {
+    transform: translateY(200px);
+  }
 }
