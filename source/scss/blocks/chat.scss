@@ -122,9 +122,10 @@
     text-align: center;
 
     p {
-      color: $c-white;
+      color: transparent;
       background-color: $c-purple;
       word-break: break-word;
+      animation: chat__incoming-fade 0.4s ease-out forwards;
     }
   }
 }
@@ -207,5 +208,15 @@
 
   100% {
     opacity: 1;
+  }
+}
+
+@keyframes chat__incoming-fade {
+  0% {
+    color: transparent;
+  }
+
+  100% {
+    color: $c-white;
   }
 }
