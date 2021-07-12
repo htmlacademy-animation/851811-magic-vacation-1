@@ -147,7 +147,7 @@ $rules__lead--animation-duration: 0.45s;
   100% {
     opacity: 1;
     transform: scale(1);
-    color: $c-light;
+    color: $c-white;
   }
 }
 
@@ -306,7 +306,7 @@ $rules__link--before--animation-duration: 0.4s;
   }
 
   &.rules__link--active {
-    color: $c-dark;
+    color: $c-purple-dark;
 
     &::before {
       animation: rules__link--before-fade-in $rules__link--before--animation-duration ease-out forwards;

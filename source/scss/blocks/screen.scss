@@ -43,8 +43,8 @@
   bottom: 0;
   left: 0;
   right: 0;
-  color: $c-dark;
-  background-color: $c-light;
+  color: $c-purple-dark;
+  background-color: $c-white;
   z-index: 1;
   transform: translateY(100%);
   will-change: transform;
@@ -105,7 +105,7 @@
   display: none;
   width: 4rem;
   height: 4rem;
-  color: $c-dark;
+  color: $c-purple-dark;
   z-index: 1;
 
   @media (max-width: $tablet) and (orientation: portrait) {
@@ -144,7 +144,7 @@
   display: none;
   width: 4rem;
   height: 4rem;
-  color: $c-dark;
+  color: $c-purple-dark;
   z-index: 1;
 
   @media (max-width: $tablet) and (orientation: portrait) {
@@ -330,7 +330,7 @@ $screen--prizes--animation-duration: 0.4s;
     height: 100%;
     transform: translateY(100%);
     will-change: transform;
-    background-color: $c-dark;
+    background-color: $c-purple-dark;
   }
 
   &.screen--transitioning {
@@ -367,7 +367,7 @@ $screen--prizes--animation-duration: 0.4s;
 
 .screen--game {
   position: relative;
-  background-color: $c-dark;
+  background-color: $c-purple-dark;
 
   .screen__picture {
     position: absolute;
@@ -402,7 +402,7 @@ $screen--prizes--animation-duration: 0.4s;
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: $c-dark;
+  background-color: $c-purple-dark;
   opacity: 0;
   pointer-events: none;
 
@@ -413,5 +413,5 @@ $screen--prizes--animation-duration: 0.4s;
 }
 
 .screen--rules {
-  background-color: $c-dark;
+  background-color: $c-purple-dark;
 }

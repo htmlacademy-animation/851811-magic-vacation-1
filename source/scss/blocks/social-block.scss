@@ -20,7 +20,7 @@ $social-block--elements-count: 3;
 
 .social-block--active {
   .social-block__toggler:not(:hover) {
-    color: $c-light;
+    color: $c-white;
 
     &::before {
       background-color: $c-purple;
@@ -52,7 +52,7 @@ $social-block--elements-count: 3;
   display: block;
   width: 4rem;
   height: 4rem;
-  color: $c-dark;
+  color: $c-purple-dark;
   border-radius: 50%;
   transition: color 0.3s ease-out 0.1s;
 
@@ -78,7 +78,7 @@ $social-block--elements-count: 3;
       transform 0.3s ease-out 0.1s,
       background-color 0.3s ease-out 0.1s;
     border-radius: 50%;
-    background-color: $c-light;
+    background-color: $c-white;
     z-index: -1;
 
     .document__body_ready & {
@@ -116,7 +116,7 @@ $social-block--elements-count: 3;
 
   &:active,
   &:active:focus {
-    color: $c-light;
+    color: $c-white;
 
     &::before {
       transform: scale(1);
@@ -206,7 +206,7 @@ $social-block--elements-count: 3;
   display: block;
   width: 4rem;
   height: 4rem;
-  color: $c-light;
+  color: $c-white;
   border: 2px solid transparent;
   border-radius: 50%;
   transition: color 0.3s ease-out;
@@ -217,13 +217,13 @@ $social-block--elements-count: 3;
   }
 
   @media (max-width: $tablet) and (orientation: portrait) {
-    color: $c-light;
-    background-color: $c-dark;
+    color: $c-white;
+    background-color: $c-purple-dark;
   }
 
   @media (max-width: $mobile) and (orientation: landscape) {
-    color: $c-light;
-    background-color: $c-dark;
+    color: $c-white;
+    background-color: $c-purple-dark;
   }
 
   &:hover {
@@ -232,7 +232,7 @@ $social-block--elements-count: 3;
 
   &:focus {
     color: $c-purple;
-    background-color: $c-light;
+    background-color: $c-white;
     border-color: $c-purple;
     outline: none;
   }
@@ -240,8 +240,8 @@ $social-block--elements-count: 3;
   &:active,
   &:active:focus {
     color: $c-purple;
-    background-color: $c-light;
-    border-color: $c-light;
+    background-color: $c-white;
+    border-color: $c-white;
   }
 
   svg {
