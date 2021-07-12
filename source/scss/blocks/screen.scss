@@ -49,10 +49,36 @@
   transform: translateY(100%);
   will-change: transform;
 
+  &::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transform: translate(calc(3.5rem - 100%), calc(100% - 3.5rem));
+    background-color: $c-white;
+    z-index: -1;
+    border-radius: inherit;
+    opacity: 0;
+    width: 100vw;
+  }
+
+  &.screen__footer--full {
+    &::before {
+      transform: translate(0, 0);
+      transition: transform 0.5s ease-out;
+    }
+  }
+
   @media (max-width: $tablet) and (orientation: portrait) {
     width: 3.5rem;
     height: 3.5rem;
     border-radius: 0 3.6rem 0 0;
+    background-color: transparent;
+
+    &::before {
+      opacity: 1;
+      height: 18rem;
+    }
 
     &.screen__footer--full {
       width: 100%;
@@ -64,6 +90,12 @@
     width: 3.5rem;
     height: 3.5rem;
     border-radius: 0 3.6rem 0 0;
+    background-color: transparent;
+
+    &::before {
+      opacity: 1;
+      height: 16rem;
+    }
 
     &.screen__footer--full {
       width: 100%;
@@ -80,6 +112,7 @@
 
     .screen__footer--full & {
       opacity: 1;
+      transition: opacity 0.3s 0.5s ease-out;
     }
   }
 
@@ -88,6 +121,7 @@
 
     .screen__footer--full & {
       opacity: 1;
+      transition: opacity 0.3s 0.5s ease-out;
     }
   }
 }
