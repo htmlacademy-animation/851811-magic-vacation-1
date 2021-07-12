@@ -31,9 +31,26 @@ const ResultId = {
   failure: `result3`,
 };
 
+const getMessageStyles = (height, index) => {
+  const isOdd = index % 2 === 0;
+
+  return {
+    keyframes: [
+      {transform: `translateY(${height}px)`, offset: 0},
+      {transform: `translateY(0)`, offset: 1},
+    ],
+    options: {
+      duration: isOdd ? 100 : 250,
+      easing: `ease-out`,
+      fill: `forwards`,
+    }
+  };
+};
+
 const messageList = document.getElementById(messageListId);
 const field = document.getElementById(fieldId);
 const results = [...document.querySelectorAll(resultSelector)];
+const chat = document.querySelector(chatSelector);
 
 function play() {
   const playBtn = document.querySelector(playSelector);
@@ -56,7 +73,7 @@ function handlePlay() {
   gameCountdown.startCountdown();
 }
 
-function scrollToBottom(list, chat) {
+function scrollToBottom(list) {
   if (list.scrollHeight > chat.offsetHeight) {
     chat.scrollTop = list.scrollHeight;
   }
@@ -64,8 +81,6 @@ function scrollToBottom(list, chat) {
 
 function handleFormSubmit(event) {
   event.preventDefault();
-
-  const chat = document.querySelector(chatSelector);
 
   const getAnswer = (question) => {
     const level = Object.keys(QuestionLevel).find((key) => QuestionLevel[key] === question);
@@ -79,6 +94,7 @@ function handleFormSubmit(event) {
 
     const answerEl = createAnswerElement(answerText);
     messageList.appendChild(answerEl);
+    setMessageOffsets(answerEl.offsetHeight);
     scrollToBottom(messageList, chat);
 
     setTimeout(showAnswer, 700);
@@ -97,7 +113,7 @@ function handleFormSubmit(event) {
     field.value = ``;
     field.setAttribute(`disabled`, `true`);
 
-    setTimeout(() => getAnswer(value.toLowerCase()), 700);
+    getAnswer(value.toLowerCase());
 
     field.removeAttribute(`disabled`);
     field.focus();
@@ -110,10 +126,10 @@ function handleFormSubmit(event) {
 function createQuestionElement(question) {
   const messageEl = document.createElement(`li`);
   messageEl.classList.add(`chat__message`);
+  messageEl.classList.add(`chat__message--outcoming`);
   const text = document.createElement(`p`);
   text.innerText = question;
   messageEl.appendChild(text);
-  messageEl.classList.add(`chat__message--outcoming`);
 
   return messageEl;
 }
@@ -141,7 +157,6 @@ function createAnswerElement(answer) {
   return answerEl;
 }
 
-
 function showAnswer() {
   const lastMessage = document.querySelector(`.chat__message--last`);
   if (lastMessage) {
@@ -154,6 +169,21 @@ function showAnswer() {
     lastMessageText.classList.remove(`hidden`);
     lastMessage.classList.remove(`chat__message--last`);
   }
+}
+
+function setMessageOffsets(height) {
+  const messagesNodeList = messageList.querySelectorAll(`.chat__message`);
+  const firstMessages = [...messagesNodeList].slice(0, -1);
+  const lastQuestion = messagesNodeList[messagesNodeList.length - 1];
+
+  const lastQuestionHeight = lastQuestion.offsetHeight;
+  const margin = parseFloat(window.getComputedStyle(lastQuestion).marginBottom) * 2;
+  const totalLastHeight = height + lastQuestionHeight + margin;
+
+  firstMessages.forEach((message, index) => {
+    const styles = getMessageStyles(totalLastHeight, index);
+    message.animate(...Object.values(styles));
+  });
 }
 
 function showScreen(id, level) {

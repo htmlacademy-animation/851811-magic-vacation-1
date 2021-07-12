@@ -108,6 +108,9 @@
 
   &--outcoming {
     justify-content: flex-start;
+    transform: translateY(100px);
+    opacity: 0;
+    animation: fade-in 0.5s 0.2s ease-out forwards, message-slide-up 0.5s ease-in-out forwards;
 
     p {
       width: 100%;
@@ -120,12 +123,14 @@
   &--incoming {
     justify-content: flex-end;
     text-align: center;
+    opacity: 0;
+    animation: fade-in 0.3s 0.5s ease-out forwards;
 
     p {
       color: transparent;
       background-color: $c-purple;
       word-break: break-word;
-      animation: chat__incoming-fade 0.4s ease-out forwards;
+      animation: chat__incoming-fade 0.4s 0.5s ease-out forwards;
     }
   }
 }
@@ -219,5 +224,15 @@
 
   100% {
     opacity: 1;
+  }
+}
+
+@keyframes message-slide-up {
+  0% {
+    transform: translateY(100px);
+  }
+
+  100% {
+    transform: translateY(0);
   }
 }
