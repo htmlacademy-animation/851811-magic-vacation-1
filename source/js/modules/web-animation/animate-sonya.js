@@ -28,6 +28,8 @@ const animations = {
 class SonyaAnimation {
   constructor() {
     this.sonya = document.querySelector(`#sonya`);
+
+    this.reduceMotion = window.matchMedia(`(prefers-reduced-motion: reduce)`).matches;
   }
 
   start() {
@@ -37,6 +39,11 @@ class SonyaAnimation {
 
     const {appear, idle} = animations;
     this.appearance = this.sonya.animate(...Object.values(appear));
+
+    if (this.reduceMotion) {
+      this.appearance.finish();
+      return;
+    }
 
     this.appearance.onfinish = () => {
       this.idle = this.sonya.animate(...Object.values(idle));
