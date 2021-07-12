@@ -372,7 +372,7 @@
 
     .prizes__desc {
       b {
-        animation: prizes__item--amount--fade-in 0.4s ease-in-out forwards;
+        animation: fade-in 0.4s ease-in-out forwards;
       }
 
       span {
@@ -437,15 +437,5 @@
 
   100% {
     transform: translateX(0);
-  }
-}
-
-@keyframes prizes__item--amount--fade-in {
-  0% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
   }
 }

@@ -296,16 +296,6 @@ $slider__control--timing-function: cubic-bezier(0.08, 0.45, 0.4, 1.35);
   }
 }
 
-@keyframes slider__pagination--fade-in {
-  0% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
-}
-
 .slider__pagination.swiper-pagination {
   position: absolute;
   bottom: 2.8rem;
@@ -320,7 +310,7 @@ $slider__control--timing-function: cubic-bezier(0.08, 0.45, 0.4, 1.35);
   line-height: 4rem;
 
   .screen.active & {
-    animation: slider__pagination--fade-in 0.5s ease-out forwards;
+    animation: fade-in 0.5s ease-out forwards;
   }
 
   @media (min-width: $stop-scaling) {
