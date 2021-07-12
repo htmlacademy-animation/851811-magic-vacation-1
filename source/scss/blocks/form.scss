@@ -47,6 +47,16 @@
   }
 }
 
+@keyframes form__field--color-fade-in {
+  0% {
+    color: transparent;
+  }
+
+  100% {
+    color: $c-purple-dark;
+  }
+}
+
 .form__field {
   flex: none;
   margin-right: 3rem;
@@ -58,11 +68,16 @@
   font: inherit;
   font-size: 2.4rem;
   line-height: 1.2;
-  color: $c-purple-dark;
+  color: transparent;
   border: 0;
   border-radius: 3rem;
   outline: none;
-  animation: form__field--field-fade-in 0.7s ease-out;
+  animation: form__field--field-fade-in 0.7s ease-out, form__field--color-fade-in 1s ease-out forwards;
+
+  &::placeholder {
+    color: currentColor;
+    opacity: 0.5;
+  }
 
   &:focus {
     border: 1px solid $c-purple;
