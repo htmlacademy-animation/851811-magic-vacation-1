@@ -49,11 +49,6 @@
   transform: translateY(100%);
   will-change: transform;
 
-  .document__body_ready & {
-    transform: translateY(0);
-    transition: transform 0.3s cubic-bezier(0.48, 0.83, 0.16, 0.92);
-  }
-
   @media (max-width: $tablet) and (orientation: portrait) {
     width: 3.5rem;
     height: 3.5rem;
@@ -291,6 +286,15 @@
       .section-prizes & {
         display: inline;
       }
+    }
+  }
+}
+
+.screen--intro {
+  .document__body_ready & {
+    .screen__footer {
+      transform: translateY(0);
+      transition: transform 0.3s cubic-bezier(0.48, 0.83, 0.16, 0.92);
     }
   }
 }
