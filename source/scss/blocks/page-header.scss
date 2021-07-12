@@ -121,12 +121,12 @@
   &::before {
     top: 0.9rem;
     width: 1rem;
-    box-shadow: 0 0.6rem 0 0 $c-purple-dark;
+    box-shadow: -0.6rem 0.3rem 0 0 $c-white, 0 0.3rem 0 0 $c-purple-dark;
   }
 
   &::after {
-    top: 1.2rem;
-    width: 0.7rem;
+    top: 1.5rem;
+    width: 1rem;
   }
 
   .page-header--menu-opened & {
@@ -134,14 +134,14 @@
     &::after {
       top: 50%;
       left: 50%;
-      transform: translate(-50%) rotate(45deg);
-      width: 2.6rem;
-      height: 2px;
+      transform: translate(-50%) rotate(45deg) scale(2.6, 2);
+      transform-origin: center;
+      transition: transform 0.2s ease-out;
       box-shadow: none;
     }
 
     &::after {
-      transform: translate(-50%) rotate(-45deg);
+      transform: translate(-50%) rotate(-45deg) scale(2.6, 2);
     }
   }
 }
@@ -150,6 +150,18 @@
   display: flex;
   align-items: center;
   opacity: 0;
+
+  &::before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    content: "";
+    opacity: 0;
+    width: 100vw;
+    height: 100vh;
+    transform: translate(100%, -100%);
+    background-color: $c-white;
+  }
 
   .document__body_ready & {
     animation: fade-in 0.4s cubic-bezier(0.48, 0.83, 0.16, 0.92) 0.4s forwards;
@@ -166,10 +178,20 @@
     align-items: flex-start;
     padding: 4rem 3.5rem;
     color: $c-purple-dark;
-    background-color: $c-white;
 
     .page-header--menu-opened & {
       transform: translateX(0);
+
+      &::before {
+        opacity: 1;
+        transform: translate(0, 0);
+        transition: transform 0.5s ease-out, opacity 0.2s ease-out;
+      }
+
+      .page-header__menu {
+        opacity: 0;
+        animation: fade-in 0.3s 0.5s ease-out forwards;
+      }
     }
   }
 
@@ -190,6 +212,17 @@
 
     .page-header--menu-opened & {
       transform: translateX(0);
+
+      &::before {
+        opacity: 1;
+        transform: translate(0, 0);
+        transition: transform 0.5s ease-out, opacity 0.2s ease-out;
+      }
+
+      .page-header__menu {
+        opacity: 0;
+        animation: fade-in 0.3s 0.5s ease-out forwards;
+      }
     }
   }
 }
