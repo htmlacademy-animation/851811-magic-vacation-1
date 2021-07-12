@@ -126,6 +126,7 @@ function createAnswerElement(answer) {
   placeholder.classList.add(`chat__placeholder`);
   for (let i = 0; i < 3; i++) {
     const dot = document.createElement(`span`);
+    dot.classList.add(`chat__placeholder-dot`);
     placeholder.appendChild(dot);
   }
   answerEl.appendChild(placeholder);
