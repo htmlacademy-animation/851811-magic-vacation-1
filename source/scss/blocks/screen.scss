@@ -43,21 +43,42 @@
   bottom: 0;
   left: 0;
   right: 0;
-  color: $c-dark;
-  background-color: $c-light;
+  color: $c-purple-dark;
+  background-color: $c-white;
   z-index: 1;
   transform: translateY(100%);
   will-change: transform;
 
-  .document__body_ready & {
-    transform: translateY(0);
-    transition: transform 0.3s cubic-bezier(0.48, 0.83, 0.16, 0.92);
+  &::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transform: translate(calc(3.5rem - 100%), calc(100% - 3.5rem));
+    background-color: $c-white;
+    z-index: -1;
+    border-radius: inherit;
+    opacity: 0;
+    width: 100vw;
+  }
+
+  &.screen__footer--full {
+    &::before {
+      transform: translate(0, 0);
+      transition: transform 0.5s ease-out;
+    }
   }
 
   @media (max-width: $tablet) and (orientation: portrait) {
     width: 3.5rem;
     height: 3.5rem;
     border-radius: 0 3.6rem 0 0;
+    background-color: transparent;
+
+    &::before {
+      opacity: 1;
+      height: 18rem;
+    }
 
     &.screen__footer--full {
       width: 100%;
@@ -69,6 +90,12 @@
     width: 3.5rem;
     height: 3.5rem;
     border-radius: 0 3.6rem 0 0;
+    background-color: transparent;
+
+    &::before {
+      opacity: 1;
+      height: 16rem;
+    }
 
     &.screen__footer--full {
       width: 100%;
@@ -85,6 +112,7 @@
 
     .screen__footer--full & {
       opacity: 1;
+      transition: opacity 0.3s 0.5s ease-out;
     }
   }
 
@@ -93,6 +121,7 @@
 
     .screen__footer--full & {
       opacity: 1;
+      transition: opacity 0.3s 0.5s ease-out;
     }
   }
 }
@@ -105,7 +134,7 @@
   display: none;
   width: 4rem;
   height: 4rem;
-  color: $c-dark;
+  color: $c-purple-dark;
   z-index: 1;
 
   @media (max-width: $tablet) and (orientation: portrait) {
@@ -144,7 +173,7 @@
   display: none;
   width: 4rem;
   height: 4rem;
-  color: $c-dark;
+  color: $c-purple-dark;
   z-index: 1;
 
   @media (max-width: $tablet) and (orientation: portrait) {
@@ -295,18 +324,44 @@
   }
 }
 
+.screen--intro {
+  .document__body_ready & {
+    .screen__footer {
+      transform: translateY(0);
+      transition: transform 0.3s cubic-bezier(0.48, 0.83, 0.16, 0.92);
+    }
+  }
+}
+
 .screen--story {
-  &.screen--transitioning {
+  transform: scale(1);
+
+  &.screen--transitioning-out {
     display: block;
     position: fixed;
     width: 100%;
     height: 100%;
+    transform: scale(0.8);
+    transition: transform 0.5s ease-out;
   }
 }
 
-$screen--prizes--animation-duration: 0.4s;
+.background {
+  opacity: 0;
+}
 
-@keyframes screen--prizes--bg-slide-up {
+.screen--story,
+.screen--intro,
+.screen--prizes {
+  &.active ~ .background {
+    opacity: 1;
+  }
+}
+
+$screen--bg-animation-duration: 0.4s;
+$screen--bg-animation-delay: 0.2s;
+
+@keyframes screen--bg-slide-up {
   0% {
     transform: translateY(100%);
   }
@@ -316,8 +371,21 @@ $screen--prizes--animation-duration: 0.4s;
   }
 }
 
-.screen--prizes {
+@keyframes screen-footer--slide-up {
+  0% {
+    transform: translateY(100%);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.screen--prizes,
+.screen--rules,
+.screen--game {
   position: relative;
+  z-index: -1;
 
   &::after {
     content: "";
@@ -328,51 +396,62 @@ $screen--prizes--animation-duration: 0.4s;
     bottom: 0;
     width: 100%;
     height: 100%;
-    transform: translateY(100%);
     will-change: transform;
-    background-color: $c-dark;
+    background-color: $c-purple-dark;
   }
 
-  &.screen--transitioning {
+  .screen__wrapper {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  &.screen--transitioning-out {
     display: block;
-    z-index: -1;
+    position: fixed;
+    width: 100%;
+    height: 100%;
 
     .screen__wrapper {
+      transform: scale(0.9);
       opacity: 0;
+      transition: transform $screen--bg-animation-delay ease-out, opacity $screen--bg-animation-delay ease-out;
     }
+  }
 
-    .screen__footer {
-      transform: translateY(100%);
-    }
+  .screen__footer {
+    transform: translateY(100%);
   }
 
   &.active {
     z-index: 1;
 
     &::after {
-      animation: screen--prizes--bg-slide-up $screen--prizes--animation-duration ease-in-out forwards;
-    }
-
-    .screen__wrapper {
-      opacity: 1;
-      transition: opacity 0.4s ease-in $screen--prizes--animation-duration; // TODO убрать когда будет задание на анимацию этого экрана
+      opacity: 0;
+      animation: fade-in $screen--bg-animation-duration $screen--bg-animation-delay ease-in forwards;
     }
 
     .screen__footer {
-      transform: translateY(0);
-      transition: transform $screen--prizes--animation-duration cubic-bezier(0.48, 0.83, 0.16, 0.92);
+      animation: screen-footer--slide-up $screen--bg-animation-duration $screen--bg-animation-delay cubic-bezier(0.48, 0.83, 0.16, 0.92) forwards;
+    }
+  }
+
+  &.screen--transitioning-in {
+    &::after {
+      opacity: 1;
+      transform: translateY(100%);
+      animation: screen--bg-slide-up $screen--bg-animation-duration $screen--bg-animation-delay ease-in-out forwards;
     }
   }
 }
 
 .screen--game {
   position: relative;
-  background-color: $c-dark;
 
   .screen__picture {
     position: absolute;
     right: -8.5rem;
     bottom: 0;
+    z-index: 1;
     transform: translate(200px, 200px);
 
     @media (min-width: $stop-scaling) {
@@ -402,16 +481,13 @@ $screen--prizes--animation-duration: 0.4s;
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: $c-dark;
+  background-color: $c-purple-dark;
   opacity: 0;
   pointer-events: none;
 
   &.screen--show {
-    opacity: 1;
+    animation: fade-in 0.4s ease-out forwards;
     pointer-events: auto;
   }
 }
 
-.screen--rules {
-  background-color: $c-dark;
-}

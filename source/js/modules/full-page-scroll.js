@@ -10,6 +10,8 @@ const PrizeType = {
   CODES: `additional`,
 };
 
+const slideUpScreens = [`prizes`, `rules`, `game`];
+
 export default class FullPageScroll {
   constructor() {
     this.THROTTLE_TIMEOUT = 2000;
@@ -17,6 +19,7 @@ export default class FullPageScroll {
     this.screenElements = document.querySelectorAll(`.screen:not(.screen--result)`);
     this.menuElements = document.querySelectorAll(`.page-header__menu .js-menu-link`);
 
+    this.previousActiveScreen = null;
     this.activeScreen = 0;
     this.onScrollHandler = this.onScroll.bind(this);
     this.onUrlHashChengedHandler = this.onUrlHashChanged.bind(this);
@@ -42,6 +45,7 @@ export default class FullPageScroll {
 
   onUrlHashChanged() {
     const newIndex = Array.from(this.screenElements).findIndex((screen) => location.hash.slice(1) === screen.id);
+    this.previousActiveScreen = this.activeScreen;
     this.activeScreen = (newIndex < 0) ? 0 : newIndex;
     this.changePageDisplay();
   }
@@ -56,34 +60,36 @@ export default class FullPageScroll {
     this.screenElements.forEach((screen) => {
       screen.classList.add(`screen--hidden`);
       screen.classList.remove(`active`);
-      screen.classList.remove(`screen--transitioning`);
+      screen.classList.remove(`screen--transitioning-in`);
+      screen.classList.remove(`screen--transitioning-out`);
     });
     this.screenElements[this.activeScreen].classList.remove(`screen--hidden`);
     this.screenElements[this.activeScreen].classList.add(`active`);
 
-    const isStory = this.screenElements[this.activeScreen].id === `story`;
+    if (this.previousActiveScreen) {
+      this.screenElements[this.activeScreen].classList.add(`screen--transitioning-in`);
+
+      const isSlideUpScreen = slideUpScreens.includes(this.screenElements[this.activeScreen].id);
+      if (isSlideUpScreen) {
+        this.screenElements[this.previousActiveScreen].classList.add(`screen--transitioning-out`);
+
+        this.screenElements[this.activeScreen].addEventListener(`animationend`, (event) => {
+          if (event.animationName.match(/screen--bg-slide-up/)) {
+            this.screenElements[this.previousActiveScreen].classList.remove(`screen--transitioning-out`);
+          }
+        });
+      }
+
+      const wasSlideUpScreen = slideUpScreens.includes(this.screenElements[this.previousActiveScreen].id);
+      if (wasSlideUpScreen) {
+        this.screenElements[this.activeScreen].classList.remove(`screen--transitioning-in`);
+      }
+    }
+
     const isPrizes = this.screenElements[this.activeScreen].id === `prizes`;
     const isGame = this.screenElements[this.activeScreen].id === `game`;
 
-    if (isStory) {
-      this.screenElements[this.activeScreen + 1].classList.add(`screen--transitioning`);
-
-      this.screenElements[this.activeScreen + 1].addEventListener(`animationend`, (event) => {
-        if (event.animationName.match(/screen--prizes--bg-slide-up/)) {
-          this.screenElements[this.activeScreen + 1].classList.remove(`screen--transitioning`);
-        }
-      });
-    }
-
     if (isPrizes) {
-      this.screenElements[this.activeScreen - 1].classList.add(`screen--transitioning`);
-
-      this.screenElements[this.activeScreen].addEventListener(`animationend`, (event) => {
-        if (event.animationName.match(/screen--prizes--bg-slide-up/)) {
-          this.screenElements[this.activeScreen - 1].classList.remove(`screen--transitioning`);
-        }
-      });
-
       this.animatePrize({prize: `journeys`, timeout: 0});
       this.animatePrize({prize: `cases`, timeout: 5000});
       this.animatePrize({prize: `codes`, timeout: 7000, firstAmount: 11});
@@ -121,6 +127,8 @@ export default class FullPageScroll {
   }
 
   reCalculateActiveScreenPosition(delta) {
+    this.previousActiveScreen = this.activeScreen;
+
     if (delta > 0) {
       this.activeScreen = Math.min(this.screenElements.length - 1, ++this.activeScreen);
     } else {

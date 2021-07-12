@@ -147,7 +147,7 @@ $rules__lead--animation-duration: 0.45s;
   100% {
     opacity: 1;
     transform: scale(1);
-    color: $c-light;
+    color: $c-white;
   }
 }
 
@@ -298,18 +298,39 @@ $rules__link--before--animation-duration: 0.4s;
   }
 
   &::before {
-    top: 0;
-    left: 0;
-    transform: none;
-    border: none;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-color: transparent;
     opacity: 0;
   }
 
   &.rules__link--active {
-    color: $c-dark;
+    color: $c-purple-dark;
 
     &::before {
       animation: rules__link--before-fade-in $rules__link--before--animation-duration ease-out forwards;
+    }
+
+    &:hover {
+      color: $c-purple;
+    }
+
+    &:focus {
+      color: $c-purple;
+
+      &::before {
+        border-color: currentColor;
+      }
+    }
+
+    &:active {
+      color: $c-white;
+
+      &::before {
+        background-color: $c-purple;
+        border-color: $c-purple;
+      }
     }
   }
 }

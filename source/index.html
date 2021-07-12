@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Mysterious Vacation</title>
-  <link rel="stylesheet" href="css/style.min.css">
 </head>
 <body class="document__body js-body">
 
@@ -79,7 +78,6 @@
   <main class="page-content">
 
     <section class="animation-screen"></section>
-    <canvas class="background" id="background-canvas--story">Обновите браузер</canvas>
 
     <section class="screen screen--hidden screen--intro js-scrollspy" id="top">
       <div class="screen__wrapper">
@@ -265,6 +263,8 @@
       </div>
     </section>
 
+    <canvas class="background" id="background-canvas--story">Обновите браузер</canvas>
+
     <section class="screen screen--hidden screen--rules js-scrollspy" id="rules">
       <div class="screen__wrapper">
         <div class="rules">
@@ -323,9 +323,10 @@
               <div class="chat__footer">
                 <form action="#" method="post" class="form" id="message-form">
                   <label for="message-field" class="visually-hidden">Поле для ввода вопроса</label>
-                  <input type="text" class="form__field" id="message-field">
+                  <input type="text" class="form__field" id="message-field" placeholder="Задай вопрос">
                   <button class="form__button btn">
-                    Узнать
+                    <span class="form__button-text">Узнать</span>
+                    <span aria-hidden class="form__button-spacer">Погнали!</span>
                     <svg width="18" height="19" viewBox="0 0 18 19" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path stroke="currentColor" stroke-width="2" d="M9 19V1"/>
                       <path d="M1 9l8-8 8 8" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
@@ -334,12 +335,6 @@
                 </form>
               </div>
             </div>
-          </div>
-          <!-- временные кнопки для показа результата -->
-          <div class="game__buttons">
-            <button class="game__button btn js-show-result" type="button" data-target="result">Положительный результат</button>
-            <button class="game__button btn js-show-result" type="button" data-target="result2">Положительный результат - 2</button>
-            <button class="game__button btn js-show-result" type="button" data-target="result3">Отрицательный результат</button>
           </div>
         </div>
       </div>
@@ -490,8 +485,8 @@
           </h2>
           <button class="result__button js-play" type="button">
             не сдавайся!
-            <span>
-              <svg width="27" height="22" viewBox="0 0 27 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <span class="result__button-icon">
+              <svg class="result__button-icon-svg" width="27" height="22" viewBox="0 0 27 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M10.6899 1.47998C5.42992 1.47998 1.16992 5.73998 1.16992 11C1.16992 16.26 5.42992 20.52 10.6899 20.52C15.9499 20.52 20.2099 16.26 20.2099 11V7.13998" stroke="currentColor" stroke-width="2" stroke-miterlimit="10"/>
                 <path d="M15.1099 12.5099L20.1499 7.13989L25.3099 12.6299" stroke="currentColor" stroke-width="2" stroke-miterlimit="10" stroke-linejoin="round"/>
               </svg>

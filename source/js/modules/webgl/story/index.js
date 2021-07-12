@@ -10,6 +10,7 @@ import {getLightConfig, createLight} from '../common/lights';
 import {ScreenName, ScreenId} from '../common/vars';
 import {setMeshParams} from '../common/helpers';
 import hideObjectsMobile from '../common/hide-objects-on-mobile';
+import setStyleClasses from '../common/set-style-classes';
 
 import rooms, {effectRoom, effectRoomIndex} from '../common/get-room-settings';
 import ProgressBar from './progress-bar';
@@ -341,6 +342,8 @@ export default class Story {
     this.mouseMoving = false;
     this.rigUpdating = null;
     this.animationRequest = null;
+
+    setStyleClasses(rooms[0].menuBackground);
   }
 
   handleResize() {
@@ -415,6 +418,9 @@ export default class Story {
 
       this.hue.animate(this.effectMaterial, this.currentScene);
     }
+
+    setStyleClasses(rooms[this.currentScene].menuBackground);
+
     this.renderer.render(this.scene, this.camera);
   }
 

@@ -162,35 +162,27 @@ const createFailAnimation = (element) => {
   document.querySelector(`#${firstAnimationId}`).beginElement();
 };
 
-const startAnimationByClick = ({elementSelector, buttonSelector, createAnimation, callback}) => {
-  const button = document.querySelector(buttonSelector);
-  button.addEventListener(`click`, () => {
-    const element = document.querySelector(elementSelector);
-    createAnimation(element);
-    if (callback) {
-      callback();
-    }
-  });
+const startAnimation = ({elementSelector, createAnimation, callback}) => {
+  const element = document.querySelector(elementSelector);
+  createAnimation(element);
+  if (callback) {
+    callback();
+  }
 };
 
-export default () => {
-  startAnimationByClick({
+export default {
+  first: () => startAnimation({
     elementSelector: `#result__title-svg_victory`,
-    buttonSelector: `.js-show-result[data-target=result]`,
     createAnimation: createVictoryAnimation,
     callback: animateTrip,
-  });
-
-  startAnimationByClick({
+  }),
+  second: () => startAnimation({
     elementSelector: `#result__title-svg_victory2`,
-    buttonSelector: `.js-show-result[data-target=result2]`,
     createAnimation: createVictoryAnimation,
-  });
-
-  startAnimationByClick({
+  }),
+  failure: () => startAnimation({
     elementSelector: `#result__title-svg_fail`,
-    buttonSelector: `.js-show-result[data-target=result3]`,
     createAnimation: createFailAnimation,
     callback: animateFail,
-  });
+  }),
 };

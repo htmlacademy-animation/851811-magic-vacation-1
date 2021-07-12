@@ -17,9 +17,10 @@ const rooms = [
         variation: 0.3,
       },
     },
+    menuBackground: `blue`,
     Elements: SecondRoom,
   },
-  {Elements: ThirdRoom},
+  {Elements: ThirdRoom, menuBackground: `gray`},
   {
     Elements: FirstRoom,
     elementsOptions: {dark: true},
