@@ -100,6 +100,8 @@
 
 .form__button {
   flex-shrink: 0;
+  color: transparent;
+  animation: form__button-text-fade 0.3s ease-out forwards;
 
   @media (orientation: portrait) {
     position: relative;
@@ -124,6 +126,16 @@
     height: 4rem;
   }
 
+  .form__button-text {
+    position: absolute;
+    left: 0;
+    right: 0;
+  }
+
+  .form__button-spacer {
+    opacity: 0;
+  }
+
   svg {
     @include center;
     display: none;
@@ -137,10 +149,14 @@
 
     @media (orientation: portrait) {
       display: block;
+      opacity: 0;
+      animation: form__button-svg-fade 0.3s ease-out forwards;
     }
 
     @media (max-width: $tablet) and (orientation: landscape) {
       display: block;
+      opacity: 0;
+      animation: form__button-svg-fade 0.3s ease-out forwards;
     }
   }
 }
@@ -164,5 +180,25 @@
     @media (max-width: $mobile) and (orientation: landscape) {
       width: calc(100% - 5rem);
     }
+  }
+}
+
+@keyframes form__button-svg-fade {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes form__button-text-fade {
+  0% {
+    color: transparent;
+  }
+
+  100% {
+    color: $c-purple-dark;
   }
 }
